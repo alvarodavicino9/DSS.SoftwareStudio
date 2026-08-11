@@ -1,6 +1,7 @@
 import { useEffect, useRef, lazy, Suspense } from 'react';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { trackEvent } from '../utils/analytics';
+import SpotlightButton from './SpotlightButton';
 
 // three.js is a heavy dependency (~700kB) used only by the 3D hero visuals —
 // split into their own chunk so it doesn't block the initial page render.
@@ -54,7 +55,7 @@ export default function Hero() {
 
       <div id="hero-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', alignItems: 'center', flex: 1, minHeight: 0, position: 'relative', zIndex: 1 }}>
         <div
-          className="fade-up-item"
+          className="fade-up-item hero-copy"
           style={{
             maxWidth: 600,
             position: 'relative',
@@ -88,22 +89,23 @@ export default function Hero() {
               animation: 'fadeUp 1s var(--ease-cinematic) 0.16s both',
             }}
           >
-            Desarrollamos soluciones digitales ágiles, robustas y adaptadas exactamente a las necesidades de tu
-            negocio. Hablás y trabajás directamente con los ingenieros que escriben tu código — sin capas
-            comerciales en el medio.
+            Diseñamos y programamos software a medida de tu negocio, no genérico. Trabajás directo
+            con los ingenieros que escriben tu código, sin capas comerciales en el medio.
           </p>
           <div
-            className="fade-up-item"
+            className="fade-up-item hero-cta-row"
             style={{ display: 'flex', gap: 14, flexWrap: 'wrap', animation: 'fadeUp 1s var(--ease-cinematic) 0.24s both' }}
           >
-            <a
+            <SpotlightButton
               href="#contacto"
               className="btn btn-primary"
-              onClick={() => trackEvent('cta_click', { label: 'agendar_diagnostico', location: 'hero' })}
+              onClick={() => trackEvent('cta_click', { label: 'agendar_consulta', location: 'hero' })}
             >
-              Agendar Diagnóstico (15 min)
-            </a>
-            <a href="#portafolio" className="btn btn-secondary">Ver Experiencia</a>
+              Agendar una Consulta
+            </SpotlightButton>
+            <SpotlightButton href="#portafolio" className="btn btn-secondary" glowColor="rgba(139,124,246,0.4)">
+              Ver Experiencia
+            </SpotlightButton>
           </div>
         </div>
 

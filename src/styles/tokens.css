@@ -54,6 +54,11 @@
 
 html { scroll-behavior: smooth; }
 
+/* Sections jumped to via nav anchors (#servicios, #contacto, etc.) would
+   otherwise land with their heading tucked right under the fixed nav bar —
+   scroll-margin-top keeps a gap so the heading is fully visible on arrival. */
+section[id] { scroll-margin-top: 90px; }
+
 body {
   margin: 0;
   background: var(--color-bg);
@@ -117,6 +122,24 @@ button { font-family: inherit; cursor: pointer; }
 
 .btn-block { width: 100%; }
 
+/* Spotlight glow overlay — see SpotlightButton.jsx. The glow div sits above
+   the button's own background and below its label text. */
+.spotlight-btn { position: relative; overflow: hidden; }
+.spotlight-glow {
+  position: absolute;
+  inset: -1px;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+.spotlight-content {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .btn[disabled] { opacity: 0.55; cursor: not-allowed; transform: none; }
 
 /* Tags */
@@ -170,6 +193,29 @@ button { font-family: inherit; cursor: pointer; }
   font-size: 13px;
   font-weight: 700;
   flex: none;
+  transition: transform 0.25s var(--ease-cinematic);
+}
+
+/* Micro-interactions — badges nudge on hover instead of sitting static. */
+.icon-badge,
+.step-badge {
+  transition: transform 0.25s var(--ease-cinematic);
+}
+.card:hover .icon-badge,
+.card:hover .step-badge {
+  transform: scale(1.08) rotate(-4deg);
+}
+.founder-chip:hover .avatar-badge {
+  transform: scale(1.1);
+}
+.portfolio-accent {
+  transition: width 0.3s var(--ease-cinematic);
+}
+.card:hover .portfolio-accent {
+  width: 100%;
+}
+@media (prefers-reduced-motion: reduce) {
+  .icon-badge, .step-badge, .avatar-badge, .portfolio-accent { transition: none; }
 }
 
 /* Cards */

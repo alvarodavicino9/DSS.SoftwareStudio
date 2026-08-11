@@ -29,17 +29,58 @@
   right: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-2);
   padding: var(--space-6) var(--space-8) var(--space-8);
   background: rgba(245, 246, 250, 0.98);
   backdrop-filter: blur(10px);
   border-top: 1px solid var(--border-neutral);
   box-shadow: var(--shadow-md);
+  animation: mobileMenuIn 0.3s var(--ease-cinematic) both;
 }
-.mobile-menu a:not(.btn) {
+@keyframes mobileMenuIn {
+  from { opacity: 0; transform: translateY(-14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.mobile-menu-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
   font-size: 15px;
   color: var(--color-text);
-  padding: var(--space-2) 0;
+  padding: var(--space-2) var(--space-2);
+  border-radius: var(--radius-md);
+  opacity: 0;
+  animation: mobileLinkIn 0.4s var(--ease-cinematic) both;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+.mobile-menu-link:nth-child(1) { animation-delay: 0.04s; }
+.mobile-menu-link:nth-child(2) { animation-delay: 0.09s; }
+.mobile-menu-link:nth-child(3) { animation-delay: 0.14s; }
+.mobile-menu-link:nth-child(4) { animation-delay: 0.19s; }
+.mobile-menu-link:nth-child(5) { animation-delay: 0.24s; }
+.mobile-menu-link:nth-child(6) { animation-delay: 0.29s; }
+.mobile-menu-link:active {
+  background: var(--color-neutral-800);
+  transform: scale(0.98);
+}
+.mobile-menu-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  flex: none;
+  background: rgba(139, 124, 246, 0.12);
+  color: var(--color-accent-300);
+}
+.mobile-menu-icon svg { width: 18px; height: 18px; }
+@keyframes mobileLinkIn {
+  from { opacity: 0; transform: translateX(-14px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mobile-menu, .mobile-menu-link { animation: none; opacity: 1; }
 }
 
 @media (max-width: 860px) {
@@ -54,6 +95,29 @@
     opacity: 1 !important;
   }
   #nosotros-grid { grid-template-columns: 1fr !important; padding: 36px !important; }
+
+  /* Center text content on mobile — left-aligned copy reads unbalanced on
+     narrow screens, especially with the figure now sitting above it. */
+  .hero-copy {
+    text-align: center;
+    margin: 0 auto;
+  }
+  .hero-copy .tag,
+  .hero-copy p {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hero-cta-row { justify-content: center; }
+
+  .section-header {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+  }
+  .section-header .section-kicker {
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 @media (max-width: 700px) {
@@ -78,15 +142,16 @@
 }
 .nav-link:hover::after { right: 0; }
 
-/* Nav dock — icon row that magnifies and reveals a label on hover/focus,
-   mac-dock style. Kept simple (per-icon hover, no neighbor-bleed physics)
-   so it's cheap and works the same with mouse or keyboard. */
+/* Nav dock — real macOS-dock magnification via framer-motion (see Dock.jsx):
+   icons grow based on cursor distance, not just a flat per-icon hover state.
+   Sizing (width/height) is set inline by framer-motion; this CSS only
+   handles shape, color and the label tooltip positioning. */
 .nav-dock {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   background: rgba(255, 255, 255, 0.14);
-  padding: 6px;
+  padding: 6px 10px;
   border-radius: 999px;
 }
 .dock-item {
@@ -94,25 +159,25 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
   border-radius: 50%;
   color: rgba(255, 255, 255, 0.9);
-  transition: transform 0.22s var(--ease-cinematic), background 0.22s ease, color 0.2s ease;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 .dock-item:hover,
 .dock-item:focus-visible {
-  transform: translateY(-3px) scale(1.18);
   background: rgba(255, 255, 255, 0.95);
   color: var(--color-accent-300);
   outline: none;
 }
-.dock-icon { display: flex; }
+.dock-icon { display: flex; align-items: center; justify-content: center; }
+.dock-icon svg { width: 100%; height: 100%; display: block; }
 .dock-label {
   position: absolute;
-  top: calc(100% + 10px);
+  top: 100%;
   left: 50%;
-  transform: translateX(-50%) translateY(-4px);
+  margin-top: 10px;
   white-space: nowrap;
   font-size: 11px;
   font-weight: 600;
@@ -122,18 +187,10 @@
   color: #fff;
   padding: 5px 11px;
   border-radius: 999px;
-  opacity: 0;
   pointer-events: none;
-  transition: opacity 0.18s ease, transform 0.18s ease;
-}
-.dock-item:hover .dock-label,
-.dock-item:focus-visible .dock-label {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
 }
 @media (prefers-reduced-motion: reduce) {
   .dock-item { transition: none; }
-  .dock-item:hover, .dock-item:focus-visible { transform: none; }
 }
 
 /* Floating WhatsApp widget — fixed wrapper holds both the toggle button and

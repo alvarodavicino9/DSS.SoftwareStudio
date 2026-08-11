@@ -34,7 +34,16 @@ export default function Logo({ variant = 'full', height = 30, style, light = fal
 
   if (variant === 'mark') {
     return (
-      <svg viewBox="0 0 120 60" height={height} style={{ display: 'block', ...style }} role="img" aria-label="DS.SoftwareStudio">
+      // viewBox widened to 170 (was 120 — way too narrow for "<DSS/>" at
+      // fontSize 38, which was clipping the closing ">" off entirely).
+      // overflow:visible is a defensive backstop on top of that.
+      <svg
+        viewBox="0 0 170 60"
+        height={height}
+        style={{ display: 'block', overflow: 'visible', ...style }}
+        role="img"
+        aria-label="DS.SoftwareStudio"
+      >
         <defs>
           <linearGradient id={gradId} x1="0" y1="0" x2="1" y2="0">
             <stop offset="0" stopColor="var(--color-accent, #8b7cf6)" />
@@ -49,9 +58,17 @@ export default function Logo({ variant = 'full', height = 30, style, light = fal
   }
 
   return (
-    // viewBox widened to 375 (was 340, which clipped the tagline — its ~27
-    // characters starting at x=172 ran past the old right edge).
-    <svg viewBox="0 0 375 60" height={height} style={{ display: 'block', ...style }} role="img" aria-label="DS.SoftwareStudio">
+    // viewBox widened to 375, tagline bumped from fontSize 9 to 11 (was
+    // illegible at real nav render size) with letterSpacing trimmed to
+    // compensate so it still fits without clipping. overflow:visible as a
+    // backstop in case any future copy runs long again.
+    <svg
+      viewBox="0 0 375 60"
+      height={height}
+      style={{ display: 'block', overflow: 'visible', ...style }}
+      role="img"
+      aria-label="DS.SoftwareStudio"
+    >
       <defs>
         <linearGradient id={gradId} x1="0" y1="0" x2="1" y2="0">
           <stop offset="0" stopColor="var(--color-accent, #8b7cf6)" />
@@ -71,26 +88,26 @@ export default function Logo({ variant = 'full', height = 30, style, light = fal
       </text>
       <text
         x="172"
-        y="30"
+        y="31"
         fontFamily="Inter, system-ui, sans-serif"
         fontWeight="700"
-        fontSize="19"
+        fontSize="21"
         fill={light ? '#ffffff' : 'var(--color-text, #14151f)'}
       >
         SoftwareStudio
       </text>
       <text
         x="172"
-        y="46"
+        y="48"
         fontFamily="Inter, system-ui, sans-serif"
-        fontWeight="500"
-        fontSize="9"
-        letterSpacing="1.5"
-        fill={light ? 'rgba(255,255,255,0.75)' : 'var(--text-tertiary, #7a7f92)'}
+        fontWeight="600"
+        fontSize="11"
+        letterSpacing="1"
+        fill={light ? 'rgba(255,255,255,0.85)' : 'var(--text-tertiary, #7a7f92)'}
       >
         SOFTWARE ENGINEERING STUDIO
       </text>
-      <rect x="172" y="50" width="14" height="1.4" fill={light ? '#ffffff' : 'var(--color-accent-2, #2fc8db)'} />
+      <rect x="172" y="52" width="14" height="1.4" fill={light ? '#ffffff' : 'var(--color-accent-2, #2fc8db)'} />
     </svg>
   );
 }

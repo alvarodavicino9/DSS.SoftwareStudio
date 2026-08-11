@@ -1,6 +1,8 @@
 // Minimal stroke icons for the nav dock — hand-drawn, no icon library
-// dependency. Consistent 24x24 viewBox, currentColor stroke.
-const common = { viewBox: '0 0 24 24', width: 20, height: 20, fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': true };
+// dependency. Consistent 24x24 viewBox, currentColor stroke. width/height are
+// 100% so they scale with whatever size their motion-animated wrapper (the
+// dock icon slot, or the fixed mobile-menu chip) sets.
+const common = { viewBox: '0 0 24 24', width: '100%', height: '100%', fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': true };
 
 export function HomeIcon() {
   return (

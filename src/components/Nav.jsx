@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import Logo from './Logo';
+import { Dock, DockItem, DockLabel, DockIcon } from './Dock';
 import { HomeIcon, UsersIcon, WrenchIcon, StepsIcon, BriefcaseIcon, MailIcon } from './NavIcons';
 
 const LINKS = [
@@ -47,13 +48,15 @@ export default function Nav() {
         <Logo height={38} light />
       </a>
 
-      <div className="nav-links-desktop nav-dock" style={{ justifySelf: 'center' }}>
-        {LINKS.map((l) => (
-          <a key={l.href} href={l.href} className="dock-item" aria-label={l.label}>
-            <span className="dock-icon"><l.Icon /></span>
-            <span className="dock-label" aria-hidden="true">{l.label}</span>
-          </a>
-        ))}
+      <div className="nav-links-desktop" style={{ justifySelf: 'center' }}>
+        <Dock>
+          {LINKS.map((l) => (
+            <DockItem key={l.href} href={l.href} ariaLabel={l.label}>
+              <DockIcon><l.Icon /></DockIcon>
+              <DockLabel>{l.label}</DockLabel>
+            </DockItem>
+          ))}
+        </Dock>
       </div>
 
       <button
@@ -72,8 +75,8 @@ export default function Nav() {
       {open && (
         <div className="mobile-menu" role="dialog" aria-modal="true">
           {LINKS.map((l) => (
-            <a key={l.href} href={l.href} onClick={closeMenu} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <l.Icon />
+            <a key={l.href} href={l.href} onClick={closeMenu} className="mobile-menu-link">
+              <span className="mobile-menu-icon"><l.Icon /></span>
               {l.label}
             </a>
           ))}

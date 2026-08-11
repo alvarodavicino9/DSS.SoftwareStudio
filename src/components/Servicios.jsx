@@ -4,17 +4,17 @@ import { ServerIcon, GlobeIcon, RocketIcon } from './SectionIcons';
 const SERVICES = [
   {
     title: 'Sistemas & Backend',
-    desc: 'Automatización de procesos operativos, gestión de bases de datos y APIs seguras y escalables que integran tus sistemas existentes.',
+    desc: 'Automatizamos procesos operativos y construimos APIs seguras y escalables que se integran con los sistemas que ya usás.',
     Icon: ServerIcon,
   },
   {
     title: 'Plataformas Web & PWAs',
-    desc: 'Aplicaciones web modernas, ultra rápidas e instalables en móviles, pensadas para la mejor experiencia de tus usuarios.',
+    desc: 'Apps web rápidas, instalables en el celular como una app nativa, pensadas para que tus usuarios no se frustren.',
     Icon: GlobeIcon,
   },
   {
     title: 'Desarrollo de MVPs',
-    desc: 'Construcción rápida de Productos Mínimos Viables para validar tu idea de negocio en tiempo récord, con métricas desde el día uno.',
+    desc: 'MVPs funcionales en semanas, no meses, con métricas desde el primer usuario para validar tu idea antes de invertir de más.',
     Icon: RocketIcon,
   },
 ];
@@ -29,11 +29,11 @@ export default function Servicios() {
     <section id="servicios" className="section-textured" style={{ padding: '60px 40px 140px' }}>
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         <div ref={headerRef} style={revealStyle(headerVisible, 0)}>
-          <div style={{ marginBottom: 48, maxWidth: 560 }}>
+          <div className="section-header" style={{ marginBottom: 48, maxWidth: 560 }}>
             <div className="section-kicker" />
-            <h2 style={{ fontSize: 36, margin: '0 0 10px', letterSpacing: '-0.015em' }}>Lo Que Podemos Hacer</h2>
+            <h2 style={{ fontSize: 36, margin: '0 0 10px', letterSpacing: '-0.015em' }}>Lo Que Hacemos</h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: 16, margin: 0 }}>
-              Soluciones integrales para cualquier tipo de complejidad.
+              Soluciones a medida, del primer prototipo al sistema en producción.
             </p>
           </div>
         </div>

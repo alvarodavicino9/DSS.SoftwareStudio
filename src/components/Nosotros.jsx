@@ -6,9 +6,9 @@ const FOUNDERS = [
 ];
 
 const VALUES = [
-  { label: 'Agilidad', desc: 'Entregables funcionales continuos, con feedback cada semana en vez de sorpresas al final.' },
+  { label: 'Agilidad', desc: 'Entregas funcionales todas las semanas, con feedback continuo — nada de sorpresas el día final.' },
   { label: 'Flexibilidad', desc: 'Nos adaptamos a tu rubro, tu stack existente y tu forma de trabajar — no al revés.' },
-  { label: 'Compromiso', desc: 'Garantía de soporte posterior al lanzamiento. El proyecto no termina en el deploy.' },
+  { label: 'Compromiso', desc: 'El soporte no termina en el deploy: seguimos cerca después del lanzamiento.' },
 ];
 
 export default function Nosotros() {
@@ -37,14 +37,15 @@ export default function Nosotros() {
               Trato directo con los desarrolladores
             </h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: 15, lineHeight: 1.7, margin: '0 0 28px' }}>
-              Eliminamos las capas comerciales e intermediarios. En DS.SoftwareStudio diseñamos y programamos
-              directamente nosotros, asegurando flexibilidad, código limpio y cumplimiento estricto de tiempos.
-              Cada decisión técnica la toma quien después la sostiene en producción.
+              En DS.SoftwareStudio no hay vendedores entre vos y el código: diseñamos, programamos y sostenemos
+              cada proyecto nosotros mismos. Eso significa flexibilidad real, código prolijo y plazos que se
+              cumplen — porque quien decide es quien después responde en producción.
             </p>
             <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
               {FOUNDERS.map((f, i) => (
                 <div
                   key={f.name}
+                  className="founder-chip"
                   style={revealStyle(visible, i + 1, 'cinematografica', {
                     display: 'flex',
                     alignItems: 'center',

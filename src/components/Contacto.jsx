@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useReveal, revealStyle } from '../hooks/useReveal';
 import { trackEvent } from '../utils/analytics';
+import SpotlightButton from './SpotlightButton';
 
 // TODO(cliente): reemplazar por el endpoint real de Formspree.
 // 1. Crear cuenta gratis en https://formspree.io con el email que reciba las consultas.
@@ -61,7 +62,7 @@ export default function Contacto() {
   return (
     <section id="contacto" className="section-textured section-alt" style={{ padding: '60px 40px 160px' }}>
       <div ref={ref} style={{ maxWidth: 700, margin: '0 auto', perspective: 1200, ...revealStyle(visible, 0) }}>
-        <div style={{ marginBottom: 36 }}>
+        <div className="section-header" style={{ marginBottom: 36 }}>
           <div className="section-kicker" />
           <h2 style={{ fontSize: 32, margin: '0 0 10px', letterSpacing: '-0.015em' }}>Iniciemos tu proyecto</h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: 15, margin: 0 }}>
@@ -131,9 +132,9 @@ export default function Contacto() {
             />
           </div>
 
-          <button type="submit" className="btn btn-primary btn-block" disabled={status === 'sending'}>
+          <SpotlightButton as="button" type="submit" className="btn btn-primary btn-block" disabled={status === 'sending'}>
             {status === 'sending' ? 'Enviando...' : 'Enviar Consulta Directa'}
-          </button>
+          </SpotlightButton>
 
           {status === 'success' && (
             <p role="status" style={{ margin: 0, fontSize: 13, color: 'var(--color-accent-300)' }}>

@@ -5,7 +5,7 @@ import { trackEvent } from '../utils/analytics';
 const QUICK_OPTIONS = [
   { label: 'Quiero un presupuesto para mi proyecto', message: 'Hola, quiero un presupuesto para mi proyecto.' },
   { label: 'Tengo una consulta técnica', message: 'Hola, tengo una consulta técnica.' },
-  { label: 'Quiero agendar un diagnóstico gratuito (15 min)', message: 'Hola, quiero agendar un diagnóstico gratuito de 15 minutos.' },
+  { label: 'Quiero agendar una consulta', message: 'Hola, quiero agendar una consulta.' },
 ];
 
 function WhatsappIcon({ size = 26 }) {

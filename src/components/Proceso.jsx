@@ -4,7 +4,7 @@ const STEPS = [
   {
     n: '01',
     title: 'Diagnóstico',
-    desc: 'Una llamada de 15 minutos para entender tu problema real, tu operación actual y qué resultado necesitás — sin tecnicismos.',
+    desc: 'Una llamada breve para entender tu problema real, tu operación actual y qué resultado necesitás — sin tecnicismos.',
   },
   {
     n: '02',
@@ -31,11 +31,11 @@ export default function Proceso() {
     <section id="proceso" className="section-textured section-alt" style={{ padding: '60px 40px 140px' }}>
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         <div ref={headerRef} style={revealStyle(headerVisible, 0)}>
-          <div style={{ marginBottom: 48, maxWidth: 560 }}>
+          <div className="section-header" style={{ marginBottom: 48, maxWidth: 560 }}>
             <div className="section-kicker" />
             <h2 style={{ fontSize: 36, margin: '0 0 10px', letterSpacing: '-0.015em' }}>Cómo Trabajamos</h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: 16, margin: 0 }}>
-              Cuatro pasos, sin intermediarios entre vos y quien escribe el código.
+              Cuatro pasos simples, siempre hablando con quien escribe el código.
             </p>
           </div>
         </div>
