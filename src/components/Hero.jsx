@@ -89,8 +89,8 @@ export default function Hero() {
               animation: 'fadeUp 1s var(--ease-cinematic) 0.16s both',
             }}
           >
-            Diseñamos y programamos software a medida de tu negocio, no genérico. Trabajás directo
-            con los ingenieros que escriben tu código, sin capas comerciales en el medio.
+            Diseñamos y programamos software a medida para tu negocio. Trabajás directo con los
+            ingenieros que escriben tu código, de principio a fin.
           </p>
           <div
             className="fade-up-item hero-cta-row"

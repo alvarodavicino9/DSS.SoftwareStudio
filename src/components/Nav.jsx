@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
 import Logo from './Logo';
 import { Dock, DockItem, DockLabel, DockIcon } from './Dock';
+import RadialMenu from './RadialMenu';
 import { HomeIcon, UsersIcon, WrenchIcon, StepsIcon, BriefcaseIcon, MailIcon } from './NavIcons';
 
 const LINKS = [
@@ -12,18 +12,10 @@ const LINKS = [
   { href: '#contacto', label: 'Contacto', Icon: MailIcon },
 ];
 
+// Desktop: full logo lockup + icon dock. Mobile: compact mark-only logo
+// (the full lockup doesn't fit next to the radial menu trigger without
+// overlapping it) + the radial "sections" menu in RadialMenu.jsx.
 export default function Nav() {
-  const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e) => e.key === 'Escape' && setOpen(false);
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [open]);
-
-  const closeMenu = () => setOpen(false);
-
   return (
     <nav
       style={{
@@ -33,10 +25,6 @@ export default function Nav() {
         right: 0,
         zIndex: 50,
         display: 'grid',
-        // Two equal flanking columns keep the links visually centered no
-        // matter what's in the right column — on desktop that's nothing
-        // (the hamburger is mobile-only, display:none there), so a plain
-        // flex + space-between would shove the links off to the right.
         gridTemplateColumns: '1fr auto 1fr',
         alignItems: 'center',
         padding: 'var(--space-6) var(--space-8)',
@@ -44,9 +32,14 @@ export default function Nav() {
         boxShadow: '0 4px 24px rgba(20, 21, 31, 0.16)',
       }}
     >
-      <a href="#" onClick={closeMenu} aria-label="DS.SoftwareStudio — inicio" style={{ justifySelf: 'start' }}>
-        <Logo height={38} light />
-      </a>
+      <div style={{ justifySelf: 'start' }}>
+        <a href="#" aria-label="DS.SoftwareStudio — inicio" className="nav-logo-full">
+          <Logo height={38} light />
+        </a>
+        <a href="#" aria-label="DS.SoftwareStudio — inicio" className="nav-logo-compact">
+          <Logo variant="mark" height={30} light />
+        </a>
+      </div>
 
       <div className="nav-links-desktop" style={{ justifySelf: 'center' }}>
         <Dock>
@@ -59,29 +52,9 @@ export default function Nav() {
         </Dock>
       </div>
 
-      <button
-        type="button"
-        className="hamburger-btn"
-        aria-label={open ? 'Cerrar menú' : 'Abrir menú'}
-        aria-expanded={open}
-        onClick={() => setOpen((o) => !o)}
-        style={{ justifySelf: 'end' }}
-      >
-        <span />
-        <span />
-        <span />
-      </button>
-
-      {open && (
-        <div className="mobile-menu" role="dialog" aria-modal="true">
-          {LINKS.map((l) => (
-            <a key={l.href} href={l.href} onClick={closeMenu} className="mobile-menu-link">
-              <span className="mobile-menu-icon"><l.Icon /></span>
-              {l.label}
-            </a>
-          ))}
-        </div>
-      )}
+      <div className="nav-slot-end" style={{ justifySelf: 'end' }}>
+        <RadialMenu />
+      </div>
     </nav>
   );
 }

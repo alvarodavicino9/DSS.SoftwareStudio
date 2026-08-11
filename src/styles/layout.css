@@ -120,9 +120,16 @@
   }
 }
 
+.nav-logo-compact { display: none; }
 @media (max-width: 700px) {
   .nav-links-desktop { display: none !important; }
   .hamburger-btn { display: flex !important; }
+  .nav-logo-full { display: none !important; }
+  .nav-logo-compact { display: inline-block !important; }
+  /* Nudge the radial-menu trigger a bit closer to the screen edge than the
+     nav's full padding — but not flush against it, or there's no room at
+     all for the fan to use the right side too. */
+  .nav-slot-end { margin-right: -6px; }
 }
 
 @media (min-width: 701px) {
@@ -191,6 +198,56 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .dock-item { transition: none; }
+}
+
+/* Radial "sections" menu — mobile only, lives in the nav's top-right slot
+   (where the hamburger used to be). See RadialMenu.jsx for the fan-out
+   logic (framer-motion). Relative, not fixed: it's a normal child of <nav>
+   now, so it inherits the nav's stacking/position for free. */
+.radial-menu {
+  position: relative;
+}
+.radial-trigger {
+  position: relative;
+  z-index: 2;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  /* A gradient-on-gradient glow just blurred into the nav bar behind it.
+     Plain white + a neutral dark shadow reads as a crisp, separate button
+     instead — same contrast trick the dock items already use on hover. */
+  background: #fff;
+  color: var(--color-accent-300);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 10px rgba(20, 21, 31, 0.22);
+}
+.radial-trigger-icon { display: flex; }
+.radial-item {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -23px;
+  margin-left: -23px;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(20, 21, 31, 0.88);
+  backdrop-filter: blur(6px);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  z-index: 1;
+}
+.radial-item svg { width: 19px; height: 19px; }
+@media (min-width: 701px) {
+  .radial-menu { display: none; }
 }
 
 /* Floating WhatsApp widget — fixed wrapper holds both the toggle button and

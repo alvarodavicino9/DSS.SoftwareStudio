@@ -50,7 +50,15 @@ export default function Logo({ variant = 'full', height = 30, style, light = fal
             <stop offset="1" stopColor="var(--color-accent-2, #2fc8db)" />
           </linearGradient>
         </defs>
-        <text x="0" y="42" fontFamily="Inter, system-ui, sans-serif" fontWeight="800" fontSize="38" fill={`url(#${gradId})`} letterSpacing="-1">
+        <text
+          x="0"
+          y="42"
+          fontFamily="Inter, system-ui, sans-serif"
+          fontWeight="800"
+          fontSize="38"
+          fill={light ? '#ffffff' : `url(#${gradId})`}
+          letterSpacing="-1"
+        >
           &lt;DSS/&gt;
         </text>
       </svg>
