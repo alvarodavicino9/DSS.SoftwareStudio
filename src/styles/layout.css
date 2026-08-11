@@ -1,0 +1,186 @@
+/* Nav — hamburger only on mobile */
+.hamburger-btn {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+.hamburger-btn span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background: #ffffff;
+  border-radius: 2px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.hamburger-btn[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger-btn[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.hamburger-btn[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.mobile-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-8) var(--space-8);
+  background: rgba(245, 246, 250, 0.98);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid var(--border-neutral);
+  box-shadow: var(--shadow-md);
+}
+.mobile-menu a:not(.btn) {
+  font-size: 15px;
+  color: var(--color-text);
+  padding: var(--space-2) 0;
+}
+
+@media (max-width: 860px) {
+  #hero-grid { grid-template-columns: 1fr !important; }
+  #hero-figure-wrap {
+    order: -1 !important;
+    position: relative !important;
+    width: 100% !important;
+    right: 0 !important;
+    height: 260px !important;
+    margin-bottom: 8px !important;
+    opacity: 1 !important;
+  }
+  #nosotros-grid { grid-template-columns: 1fr !important; padding: 36px !important; }
+}
+
+@media (max-width: 700px) {
+  .nav-links-desktop { display: none !important; }
+  .hamburger-btn { display: flex !important; }
+}
+
+@media (min-width: 701px) {
+  .mobile-menu { display: none !important; }
+}
+
+.nav-link { position: relative; transition: color 0.2s ease; }
+.nav-link:hover { color: #ffffff !important; }
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 100%;
+  bottom: -4px;
+  height: 1px;
+  background: #ffffff;
+  transition: right 0.25s var(--ease-cinematic);
+}
+.nav-link:hover::after { right: 0; }
+
+/* Floating WhatsApp button */
+.floating-whatsapp {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 40;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gradient-brand);
+  color: #fff;
+  box-shadow: var(--shadow-glow);
+  transition: opacity 0.3s var(--ease-cinematic), transform 0.3s var(--ease-cinematic), box-shadow 0.2s ease;
+}
+.floating-whatsapp:hover { box-shadow: 0 16px 38px rgba(139, 124, 246, 0.45); }
+.floating-whatsapp-ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid var(--color-accent);
+  opacity: 0.5;
+  animation: whatsappPulse 2.4s ease-out infinite;
+}
+@keyframes whatsappPulse {
+  0% { transform: scale(0.85); opacity: 0.55; }
+  100% { transform: scale(1.35); opacity: 0; }
+}
+@media (max-width: 700px) {
+  .floating-whatsapp { right: 16px; bottom: 16px; width: 52px; height: 52px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .floating-whatsapp-ring { animation: none; display: none; }
+}
+
+/* Section background texture — subtle dot grid + soft brand-color blobs so
+   the sections after the Hero aren't flat white. Deliberately NOT the
+   animated 3D TechNetwork canvas: reusing that per-section would be heavy
+   (one more WebGL context each — the kind of thing that made mobile slow
+   before) and would dilute it as a Hero-only "wow" moment. This is the same
+   violet/cyan visual language, static and near-zero cost. */
+.section-textured {
+  position: relative;
+  isolation: isolate;
+}
+.section-textured::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(20, 21, 31, 0.055) 1px, transparent 1px);
+  background-size: 26px 26px;
+  mask-image: radial-gradient(ellipse 75% 65% at 50% 35%, #000 35%, transparent 85%);
+  -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 35%, #000 35%, transparent 85%);
+}
+.section-textured::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 88% 8%, rgba(139, 124, 246, 0.12), transparent 46%),
+    radial-gradient(circle at 6% 92%, rgba(47, 200, 219, 0.1), transparent 46%);
+}
+.section-alt { background: var(--color-bg-alt); }
+
+/* Hero — A.R.I.A quick-action pills */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  border-radius: 999px;
+  font-size: 13px;
+  padding: 0.4em 1em;
+  margin: 0 0.2em 0.4em 0;
+  border: 1px solid var(--border-neutral);
+  background: var(--color-surface);
+  color: var(--color-text);
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+}
+.pill:hover {
+  background: var(--gradient-brand);
+  border-color: transparent;
+  color: #fff;
+  transform: translateY(-1px);
+}
+.pill-outline {
+  background: transparent;
+  border: 1px solid var(--color-accent);
+  color: var(--color-accent-300);
+  gap: 8px;
+}
+.pill-outline:hover {
+  background: var(--gradient-brand);
+  color: #fff;
+}
+.pill-outline svg { flex-shrink: 0; }
+
+@media (min-width: 640px) {
+  .pill { font-size: 15px; padding: 0.4em 1.2em; }
+}

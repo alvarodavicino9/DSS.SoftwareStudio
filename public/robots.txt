@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dssoftwarestudio.com.ar/sitemap.xml
