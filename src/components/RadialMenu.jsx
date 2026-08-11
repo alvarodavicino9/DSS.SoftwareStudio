@@ -2,13 +2,17 @@ import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HomeIcon, UsersIcon, WrenchIcon, StepsIcon, BriefcaseIcon, MailIcon } from './NavIcons';
 
+// `label` is the full name (used for aria-label / accessibility). `short` is
+// what actually renders under the icon — "Cómo Trabajamos" is too wide to
+// sit next to its neighbors without crowding them, so it gets a shorter
+// on-screen name while keeping the descriptive aria-label intact.
 const ITEMS = [
-  { href: '#', label: 'Inicio', Icon: HomeIcon },
-  { href: '#nosotros', label: 'Nosotros', Icon: UsersIcon },
-  { href: '#servicios', label: 'Servicios', Icon: WrenchIcon },
-  { href: '#proceso', label: 'Cómo Trabajamos', Icon: StepsIcon },
-  { href: '#portafolio', label: 'Portafolio', Icon: BriefcaseIcon },
-  { href: '#contacto', label: 'Contacto', Icon: MailIcon },
+  { href: '#', label: 'Inicio', short: 'Inicio', Icon: HomeIcon },
+  { href: '#nosotros', label: 'Nosotros', short: 'Nosotros', Icon: UsersIcon },
+  { href: '#servicios', label: 'Servicios', short: 'Servicios', Icon: WrenchIcon },
+  { href: '#proceso', label: 'Cómo Trabajamos', short: 'Proceso', Icon: StepsIcon },
+  { href: '#portafolio', label: 'Portafolio', short: 'Portafolio', Icon: BriefcaseIcon },
+  { href: '#contacto', label: 'Contacto', short: 'Contacto', Icon: MailIcon },
 ];
 
 // Trigger lives top-right in the nav bar. Hand-picked pixel radii kept
@@ -20,7 +24,13 @@ const ITEMS = [
 // can clip because the numbers come from the real screen, not an assumption.
 const EDGE_MARGIN = 16;
 const ITEM_HALF = 23; // half of the 46px item circle
-const MIN_RADIUS = 90;
+// Each item now has a name label hanging below its circle — this reserves
+// space for it so the label itself can't get clipped by the bottom edge,
+// same "measure real space, don't guess" fix as everything else here.
+const LABEL_ALLOWANCE = 26;
+// Bumped up from 90 so labels have more room between neighboring items and
+// don't crowd/overlap each other.
+const MIN_RADIUS = 104;
 const MAX_RADIUS = 210;
 
 function computePoints(origin, count) {
@@ -28,7 +38,7 @@ function computePoints(origin, count) {
 
   const spaceLeft = Math.max(0, origin.cx - EDGE_MARGIN - ITEM_HALF);
   const spaceRight = Math.max(0, window.innerWidth - origin.cx - EDGE_MARGIN - ITEM_HALF);
-  const spaceDown = Math.max(0, window.innerHeight - origin.cy - EDGE_MARGIN - ITEM_HALF);
+  const spaceDown = Math.max(0, window.innerHeight - origin.cy - EDGE_MARGIN - ITEM_HALF - LABEL_ALLOWANCE);
 
   const radius = Math.min(Math.max(MIN_RADIUS, spaceDown), MAX_RADIUS);
 
@@ -101,6 +111,9 @@ export default function RadialMenu() {
                 transition={{ type: 'spring', stiffness: 260, damping: 20, delay: i * 0.045 }}
               >
                 <item.Icon />
+                <span className="radial-item-label" aria-hidden="true">
+                  {item.short}
+                </span>
               </motion.a>
             );
           })}

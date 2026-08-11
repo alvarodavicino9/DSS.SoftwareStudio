@@ -236,7 +236,11 @@
   width: 46px;
   height: 46px;
   border-radius: 50%;
-  background: rgba(20, 21, 31, 0.88);
+  /* Near-black clashed with the dark 3D robot behind it — a lighter
+     surface tone with a soft border reads as its own floating chip
+     instead of blending into the background. */
+  background: rgba(38, 40, 54, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   backdrop-filter: blur(6px);
   color: #fff;
   display: flex;
@@ -246,6 +250,22 @@
   z-index: 1;
 }
 .radial-item svg { width: 19px; height: 19px; }
+.radial-item-label {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  color: #fff;
+  background: rgba(15, 16, 22, 0.82);
+  padding: 3px 7px;
+  border-radius: 999px;
+  pointer-events: none;
+}
 @media (min-width: 701px) {
   .radial-menu { display: none; }
 }
