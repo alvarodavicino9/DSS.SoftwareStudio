@@ -1,7 +1,7 @@
 {
   "name": "DS.SoftwareStudio",
   "short_name": "DS Studio",
-  "description": "Consultora y software factory argentina. Sistemas a medida, plataformas web, PWAs y MVPs.",
+  "description": "Consultora de software argentina. Sistemas a medida, plataformas web, PWAs y MVPs.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

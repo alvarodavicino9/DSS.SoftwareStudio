@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import Logo from './Logo';
+import { HomeIcon, UsersIcon, WrenchIcon, StepsIcon, BriefcaseIcon, MailIcon } from './NavIcons';
 
 const LINKS = [
-  { href: '#nosotros', label: 'Nosotros' },
-  { href: '#servicios', label: 'Servicios' },
-  { href: '#proceso', label: 'Cómo Trabajamos' },
-  { href: '#portafolio', label: 'Portafolio' },
-  { href: '#contacto', label: 'Contacto' },
+  { href: '#', label: 'Inicio', Icon: HomeIcon },
+  { href: '#nosotros', label: 'Nosotros', Icon: UsersIcon },
+  { href: '#servicios', label: 'Servicios', Icon: WrenchIcon },
+  { href: '#proceso', label: 'Cómo Trabajamos', Icon: StepsIcon },
+  { href: '#portafolio', label: 'Portafolio', Icon: BriefcaseIcon },
+  { href: '#contacto', label: 'Contacto', Icon: MailIcon },
 ];
 
 export default function Nav() {
@@ -45,13 +47,11 @@ export default function Nav() {
         <Logo height={38} light />
       </a>
 
-      <div
-        className="nav-links-desktop"
-        style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-6)', justifySelf: 'center' }}
-      >
+      <div className="nav-links-desktop nav-dock" style={{ justifySelf: 'center' }}>
         {LINKS.map((l) => (
-          <a key={l.href} href={l.href} className="nav-link" style={{ fontSize: 14, color: 'rgba(255,255,255,0.85)' }}>
-            {l.label}
+          <a key={l.href} href={l.href} className="dock-item" aria-label={l.label}>
+            <span className="dock-icon"><l.Icon /></span>
+            <span className="dock-label" aria-hidden="true">{l.label}</span>
           </a>
         ))}
       </div>
@@ -72,7 +72,8 @@ export default function Nav() {
       {open && (
         <div className="mobile-menu" role="dialog" aria-modal="true">
           {LINKS.map((l) => (
-            <a key={l.href} href={l.href} onClick={closeMenu}>
+            <a key={l.href} href={l.href} onClick={closeMenu} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <l.Icon />
               {l.label}
             </a>
           ))}

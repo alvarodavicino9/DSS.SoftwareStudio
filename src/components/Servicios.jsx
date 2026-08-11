@@ -1,17 +1,21 @@
 import { useReveal, revealStyle } from '../hooks/useReveal';
+import { ServerIcon, GlobeIcon, RocketIcon } from './SectionIcons';
 
 const SERVICES = [
   {
     title: 'Sistemas & Backend',
     desc: 'Automatización de procesos operativos, gestión de bases de datos y APIs seguras y escalables que integran tus sistemas existentes.',
+    Icon: ServerIcon,
   },
   {
     title: 'Plataformas Web & PWAs',
     desc: 'Aplicaciones web modernas, ultra rápidas e instalables en móviles, pensadas para la mejor experiencia de tus usuarios.',
+    Icon: GlobeIcon,
   },
   {
     title: 'Desarrollo de MVPs',
     desc: 'Construcción rápida de Productos Mínimos Viables para validar tu idea de negocio en tiempo récord, con métricas desde el día uno.',
+    Icon: RocketIcon,
   },
 ];
 
@@ -26,6 +30,7 @@ export default function Servicios() {
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         <div ref={headerRef} style={revealStyle(headerVisible, 0)}>
           <div style={{ marginBottom: 48, maxWidth: 560 }}>
+            <div className="section-kicker" />
             <h2 style={{ fontSize: 36, margin: '0 0 10px', letterSpacing: '-0.015em' }}>Lo Que Podemos Hacer</h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: 16, margin: 0 }}>
               Soluciones integrales para cualquier tipo de complejidad.
@@ -37,6 +42,9 @@ export default function Servicios() {
           {SERVICES.map((s, i) => (
             <div key={s.title} style={revealStyle(gridVisible, i + 1, 'cinematografica', { height: '100%' })}>
               <div className="card elev-sm" style={{ height: '100%', padding: 'var(--space-8)' }}>
+                <span className="icon-badge" style={{ marginBottom: 'var(--space-4)' }}>
+                  <s.Icon />
+                </span>
                 <h3 className="card-title">{s.title}</h3>
                 <p className="card-body">{s.desc}</p>
               </div>

@@ -46,14 +46,23 @@ export default function Nosotros() {
                 <div
                   key={f.name}
                   style={revealStyle(visible, i + 1, 'cinematografica', {
-                    background: 'var(--color-neutral-800)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 12,
+                    background: 'var(--color-surface)',
                     padding: 'var(--space-3) var(--space-4)',
                     borderRadius: 'var(--radius-md)',
+                    border: '1px solid var(--border-neutral)',
                     flex: '1 1 200px',
                   })}
                 >
-                  <strong style={{ display: 'block', fontSize: 15, fontWeight: 500 }}>{f.name}</strong>
-                  <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{f.role}</span>
+                  <span className="avatar-badge">
+                    {f.name.split(' ').map((part) => part[0]).join('')}
+                  </span>
+                  <div>
+                    <strong style={{ display: 'block', fontSize: 15, fontWeight: 500 }}>{f.name}</strong>
+                    <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{f.role}</span>
+                  </div>
                 </div>
               ))}
             </div>

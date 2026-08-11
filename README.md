@@ -102,9 +102,9 @@ Estas son las cosas que el diseño dejaba abiertas y que hay que terminar de res
    - Hasta entonces el formulario funciona (loading/success/error) pero el envío falla porque
      el endpoint es un placeholder — el usuario ve el mensaje de error con el email de fallback.
 
-2. **WhatsApp** — el número usado es `+549 3491687912` (formato armado como AR celular + código
-   de país). Confirmar que el link `https://wa.me/5493491687912` en `Nav.jsx` resuelve correctamente
-   al número real de WhatsApp Business antes de publicar.
+2. ~~**WhatsApp**~~ — confirmado: `+549 3491687912` es el número real de WhatsApp Business. El botón
+   flotante (`FloatingWhatsApp.jsx`) ahora abre un mini-chat con opciones rápidas antes de mandar
+   a `https://wa.me/5493491687912`.
 
 3. **Casos de portafolio** — siguen siendo genéricos. La estructura ya soporta nombre de cliente
    (`cliente` en cada caso de `Portafolio.jsx`, hoy en `null`) — falta completarlo cuando haya

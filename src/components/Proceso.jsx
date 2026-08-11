@@ -32,6 +32,7 @@ export default function Proceso() {
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         <div ref={headerRef} style={revealStyle(headerVisible, 0)}>
           <div style={{ marginBottom: 48, maxWidth: 560 }}>
+            <div className="section-kicker" />
             <h2 style={{ fontSize: 36, margin: '0 0 10px', letterSpacing: '-0.015em' }}>Cómo Trabajamos</h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: 16, margin: 0 }}>
               Cuatro pasos, sin intermediarios entre vos y quien escribe el código.
@@ -43,18 +44,7 @@ export default function Proceso() {
           {STEPS.map((step, i) => (
             <div key={step.n} style={revealStyle(gridVisible, i + 1, 'cinematografica', { height: '100%' })}>
               <div className="card elev-sm" style={{ height: '100%', padding: 'var(--space-8)' }}>
-                <span
-                  style={{
-                    display: 'block',
-                    fontSize: 13,
-                    fontWeight: 600,
-                    letterSpacing: '0.05em',
-                    color: 'var(--color-accent-300)',
-                    marginBottom: 'var(--space-3)',
-                  }}
-                >
-                  {step.n}
-                </span>
+                <span className="step-badge" style={{ marginBottom: 'var(--space-4)' }}>{step.n}</span>
                 <h3 className="card-title">{step.title}</h3>
                 <p className="card-body">{step.desc}</p>
               </div>

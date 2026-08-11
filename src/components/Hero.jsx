@@ -63,7 +63,7 @@ export default function Hero() {
           }}
         >
           <span className="tag tag-outline" style={{ marginBottom: 'var(--space-6)', display: 'inline-flex' }}>
-            Software Factory &amp; Consultoría
+            Consultoría de Software
           </span>
           <h1
             className="fade-up-item"

@@ -78,15 +78,80 @@
 }
 .nav-link:hover::after { right: 0; }
 
-/* Floating WhatsApp button */
-.floating-whatsapp {
+/* Nav dock — icon row that magnifies and reveals a label on hover/focus,
+   mac-dock style. Kept simple (per-icon hover, no neighbor-bleed physics)
+   so it's cheap and works the same with mouse or keyboard. */
+.nav-dock {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.14);
+  padding: 6px;
+  border-radius: 999px;
+}
+.dock-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.9);
+  transition: transform 0.22s var(--ease-cinematic), background 0.22s ease, color 0.2s ease;
+}
+.dock-item:hover,
+.dock-item:focus-visible {
+  transform: translateY(-3px) scale(1.18);
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--color-accent-300);
+  outline: none;
+}
+.dock-icon { display: flex; }
+.dock-label {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-4px);
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: var(--color-text);
+  color: #fff;
+  padding: 5px 11px;
+  border-radius: 999px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.dock-item:hover .dock-label,
+.dock-item:focus-visible .dock-label {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .dock-item { transition: none; }
+  .dock-item:hover, .dock-item:focus-visible { transform: none; }
+}
+
+/* Floating WhatsApp widget — fixed wrapper holds both the toggle button and
+   the popup panel, so the panel can be positioned relative to it. */
+.whatsapp-widget {
   position: fixed;
   right: 24px;
   bottom: 24px;
   z-index: 40;
+}
+.floating-whatsapp {
+  position: relative;
   width: 56px;
   height: 56px;
   border-radius: 50%;
+  border: none;
+  padding: 0;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -103,16 +168,130 @@
   border: 2px solid var(--color-accent);
   opacity: 0.5;
   animation: whatsappPulse 2.4s ease-out infinite;
+  pointer-events: none;
 }
 @keyframes whatsappPulse {
   0% { transform: scale(0.85); opacity: 0.55; }
   100% { transform: scale(1.35); opacity: 0; }
 }
 @media (max-width: 700px) {
-  .floating-whatsapp { right: 16px; bottom: 16px; width: 52px; height: 52px; }
+  .whatsapp-widget { right: 16px; bottom: 16px; }
+  .floating-whatsapp { width: 52px; height: 52px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .floating-whatsapp-ring { animation: none; display: none; }
+}
+
+/* WhatsApp chat widget panel — quick-option popup above the floating button */
+.whatsapp-panel {
+  position: absolute;
+  right: 0;
+  bottom: 68px;
+  width: 320px;
+  max-width: calc(100vw - 32px);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  animation: whatsappPanelIn 0.22s var(--ease-cinematic) both;
+}
+@keyframes whatsappPanelIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.whatsapp-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px;
+  background: var(--gradient-brand);
+  color: #fff;
+}
+.whatsapp-panel-header strong { font-size: 15px; }
+.whatsapp-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: 4px;
+}
+.whatsapp-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #4ade80;
+  animation: whatsappStatusPulse 1.8s ease-in-out infinite;
+}
+@keyframes whatsappStatusPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.whatsapp-panel-close {
+  border: none;
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.whatsapp-panel-body {
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.whatsapp-panel-body p {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.whatsapp-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.whatsapp-option-btn {
+  text-align: left;
+  border: 1px solid var(--border-neutral);
+  background: var(--color-bg);
+  color: var(--color-text);
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+.whatsapp-option-btn:hover {
+  border-color: transparent;
+  background: var(--gradient-brand);
+  color: #fff;
+}
+.whatsapp-panel-footer {
+  width: 100%;
+  border: none;
+  background: var(--gradient-brand);
+  color: #fff;
+  padding: 13px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: inherit;
+  cursor: pointer;
+}
+@media (max-width: 400px) {
+  .whatsapp-panel { width: calc(100vw - 32px); right: -8px; }
 }
 
 /* Section background texture — subtle dot grid + soft brand-color blobs so
@@ -131,10 +310,10 @@
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background-image: radial-gradient(rgba(20, 21, 31, 0.055) 1px, transparent 1px);
-  background-size: 26px 26px;
-  mask-image: radial-gradient(ellipse 75% 65% at 50% 35%, #000 35%, transparent 85%);
-  -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 35%, #000 35%, transparent 85%);
+  background-image: radial-gradient(rgba(20, 21, 31, 0.07) 1.2px, transparent 1.2px);
+  background-size: 24px 24px;
+  mask-image: radial-gradient(ellipse 85% 75% at 50% 30%, #000 40%, transparent 92%);
+  -webkit-mask-image: radial-gradient(ellipse 85% 75% at 50% 30%, #000 40%, transparent 92%);
 }
 .section-textured::after {
   content: '';
@@ -143,10 +322,21 @@
   z-index: -2;
   pointer-events: none;
   background:
-    radial-gradient(circle at 88% 8%, rgba(139, 124, 246, 0.12), transparent 46%),
-    radial-gradient(circle at 6% 92%, rgba(47, 200, 219, 0.1), transparent 46%);
+    radial-gradient(circle at 90% 4%, rgba(139, 124, 246, 0.22), transparent 52%),
+    radial-gradient(circle at 4% 96%, rgba(47, 200, 219, 0.18), transparent 52%),
+    radial-gradient(circle at 50% 100%, rgba(139, 124, 246, 0.08), transparent 60%);
 }
 .section-alt { background: var(--color-bg-alt); }
+
+/* Small gradient kicker line under section headings — a warm brand touch
+   next to the h2, instead of plain text floating on its own. */
+.section-kicker {
+  width: 46px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--gradient-brand);
+  margin-bottom: 14px;
+}
 
 /* Hero — A.R.I.A quick-action pills */
 .pill {

@@ -33,6 +33,7 @@ export default function Portafolio() {
       <div style={{ maxWidth: 1200, margin: '0 auto', perspective: 1200 }}>
         <div ref={headerRef} style={revealStyle(headerVisible, 0)}>
           <div style={{ marginBottom: 48, maxWidth: 560 }}>
+            <div className="section-kicker" />
             <h2 style={{ fontSize: 36, margin: '0 0 10px', letterSpacing: '-0.015em' }}>Demostración de Experiencia</h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: 16, margin: 0 }}>
               Proyectos estructurados bajo nuestro enfoque de impacto directo.
@@ -44,6 +45,7 @@ export default function Portafolio() {
           {CASES.map((c, i) => (
             <div key={c.problema} style={revealStyle(gridVisible, i + 1, 'cinematografica', { height: '100%' })}>
               <div className="card elev-sm" style={{ height: '100%', display: 'flex', flexDirection: 'column', gap: 'var(--space-4)', padding: 'var(--space-8)' }}>
+                <div style={{ height: 4, width: 40, borderRadius: 2, background: 'var(--gradient-brand)' }} />
                 {c.cliente && (
                   <span className="tag tag-neutral" style={{ alignSelf: 'flex-start' }}>{c.cliente}</span>
                 )}
