@@ -143,6 +143,19 @@ del entorno) — se puede eliminar sin romper nada, ya no se importa en ningún 
      búsquedas. Lo de este v6 es la base técnica correcta — el resto es un proceso, no algo que se
      resuelva en un commit.
 
+## v7 — portafolio con proyectos reales
+
+- **`src/data/casos.js` reemplazado por 3 proyectos reales del estudio**: Torneo Star Basket
+  (carga de estadísticas en vivo desde un Excel por partido), un sitio para inmobiliarias
+  (publicación de propiedades + panel de administrador) y uno para una veterinaria con pet shop
+  (reserva de turnos + panel de administrador). Slugs de portafolio nuevos — `public/sitemap.xml`
+  actualizado para que coincidan (si cambiás un slug de nuevo, actualizarlo ahí también).
+- **Campo `url` nuevo en cada caso** — el link al sitio en vivo. `CasoDetalle.jsx` lo usa para un
+  botón "Ver sitio en vivo" (abre en pestaña nueva, con `trackEvent('portfolio_live_site_click')`
+  si GA4 está configurado) al lado del título del caso. La card del portafolio (`Portafolio.jsx`)
+  sigue llevando a la página de caso interna como antes — el link externo es adicional, no la
+  reemplaza.
+
 ## Pendientes para producción
 
 Estas son las cosas que el diseño dejaba abiertas y que hay que terminar de resolver:
@@ -159,9 +172,10 @@ Estas son las cosas que el diseño dejaba abiertas y que hay que terminar de res
    flotante (`FloatingWhatsApp.jsx`) ahora abre un mini-chat con opciones rápidas antes de mandar
    a `https://wa.me/5493491687912`.
 
-3. **Casos de portafolio** — siguen siendo genéricos. La estructura ya soporta nombre de cliente
-   (`cliente` en cada caso de `src/data/casos.js`, hoy en `null`) — falta completarlo cuando haya
-   casos reales publicables.
+3. ~~**Casos de portafolio**~~ — resuelto: los 3 casos de `src/data/casos.js` son proyectos reales
+   del estudio, con link al sitio en vivo (ver v7 abajo). `cliente` sigue en `null` en los tres —
+   son proyectos propios/productizados, no encargos con un cliente nombrado; completarlo si en
+   algún momento corresponde.
 
 4. **GA4** — falta pegar el Measurement ID real (ver arriba).
 

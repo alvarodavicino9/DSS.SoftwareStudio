@@ -1,5 +1,6 @@
 import { useReveal, revealStyle } from '../hooks/useReveal';
 import { useDocumentMeta } from '../hooks/useDocumentMeta';
+import { trackEvent } from '../utils/analytics';
 import { Link } from '../router';
 import { getCasoBySlug, CASOS } from '../data/casos';
 
@@ -70,9 +71,24 @@ export default function CasoDetalle({ slug }) {
           <h1 style={{ fontSize: 'clamp(28px, 5vw, 42px)', margin: '0 0 14px', letterSpacing: '-0.015em' }}>
             {caso.titulo}
           </h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: 16, lineHeight: 1.6, margin: 0, maxWidth: 620 }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: 16, lineHeight: 1.6, margin: '0 0 20px', maxWidth: 620 }}>
             {caso.resumen}
           </p>
+          {caso.url && (
+            <a
+              href={caso.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-secondary"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
+              onClick={() => trackEvent('portfolio_live_site_click', { caso: caso.slug })}
+            >
+              Ver sitio en vivo
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M7 17L17 7M17 7H9M17 7V15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </a>
+          )}
         </div>
 
         <div className="card elev-sm" style={{ padding: 'calc(var(--space-8) * 1.4)', display: 'flex', flexDirection: 'column', gap: 28 }}>
