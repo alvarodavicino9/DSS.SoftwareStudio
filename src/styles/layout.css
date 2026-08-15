@@ -460,28 +460,19 @@
   .whatsapp-panel { width: calc(100vw - 32px); right: -8px; }
 }
 
-/* Section background texture — subtle dot grid over the animated WebGL
-   gradient (AnimatedGradient.jsx, fixed behind the whole page — see
-   App.jsx). Used to be a light dot grid + brand-color blobs standing in for
-   motion on a flat white page; now that the real animated gradient sits
-   behind everything, the per-section blobs were redundant (and muddied the
-   canvas colors), so only a faint dot grid remains for texture. */
+/* `.section-textured` used to layer a static CSS dot grid (+ before that, a
+   set of brand-color blobs) to fake motion on a flat white page. Now the
+   real animated background is TechBackground.jsx — a canvas fijo detrás de
+   toda la página con su propia red de nodos/puntos en movimiento — así que
+   una grilla de puntos estática encima ya no suma, solo compite con la red
+   real. Se dejó la clase (la siguen usando varias secciones) por si más
+   adelante hace falta una textura por-sección de nuevo, pero sin dibujar
+   nada por default. */
 .section-textured {
   position: relative;
   isolation: isolate;
 }
-.section-textured::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1.2px, transparent 1.2px);
-  background-size: 24px 24px;
-  mask-image: radial-gradient(ellipse 85% 75% at 50% 30%, #000 40%, transparent 92%);
-  -webkit-mask-image: radial-gradient(ellipse 85% 75% at 50% 30%, #000 40%, transparent 92%);
-}
-.section-alt { background: rgba(255, 255, 255, 0.015); }
+.section-alt { background: rgba(255, 255, 255, 0.02); }
 
 /* Small gradient kicker line under section headings — a warm brand touch
    next to the h2, instead of plain text floating on its own. */
