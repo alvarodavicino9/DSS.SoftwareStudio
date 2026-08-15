@@ -1,3 +1,31 @@
+/* Hero — el resto del sitio pasó a tema oscuro (tokens.css v5), pero el
+   Hero no tenía que cambiar: ya tenía su propia identidad visual (el robot
+   3D de HeroFigure.jsx, con materiales oscuros pensados para leerse por
+   contraste sobre fondo claro, y la red de nodos de TechNetwork.jsx). Esto
+   resetea, solo dentro de #hero-section, los tokens que sus hijos usan
+   (texto, superficie, bordes, sombras) a los valores del tema claro
+   original — así el párrafo, el tag y el botón "Ver Experiencia" del Hero
+   se siguen viendo como antes, sin tocar sus componentes uno por uno. */
+#hero-section {
+  /* `color` no es una custom property: se hereda ya "resuelto" desde el
+     `body` de afuera (donde --color-text es el valor oscuro global), así
+     que sin esta línea el <h1> del Hero (que no declara su propio color)
+     seguía heredando ese blanco casi puro en vez del valor local de acá
+     abajo — texto invisible sobre el fondo claro del Hero. */
+  color: var(--color-text);
+  --color-text: #14151f;
+  --color-bg: #f5f6fa;
+  --color-bg-alt: #eef0f7;
+  --color-surface: #ffffff;
+  --text-secondary: rgba(20, 21, 31, 0.65);
+  --text-tertiary: rgba(20, 21, 31, 0.5);
+  --text-faint: rgba(20, 21, 31, 0.4);
+  --border-neutral: rgba(20, 21, 31, 0.12);
+  --color-accent-300: #6d5bd0;
+  --shadow-sm: 0 1px 2px rgba(20, 21, 31, 0.06), 0 1px 1px rgba(20, 21, 31, 0.04);
+  --shadow-md: 0 10px 30px rgba(20, 21, 31, 0.08);
+}
+
 /* Nav — hamburger only on mobile */
 .hamburger-btn {
   display: none;
@@ -191,7 +219,7 @@
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  background: var(--color-text);
+  background: rgba(6, 7, 13, 0.9);
   color: #fff;
   padding: 5px 11px;
   border-radius: 999px;

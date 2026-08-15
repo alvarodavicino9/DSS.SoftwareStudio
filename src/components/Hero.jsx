@@ -47,6 +47,11 @@ export default function Hero() {
         flexDirection: 'column',
       }}
     >
+      {/* El Hero mantiene su paleta clara original — ver el bloque
+          "#hero-section" en layout.css, que resetea los tokens de color acá
+          adentro. El robot 3D (HeroFigure.jsx) tiene materiales oscuros
+          pensados para leerse por contraste sobre fondo claro; con el resto
+          del sitio en tema oscuro (tokens.css v5) se perdía. */}
       <div style={{ position: 'absolute', inset: 0, zIndex: 0, overflow: 'hidden', background: 'var(--color-bg)' }}>
         <Suspense fallback={null}>
           <TechNetwork containerRef={heroRef} reducedMotion={reducedMotion} />
