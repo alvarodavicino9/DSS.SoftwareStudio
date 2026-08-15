@@ -29,7 +29,7 @@ export default function TechNetwork({ containerRef, reducedMotion = false }) {
     const group = new THREE.Group();
     scene.add(group);
 
-    const COUNT = 80;
+    const COUNT = 100;
     const nodePositions = [];
     const nodeColors = [];
     for (let i = 0; i < COUNT; i++) {
