@@ -90,6 +90,27 @@ del entorno) — se puede eliminar sin romper nada, ya no se importa en ningún 
   iOS/Android. El dominio usado en `robots.txt`/`sitemap.xml`/JSON-LD/canonical es
   `dssoftwarestudio.com.ar` — confirmar que sea el definitivo antes de publicar.
 
+## v5 — tema oscuro, fondo animado, portafolio con páginas propias
+
+- **Tema oscuro + fondo animado** (`AnimatedGradient.jsx`, `tokens.css`): se sacaron los fondos
+  blancos/planos de todas las secciones. Hay un degradé animado en WebGL2 (violeta → cian sobre
+  navy, colores de marca) fijo detrás de toda la página (montado una sola vez en `App.jsx`, no por
+  sección — así solo hay un contexto WebGL en toda la app). Las `.card` pasaron de blanco sólido a
+  paneles "glass" (fondo translúcido + `backdrop-filter: blur()`) para que el degradé se note a
+  través. Se evaluó también un fondo de partículas (`particles.js` vía CDN) pero se descartó: suma
+  un script externo no versionado, está pensado para cubrir solo el hero (no la página completa) y
+  rompe con el patrón del proyecto de no depender de librerías de terceros para lo visual (ver
+  `Dock.jsx`/`RadialMenu.jsx`/`SpotlightButton.jsx`).
+- **Se sacó la sección "Nosotros"** (`Nosotros.jsx` queda en el repo sin usar, mismo criterio que
+  `TechNetwork`/`HeroFigure`/`CursorHalo`). El Home ahora vive en `src/pages/Home.jsx`.
+- **Portafolio con página propia por caso** (`src/pages/CasoDetalle.jsx`, `src/data/casos.js`): las
+  cards de `Portafolio.jsx` ahora muestran el texto recortado (3 líneas) + el resultado, con un link
+  "Ver caso completo" a `/portafolio/:slug`. Router propio y liviano en `src/router.jsx`
+  (pushState + popstate, sin sumar `react-router` como dependencia — mismo criterio que el resto de
+  componentes "portados" del proyecto). Los links de sección (`#servicios`, `#contacto`, etc.) en
+  Nav/Footer/RadialMenu siguen siendo anchors nativos; ver `src/utils/sectionHref.js` para cómo
+  resuelven cuando no se está en la home.
+
 ## Pendientes para producción
 
 Estas son las cosas que el diseño dejaba abiertas y que hay que terminar de resolver:
@@ -107,7 +128,7 @@ Estas son las cosas que el diseño dejaba abiertas y que hay que terminar de res
    a `https://wa.me/5493491687912`.
 
 3. **Casos de portafolio** — siguen siendo genéricos. La estructura ya soporta nombre de cliente
-   (`cliente` en cada caso de `Portafolio.jsx`, hoy en `null`) — falta completarlo cuando haya
+   (`cliente` en cada caso de `src/data/casos.js`, hoy en `null`) — falta completarlo cuando haya
    casos reales publicables.
 
 4. **GA4** — falta pegar el Measurement ID real (ver arriba).
@@ -115,6 +136,14 @@ Estas son las cosas que el diseño dejaba abiertas y que hay que terminar de res
 5. **Dominio real** — `robots.txt`, `sitemap.xml`, el `<link rel="canonical">` y el JSON-LD en
    `index.html` asumen `dssoftwarestudio.com.ar`. Confirmar que sea el dominio definitivo (o
    ajustarlo) antes de publicar.
+
+6. **Rewrite del hosting para `/portafolio/:slug`** — el sitio ahora tiene rutas de página real
+   (router propio en `src/router.jsx`, ver v5 abajo). `npm run build` sigue generando un solo
+   `dist/index.html` (SPA), así que quien sirva el build en producción tiene que redirigir
+   cualquier ruta no encontrada a `index.html` (ej. `_redirects` con `/* /index.html 200` en
+   Netlify, o `rewrites` en `vercel.json`) — si no, entrar directo a
+   `dssoftwarestudio.com.ar/portafolio/algun-caso` (o refrescar esa página) da 404. En local con
+   `npm run dev` funciona sin nada extra porque Vite ya resuelve esto solo.
 
 ## Decisiones de implementación
 

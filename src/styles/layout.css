@@ -31,8 +31,9 @@
   flex-direction: column;
   gap: var(--space-2);
   padding: var(--space-6) var(--space-8) var(--space-8);
-  background: rgba(245, 246, 250, 0.98);
-  backdrop-filter: blur(10px);
+  background: rgba(6, 7, 13, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-top: 1px solid var(--border-neutral);
   box-shadow: var(--shadow-md);
   animation: mobileMenuIn 0.3s var(--ease-cinematic) both;
@@ -323,7 +324,10 @@
   bottom: 68px;
   width: 320px;
   max-width: calc(100vw - 32px);
-  background: var(--color-surface);
+  background: rgba(10, 11, 20, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-neutral);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
   overflow: hidden;
@@ -428,12 +432,12 @@
   .whatsapp-panel { width: calc(100vw - 32px); right: -8px; }
 }
 
-/* Section background texture — subtle dot grid + soft brand-color blobs so
-   the sections after the Hero aren't flat white. Deliberately NOT the
-   animated 3D TechNetwork canvas: reusing that per-section would be heavy
-   (one more WebGL context each — the kind of thing that made mobile slow
-   before) and would dilute it as a Hero-only "wow" moment. This is the same
-   violet/cyan visual language, static and near-zero cost. */
+/* Section background texture — subtle dot grid over the animated WebGL
+   gradient (AnimatedGradient.jsx, fixed behind the whole page — see
+   App.jsx). Used to be a light dot grid + brand-color blobs standing in for
+   motion on a flat white page; now that the real animated gradient sits
+   behind everything, the per-section blobs were redundant (and muddied the
+   canvas colors), so only a faint dot grid remains for texture. */
 .section-textured {
   position: relative;
   isolation: isolate;
@@ -444,23 +448,12 @@
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background-image: radial-gradient(rgba(20, 21, 31, 0.07) 1.2px, transparent 1.2px);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1.2px, transparent 1.2px);
   background-size: 24px 24px;
   mask-image: radial-gradient(ellipse 85% 75% at 50% 30%, #000 40%, transparent 92%);
   -webkit-mask-image: radial-gradient(ellipse 85% 75% at 50% 30%, #000 40%, transparent 92%);
 }
-.section-textured::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -2;
-  pointer-events: none;
-  background:
-    radial-gradient(circle at 90% 4%, rgba(139, 124, 246, 0.22), transparent 52%),
-    radial-gradient(circle at 4% 96%, rgba(47, 200, 219, 0.18), transparent 52%),
-    radial-gradient(circle at 50% 100%, rgba(139, 124, 246, 0.08), transparent 60%);
-}
-.section-alt { background: var(--color-bg-alt); }
+.section-alt { background: rgba(255, 255, 255, 0.015); }
 
 /* Small gradient kicker line under section headings — a warm brand touch
    next to the h2, instead of plain text floating on its own. */

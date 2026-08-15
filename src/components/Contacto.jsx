@@ -72,7 +72,17 @@ export default function Contacto() {
 
         <form
           onSubmit={handleSubmit}
-          style={{ background: 'var(--color-surface)', borderRadius: 14, padding: 32, display: 'flex', flexDirection: 'column', gap: 18 }}
+          style={{
+            background: 'var(--color-surface)',
+            border: '1px solid var(--border-neutral)',
+            borderRadius: 14,
+            padding: 32,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 18,
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+          }}
         >
           {/* Honeypot — invisible to real users, tabIndex -1 keeps keyboard nav clean */}
           <div aria-hidden="true" style={{ position: 'absolute', left: '-9999px', width: 1, height: 1, overflow: 'hidden' }}>
@@ -142,7 +152,7 @@ export default function Contacto() {
             </p>
           )}
           {status === 'error' && (
-            <p role="alert" style={{ margin: 0, fontSize: 13, color: '#c0392b' }}>
+            <p role="alert" style={{ margin: 0, fontSize: 13, color: '#ff8a80' }}>
               No pudimos enviar tu consulta. Escribinos directo a{' '}
               <a href="mailto:contacto@dssoftwarestudio.com.ar" style={{ color: 'var(--color-accent-300)', textDecoration: 'underline' }}>
                 contacto@dssoftwarestudio.com.ar

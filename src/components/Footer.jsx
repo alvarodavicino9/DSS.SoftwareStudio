@@ -1,21 +1,26 @@
 import Logo from './Logo';
 import { WHATSAPP_URL } from '../utils/whatsapp';
+import { useLocation } from '../router';
+import { sectionHref } from '../utils/sectionHref';
 
 const FOOTER_LINKS = [
-  { href: '#nosotros', label: 'Nosotros' },
-  { href: '#servicios', label: 'Servicios' },
-  { href: '#proceso', label: 'Cómo Trabajamos' },
-  { href: '#portafolio', label: 'Portafolio' },
-  { href: '#contacto', label: 'Contacto' },
+  { hash: '#servicios', label: 'Servicios' },
+  { hash: '#proceso', label: 'Cómo Trabajamos' },
+  { hash: '#portafolio', label: 'Portafolio' },
+  { hash: '#contacto', label: 'Contacto' },
 ];
 
-// Dark footer on purpose — the page is light end to end (nav aside), and a
-// plain white footer right after a light Contacto section just faded into
-// nothing. This gives the page a grounded bottom edge and echoes the dark
-// Terminal section instead of leaving everything flat.
+// Footer un poco más oscuro/opaco que el resto de las secciones "glass" —
+// antes usaba var(--color-text) como fondo porque en el tema claro ese token
+// era navy oscuro; con el tema oscuro ese mismo token pasó a ser casi blanco
+// (ver tokens.css v5), así que ahora usa un color fijo propio en vez de
+// heredar el token de texto. Sigue dando ese borde inferior "asentado" que
+// tenía antes, ahora en línea con el resto del sitio (que ya es oscuro).
 export default function Footer() {
+  const path = useLocation();
+
   return (
-    <footer style={{ background: 'var(--color-text)' }}>
+    <footer style={{ background: 'rgba(4, 5, 10, 0.72)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', borderTop: '1px solid var(--border-neutral)' }}>
       <div style={{ padding: '40px 40px 32px', maxWidth: 1200, margin: '0 auto' }}>
         <div
           style={{
@@ -45,7 +50,7 @@ export default function Footer() {
 
           <nav style={{ display: 'flex', flexWrap: 'wrap', gap: '10px 20px' }} aria-label="Enlaces del sitio">
             {FOOTER_LINKS.map((l) => (
-              <a key={l.href} href={l.href} style={{ fontSize: 13, color: 'rgba(255,255,255,0.75)' }}>
+              <a key={l.hash} href={sectionHref(l.hash, path)} style={{ fontSize: 13, color: 'rgba(255,255,255,0.75)' }}>
                 {l.label}
               </a>
             ))}

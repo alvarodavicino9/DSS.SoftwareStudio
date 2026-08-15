@@ -1,40 +1,49 @@
 import Nav from './components/Nav';
-import FloatingWhatsApp from './components/FloatingWhatsApp';
-import Hero from './components/Hero';
-import Nosotros from './components/Nosotros';
-import Servicios from './components/Servicios';
-import Proceso from './components/Proceso';
-import Portafolio from './components/Portafolio';
-import Terminal from './components/Terminal';
-import Contacto from './components/Contacto';
 import Footer from './components/Footer';
+import FloatingWhatsApp from './components/FloatingWhatsApp';
+import AnimatedGradient from './components/AnimatedGradient';
+import Home from './pages/Home';
+import CasoDetalle from './pages/CasoDetalle';
+import { RouterProvider, useLocation } from './router';
+
+const PORTAFOLIO_ROUTE = /^\/portafolio\/([^/]+)\/?$/;
+
+function Pages() {
+  const path = useLocation();
+  const match = PORTAFOLIO_ROUTE.exec(path);
+  return <main>{match ? <CasoDetalle slug={match[1]} /> : <Home />}</main>;
+}
 
 export default function App() {
   return (
-    <>
-      <div
-        aria-hidden
-        style={{
-          position: 'fixed',
-          inset: 0,
-          zIndex: -1,
-          pointerEvents: 'none',
-          background:
-            'radial-gradient(circle at 80% 12%, rgba(139,124,246,0.10), transparent 42%), radial-gradient(circle at 8% 88%, rgba(47,200,219,0.08), transparent 45%)',
+    <RouterProvider>
+      {/* Fondo animado (WebGL, AnimatedGradient.jsx) fijo detrás de toda la
+          página — reemplaza los fondos blancos/planos de cada sección. */}
+      <AnimatedGradient
+        config={{
+          preset: 'custom',
+          color1: '#06070d',
+          color2: '#6d5bd0',
+          color3: '#0d3138',
+          rotation: -35,
+          proportion: 42,
+          scale: 0.35,
+          speed: 12,
+          distortion: 3,
+          swirl: 22,
+          swirlIterations: 8,
+          softness: 100,
+          offset: 0,
+          shape: 'Edge',
+          shapeSize: 55,
         }}
+        noise={{ opacity: 5, scale: 1 }}
+        style={{ position: 'fixed', inset: 0, zIndex: -2 }}
       />
       <Nav />
-      <main>
-        <Hero />
-        <Nosotros />
-        <Servicios />
-        <Proceso />
-        <Portafolio />
-        <Terminal />
-        <Contacto />
-      </main>
+      <Pages />
       <Footer />
       <FloatingWhatsApp />
-    </>
+    </RouterProvider>
   );
 }

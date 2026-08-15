@@ -1,18 +1,19 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { HomeIcon, UsersIcon, WrenchIcon, StepsIcon, BriefcaseIcon, MailIcon } from './NavIcons';
+import { HomeIcon, WrenchIcon, StepsIcon, BriefcaseIcon, MailIcon } from './NavIcons';
+import { useLocation } from '../router';
+import { sectionHref } from '../utils/sectionHref';
 
 // `label` is the full name (used for aria-label / accessibility). `short` is
 // what actually renders under the icon — "Cómo Trabajamos" is too wide to
 // sit next to its neighbors without crowding them, so it gets a shorter
 // on-screen name while keeping the descriptive aria-label intact.
 const ITEMS = [
-  { href: '#', label: 'Inicio', short: 'Inicio', Icon: HomeIcon },
-  { href: '#nosotros', label: 'Nosotros', short: 'Nosotros', Icon: UsersIcon },
-  { href: '#servicios', label: 'Servicios', short: 'Servicios', Icon: WrenchIcon },
-  { href: '#proceso', label: 'Cómo Trabajamos', short: 'Proceso', Icon: StepsIcon },
-  { href: '#portafolio', label: 'Portafolio', short: 'Portafolio', Icon: BriefcaseIcon },
-  { href: '#contacto', label: 'Contacto', short: 'Contacto', Icon: MailIcon },
+  { hash: '#', label: 'Inicio', short: 'Inicio', Icon: HomeIcon },
+  { hash: '#servicios', label: 'Servicios', short: 'Servicios', Icon: WrenchIcon },
+  { hash: '#proceso', label: 'Cómo Trabajamos', short: 'Proceso', Icon: StepsIcon },
+  { hash: '#portafolio', label: 'Portafolio', short: 'Portafolio', Icon: BriefcaseIcon },
+  { hash: '#contacto', label: 'Contacto', short: 'Contacto', Icon: MailIcon },
 ];
 
 // Trigger lives top-right in the nav bar. Hand-picked pixel radii kept
@@ -71,6 +72,7 @@ function PlusIcon() {
  * .radial-menu media query in layout.css).
  */
 export default function RadialMenu() {
+  const path = useLocation();
   const [open, setOpen] = useState(false);
   const [origin, setOrigin] = useState(null);
   const triggerRef = useRef(null);
@@ -100,8 +102,8 @@ export default function RadialMenu() {
             const { x, y } = points[i];
             return (
               <motion.a
-                key={item.href}
-                href={item.href}
+                key={item.hash}
+                href={sectionHref(item.hash, path)}
                 aria-label={item.label}
                 className="radial-item"
                 onClick={() => setOpen(false)}

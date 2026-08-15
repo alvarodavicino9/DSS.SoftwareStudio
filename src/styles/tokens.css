@@ -1,33 +1,36 @@
 /*
-  DS.SoftwareStudio design tokens — v2 (light theme, brand gradient).
-  Palette pulled from the client logo: violet -> cyan gradient as the single
-  brand mark, dark navy for text. Accent is used more freely than the old
-  dark system (gradient fills on primary CTAs, gradient text on highlights),
-  but body copy always stays on solid dark-navy for readability.
+  DS.SoftwareStudio design tokens — v5 (tema oscuro + fondo animado).
+  El sitio pasó del tema claro (v2, ver README) a un fondo oscuro con un
+  degradé animado en WebGL detrás de todo (AnimatedGradient.jsx, montado en
+  App.jsx). Las superficies "card" dejan de ser blancas y pasan a ser paneles
+  "glass" (fondo translúcido + blur) para que el degradé se note a través de
+  ellas en vez de taparlo. El degradé de marca (violeta -> cian, del logo)
+  se mantiene igual — sigue siendo el único acento de color.
 */
 :root {
   /* Base */
-  --color-bg: #f5f6fa;
-  --color-bg-alt: #eef0f7;
-  --color-text: #14151f;
-  --color-surface: #ffffff;
+  --color-bg: #06070d;             /* navy casi negro — fallback bajo el canvas animado */
+  --color-bg-alt: #0b0d18;         /* variante un toque más clara, para .section-alt */
+  --color-text: #f5f6fb;           /* texto principal, casi blanco */
+  --color-surface: rgba(255, 255, 255, 0.05);   /* paneles "glass" en vez de blanco sólido */
+  --color-surface-strong: rgba(255, 255, 255, 0.09); /* variante con más contraste (hover, inputs) */
 
   /* Brand */
   --color-accent: #8b7cf6;       /* violet — primary accent */
   --color-accent-2: #2fc8db;     /* cyan — secondary accent, from the logo gradient */
-  --color-accent-300: #6d5bd0;   /* deeper violet, for readable accent text on light bg */
+  --color-accent-300: #b6a9ff;   /* violeta claro, para texto de acento legible sobre fondo oscuro */
   --gradient-brand: linear-gradient(135deg, var(--color-accent), var(--color-accent-2));
 
-  --color-neutral-800: #eef0f7;  /* chip / subtle fill */
-  --color-neutral-700: rgba(20, 21, 31, 0.16);
+  --color-neutral-800: rgba(255, 255, 255, 0.07);  /* chip / subtle fill */
+  --color-neutral-700: rgba(255, 255, 255, 0.14);
   --color-suit: #3d4152;         /* 3D figure only */
-  --color-terminal-bg: #0e1019;  /* terminal stays dark on purpose — see README */
+  --color-terminal-bg: #0e1019;  /* terminal — ya era oscura, queda igual */
   --color-cursor-glow: #8b7cf6;
 
-  --text-secondary: rgba(20, 21, 31, 0.65);
-  --text-tertiary: rgba(20, 21, 31, 0.5);
-  --text-faint: rgba(20, 21, 31, 0.4);
-  --border-neutral: rgba(20, 21, 31, 0.12);
+  --text-secondary: rgba(245, 246, 251, 0.7);
+  --text-tertiary: rgba(245, 246, 251, 0.54);
+  --text-faint: rgba(245, 246, 251, 0.4);
+  --border-neutral: rgba(255, 255, 255, 0.12);
 
   /* Spacing scale — density 0.70x */
   --space-1: 0.28rem;
@@ -41,11 +44,13 @@
   --radius-md: 8px;
   --radius-lg: 14px;
 
-  /* Shadows — soft, for surfaces floating on a light page */
-  --shadow-sm: 0 1px 2px rgba(20, 21, 31, 0.06), 0 1px 1px rgba(20, 21, 31, 0.04);
-  --shadow-md: 0 10px 30px rgba(20, 21, 31, 0.08);
-  --shadow-lg: 0 24px 60px rgba(20, 21, 31, 0.12);
-  --shadow-glow: 0 10px 28px rgba(139, 124, 246, 0.32);
+  /* Shadows — sobre fondo oscuro el negro puro no aporta mucho, así que se
+     usan para profundidad real (oscurecen más que el fondo) en vez de
+     "sombra suave sobre blanco" como en la v2. El glow de marca se mantiene. */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35), 0 1px 1px rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 10px 28px rgba(139, 124, 246, 0.38);
 
   --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -75,7 +80,7 @@ p { margin: 0; }
 
 button { font-family: inherit; cursor: pointer; }
 
-::selection { background: rgba(139, 124, 246, 0.25); }
+::selection { background: rgba(139, 124, 246, 0.4); color: #fff; }
 
 :focus-visible {
   outline: 2px solid var(--color-accent);
@@ -111,14 +116,16 @@ button { font-family: inherit; cursor: pointer; }
   color: #ffffff;
   box-shadow: var(--shadow-glow);
 }
-.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 14px 34px rgba(139, 124, 246, 0.4); }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 14px 34px rgba(139, 124, 246, 0.48); }
 
 .btn-secondary {
   border-color: var(--border-neutral);
   color: var(--color-text);
   background: var(--color-surface);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
-.btn-secondary:hover { border-color: rgba(20, 21, 31, 0.28); background: var(--color-bg-alt); }
+.btn-secondary:hover { border-color: rgba(255, 255, 255, 0.28); background: var(--color-surface-strong); }
 
 .btn-block { width: 100%; }
 
@@ -152,8 +159,15 @@ button { font-family: inherit; cursor: pointer; }
   padding: 6px 12px;
   border-radius: 999px;
 }
-.tag-outline { border: 1px solid var(--color-accent); color: var(--color-accent-300); background: rgba(139, 124, 246, 0.06); }
-.tag-neutral { border: 1px solid var(--border-neutral); color: var(--text-secondary); text-transform: none; letter-spacing: normal; font-size: 13px; background: var(--color-surface); }
+.tag-outline { border: 1px solid var(--color-accent); color: var(--color-accent-300); background: rgba(139, 124, 246, 0.12); }
+.tag-neutral {
+  border: 1px solid var(--border-neutral);
+  color: var(--text-secondary);
+  text-transform: none;
+  letter-spacing: normal;
+  font-size: 13px;
+  background: var(--color-surface);
+}
 
 /* Icon badges — gradient-filled accents for service cards and process
    steps, so those cards aren't just plain text on a card. */
@@ -218,15 +232,23 @@ button { font-family: inherit; cursor: pointer; }
   .icon-badge, .step-badge, .avatar-badge, .portfolio-accent { transition: none; }
 }
 
-/* Cards */
+/* Cards — paneles "glass": fondo translúcido + blur en vez de blanco sólido,
+   así el degradé animado de fondo se sigue viendo (atenuado) a través. */
 .card {
   background: var(--color-surface);
   border-radius: var(--radius-md);
   border: 1px solid var(--border-neutral);
-  transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
 }
 .elev-sm { box-shadow: var(--shadow-sm); }
-.elev-sm:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); border-color: rgba(139, 124, 246, 0.25); }
+.elev-sm:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+  border-color: rgba(139, 124, 246, 0.35);
+  background: var(--color-surface-strong);
+}
 
 .card-title { font-size: 18px; font-weight: 500; margin: 0 0 var(--space-3); }
 .card-body { font-size: 14px; line-height: 1.6; color: var(--text-secondary); margin: 0; }
@@ -242,7 +264,7 @@ button { font-family: inherit; cursor: pointer; }
 .field { display: flex; flex-direction: column; gap: 8px; }
 .field label { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
 .input {
-  background: var(--color-bg);
+  background: rgba(0, 0, 0, 0.22);
   border: 1px solid var(--border-neutral);
   border-radius: var(--radius-md);
   color: var(--color-text);
@@ -251,7 +273,7 @@ button { font-family: inherit; cursor: pointer; }
   font-family: inherit;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
-.input:focus { border-color: var(--color-accent); box-shadow: 0 0 0 3px rgba(139, 124, 246, 0.12); }
+.input:focus { border-color: var(--color-accent); box-shadow: 0 0 0 3px rgba(139, 124, 246, 0.2); }
 .input::placeholder { color: var(--text-faint); }
 textarea.input { resize: vertical; min-height: 96px; }
 
