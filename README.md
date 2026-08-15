@@ -156,6 +156,29 @@ del entorno) — se puede eliminar sin romper nada, ya no se importa en ningún 
   sigue llevando a la página de caso interna como antes — el link externo es adicional, no la
   reemplaza.
 
+## v8 — capturas reales del sitio y carrusel en el portafolio
+
+- **`src/components/Carousel.jsx` nuevo** — carrusel de imágenes genérico y reutilizable: avanza
+  solo cada ~4.2s, tiene flechas y puntos de navegación manual, pausa el auto-avance con el mouse
+  encima, soporta swipe táctil, y respeta `prefers-reduced-motion` (desactiva el auto-avance del
+  todo si el usuario lo tiene activado). Estilos en `tokens.css` bajo `.carousel-*`.
+- **Capturas reales de los 3 sitios en vivo** — se sacaron 4 capturas por proyecto directamente de
+  cada sitio (torneostarbasket.com.ar, inmobiliarias889-pi.vercel.app, veterinaria-ecru.vercel.app),
+  recortadas a 1280x720 (16:9) y comprimidas para web. Viven en
+  `public/portfolio/<slug>/1.jpg` … `4.jpg`.
+- **Campo `imagenes` nuevo en cada caso de `src/data/casos.js`** — array de rutas a esas capturas.
+  `imagenes[0]` se usa como portada fija en la card de `Portafolio.jsx` (con zoom sutil al hover de
+  la card); el array completo alimenta el `<Carousel>` en `CasoDetalle.jsx`, mostrado arriba de la
+  sección problema/solución/resultado.
+- **Por qué portada fija en la grilla y no un mini-carrusel por card**: varios carruseles
+  auto-rotando a la vez en la misma pantalla es ruidoso visualmente y gasta ciclos de más sin
+  necesidad — el carrusel completo se reserva para la página de detalle, donde el usuario ya eligió
+  ver ese proyecto en particular.
+- **Si agregás un caso nuevo o cambiás capturas**: las imágenes deben ir en
+  `public/portfolio/<slug>/` y listarse en el campo `imagenes` del caso correspondiente en
+  `casos.js`. No hay validación automática de que el archivo exista — si el path está mal, el
+  `<img>` simplemente no carga (ícono roto).
+
 ## Pendientes para producción
 
 Estas son las cosas que el diseño dejaba abiertas y que hay que terminar de resolver:

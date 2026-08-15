@@ -33,6 +33,11 @@ export default function Portafolio() {
                   padding: 'var(--space-8)',
                 }}
               >
+                {c.imagenes && c.imagenes.length > 0 && (
+                  <div className="portfolio-cover">
+                    <img src={c.imagenes[0]} alt={c.titulo} loading="lazy" />
+                  </div>
+                )}
                 <div className="portfolio-accent" style={{ height: 4, width: 40, borderRadius: 2, background: 'var(--gradient-brand)' }} />
                 {c.cliente && (
                   <span className="tag tag-neutral" style={{ alignSelf: 'flex-start' }}>{c.cliente}</span>

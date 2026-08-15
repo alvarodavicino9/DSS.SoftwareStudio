@@ -328,6 +328,103 @@ textarea.input { resize: vertical; min-height: 96px; }
 .select-option-active { background: rgba(139, 124, 246, 0.16); }
 .select-option-selected { color: var(--color-accent-300); font-weight: 600; }
 
+/* Carrusel de imágenes (Carousel.jsx) — usado en la página de detalle de cada
+   caso (CasoDetalle.jsx) para mostrar varias capturas del sitio real. Las
+   slides se apilan (position: absolute) y se cruzan con fade; el contenedor
+   fija el aspect-ratio para que no salte de tamaño al cambiar de imagen. */
+.carousel-root {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border-neutral);
+  box-shadow: var(--shadow-md);
+}
+.carousel-viewport {
+  position: relative;
+  width: 100%;
+  background: var(--color-bg-alt);
+}
+.carousel-slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.5s var(--ease-cinematic);
+}
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border-neutral);
+  background: rgba(6, 7, 13, 0.55);
+  color: var(--color-text);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.carousel-arrow:hover { background: rgba(139, 124, 246, 0.28); border-color: rgba(139, 124, 246, 0.45); }
+.carousel-arrow-prev { left: var(--space-4); }
+.carousel-arrow-next { right: var(--space-4); }
+.carousel-dots {
+  position: absolute;
+  bottom: var(--space-4);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(6, 7, 13, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.carousel-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.carousel-dot-active { background: var(--color-accent-300); transform: scale(1.3); }
+@media (prefers-reduced-motion: reduce) {
+  .carousel-slide { transition: none; }
+}
+
+/* Portada de cada card en la grilla de Portafolio.jsx — una sola imagen fija
+   (no un carrusel: varios carruseles auto-rotando a la vez en la grilla
+   sería ruidoso y gasta ciclos de más) con leve zoom al hover de la card. */
+.portfolio-cover {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--border-neutral);
+}
+.portfolio-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s var(--ease-cinematic);
+}
+.card:hover .portfolio-cover img { transform: scale(1.06); }
+.portfolio-cover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(6, 7, 13, 0) 55%, rgba(6, 7, 13, 0.65) 100%);
+}
+
 /* Reduced motion — production requirement flagged in the design handoff */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

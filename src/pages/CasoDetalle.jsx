@@ -2,6 +2,7 @@ import { useReveal, revealStyle } from '../hooks/useReveal';
 import { useDocumentMeta } from '../hooks/useDocumentMeta';
 import { trackEvent } from '../utils/analytics';
 import { Link } from '../router';
+import Carousel from '../components/Carousel';
 import { getCasoBySlug, CASOS } from '../data/casos';
 
 function NotFound() {
@@ -90,6 +91,12 @@ export default function CasoDetalle({ slug }) {
             </a>
           )}
         </div>
+
+        {caso.imagenes && caso.imagenes.length > 0 && (
+          <div style={{ marginBottom: 40 }}>
+            <Carousel images={caso.imagenes} alt={caso.titulo} />
+          </div>
+        )}
 
         <div className="card elev-sm" style={{ padding: 'calc(var(--space-8) * 1.4)', display: 'flex', flexDirection: 'column', gap: 28 }}>
           <div>
