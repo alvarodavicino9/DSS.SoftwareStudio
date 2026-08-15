@@ -1,4 +1,5 @@
 import { useReveal, revealStyle } from '../hooks/useReveal';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 import { Link } from '../router';
 import { getCasoBySlug, CASOS } from '../data/casos';
 
@@ -24,6 +25,26 @@ function NotFound() {
 export default function CasoDetalle({ slug }) {
   const [ref, visible] = useReveal({ threshold: 0 });
   const caso = getCasoBySlug(slug);
+
+  // Un solo useDocumentMeta cubre los dos casos (llamado antes del early
+  // return de abajo — reglas de hooks): si el slug no existe, robots pasa a
+  // noindex para que Google no llegue a indexar /portafolio/algo-que-no-existe
+  // como si fuera una página real. Nunca dos llamadas separadas para esto —
+  // si NotFound tuviera su propia (efectos de hijo primero), pisaría el
+  // noindex con el "index, follow" default de esta.
+  useDocumentMeta({
+    title: caso ? `${caso.titulo} — Casos de Éxito | DS.SoftwareStudio` : undefined,
+    description: caso ? caso.resumen : undefined,
+    path: `/portafolio/${slug}`,
+    robots: caso ? 'index, follow' : 'noindex, follow',
+    breadcrumb: caso
+      ? [
+          { name: 'Inicio', url: 'https://dssoftwarestudio.com.ar/' },
+          { name: 'Portafolio', url: 'https://dssoftwarestudio.com.ar/#portafolio' },
+          { name: caso.titulo, url: `https://dssoftwarestudio.com.ar/portafolio/${slug}` },
+        ]
+      : undefined,
+  });
 
   if (!caso) return <NotFound />;
 

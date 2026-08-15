@@ -8,7 +8,11 @@ async function fillRequiredFields(user) {
   // keystroke, so running these concurrently via Promise.all races the focus
   // state and interleaves characters across fields.
   await user.type(screen.getByLabelText('Nombre o Empresa'), 'Juan Pérez');
-  await user.selectOptions(screen.getByLabelText('Tipo de proyecto'), 'mvp');
+  // Tipo de proyecto is a custom listbox (Select.jsx), not a native <select> —
+  // open it and click the option instead of selectOptions().
+  await user.click(screen.getByLabelText('Tipo de proyecto'));
+  await user.click(await screen.findByRole('option', { name: 'Desarrollo de MVP' }));
+  await user.type(screen.getByLabelText('Email o Teléfono'), 'juan@example.com');
   await user.type(screen.getByLabelText('¿Qué problema querés resolver?'), 'Necesito un MVP');
 }
 

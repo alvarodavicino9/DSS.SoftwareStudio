@@ -111,6 +111,38 @@ del entorno) — se puede eliminar sin romper nada, ya no se importa en ningún 
   Nav/Footer/RadialMenu siguen siendo anchors nativos; ver `src/utils/sectionHref.js` para cómo
   resuelven cuando no se está en la home.
 
+## v6 — SEO para posicionamiento en Google
+
+- **`useDocumentMeta`** (`src/hooks/useDocumentMeta.js`): el sitio es un SPA con un solo
+  `index.html` (ver v5, router propio), así que sin esto Google —y cualquier bot que arma la
+  vista previa de un link, como Facebook/WhatsApp/LinkedIn— veía el mismo `<title>`/description/
+  Open Graph en la home y en cada caso de portafolio. Este hook actualiza `<title>`, meta
+  description, `<link rel="canonical">`, Open Graph/Twitter y (en los casos) un JSON-LD
+  `BreadcrumbList`, en cada cambio de ruta. `Home.jsx` lo llama sin argumentos (vuelve al default
+  del sitio) y `CasoDetalle.jsx` con el título/resumen de cada caso. Un slug inexistente
+  (`/portafolio/no-existe`) pasa `robots: noindex, follow` para que Google no indexe esa URL como
+  si fuera un caso real.
+- **`public/sitemap.xml`** actualizado con las 3 URLs de casos de portafolio (antes solo tenía la
+  home). **Importante**: no se genera solo — si se agrega o saca un caso en `src/data/casos.js`,
+  hay que reflejarlo acá a mano.
+- **`index.html`**: `og:image`/`twitter:image` pasaron a URL absoluta (`https://dssoftware...`,
+  antes `/og-cover.svg` — algunos bots de vista previa no resuelven rutas relativas), se agregó
+  `og:url` y `<meta name="robots" content="index, follow">` explícito, y el JSON-LD
+  `ProfessionalService` ahora incluye `telephone` (el número de WhatsApp confirmado).
+- **Lo que el código no puede hacer** (acciones pendientes del lado de Google, no de código):
+  1. Dar de alta el dominio en [Google Search Console](https://search.google.com/search-console),
+     verificarlo y enviar `https://dssoftwarestudio.com.ar/sitemap.xml` ahí — es lo que le avisa a
+     Google que el sitio existe y hay que revisarlo; nada de esto pasa solo.
+  2. Crear/reclamar un perfil de [Google Business Profile](https://www.google.com/business/) para
+     DS.SoftwareStudio — ayuda mucho a aparecer arriba en búsquedas locales ("desarrollo de
+     software Argentina", etc.) y es lo que muestra el panel con dirección/teléfono/reseñas al
+     lado de los resultados.
+  3. Aparecer "arriba" en Google no es algo que un cambio de código pueda garantizar: además de
+     que estas dos cosas se hagan, depende de que otros sitios linkeen a dssoftwarestudio.com.ar
+     (backlinks), de contenido nuevo con el tiempo, y de cuánta competencia haya para esas
+     búsquedas. Lo de este v6 es la base técnica correcta — el resto es un proceso, no algo que se
+     resuelva en un commit.
+
 ## Pendientes para producción
 
 Estas son las cosas que el diseño dejaba abiertas y que hay que terminar de resolver:
@@ -133,11 +165,13 @@ Estas son las cosas que el diseño dejaba abiertas y que hay que terminar de res
 
 4. **GA4** — falta pegar el Measurement ID real (ver arriba).
 
-5. **Dominio real** — `robots.txt`, `sitemap.xml`, el `<link rel="canonical">` y el JSON-LD en
-   `index.html` asumen `dssoftwarestudio.com.ar`. Confirmar que sea el dominio definitivo (o
-   ajustarlo) antes de publicar.
+5. ~~**Dominio real**~~ — confirmado: `dssoftwarestudio.com.ar` es el definitivo.
+   `robots.txt`/`sitemap.xml`/canonical/JSON-LD ya asumen ese dominio (ver v6 arriba).
 
-6. **Rewrite del hosting para `/portafolio/:slug`** — el sitio ahora tiene rutas de página real
+6. **Search Console + Google Business Profile** — ver v6 arriba. Ninguna de las dos se puede hacer
+   desde el código: hay que darlos de alta a mano con una cuenta de Google del negocio.
+
+7. **Rewrite del hosting para `/portafolio/:slug`** — el sitio ahora tiene rutas de página real
    (router propio en `src/router.jsx`, ver v5 abajo). `npm run build` sigue generando un solo
    `dist/index.html` (SPA), así que quien sirva el build en producción tiene que redirigir
    cualquier ruta no encontrada a `index.html` (ej. `_redirects` con `/* /index.html 200` en

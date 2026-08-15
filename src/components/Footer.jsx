@@ -60,8 +60,8 @@ export default function Footer() {
             <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-accent-2)', fontWeight: 500 }}>
               WhatsApp
             </a>
-            <a href="mailto:contacto@dssoftwarestudio.com.ar" style={{ color: 'var(--color-accent-2)', fontWeight: 500 }}>
-              contacto@dssoftwarestudio.com.ar
+            <a href="mailto:dss.softwarestudio@gmail.com" style={{ color: 'var(--color-accent-2)', fontWeight: 500 }}>
+              dss.softwarestudio@gmail.com
             </a>
           </div>
         </div>

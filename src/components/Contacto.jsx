@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useReveal, revealStyle } from '../hooks/useReveal';
 import { trackEvent } from '../utils/analytics';
 import SpotlightButton from './SpotlightButton';
+import Select from './Select';
 
 // TODO(cliente): reemplazar por el endpoint real de Formspree.
 // 1. Crear cuenta gratis en https://formspree.io con el email que reciba las consultas.
@@ -11,20 +12,46 @@ import SpotlightButton from './SpotlightButton';
 const FORMSPREE_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID';
 
 const PROJECT_TYPES = [
-  { value: '', label: 'Seleccionar opción...' },
   { value: 'sistema', label: 'Sistema a medida / Backend' },
   { value: 'web', label: 'Plataforma Web / PWA' },
   { value: 'mvp', label: 'Desarrollo de MVP' },
   { value: 'otro', label: 'Otro / Consultoría' },
 ];
 
+// Heurística liviana: no intenta validar el formato perfecto de un email o
+// teléfono (eso rechaza casos válidos que no anticipamos), solo se fija que
+// tenga cara de uno de los dos — un @ con algo después, o suficientes dígitos.
+function looksLikeContact(value) {
+  const v = value.trim();
+  if (!v) return false;
+  if (v.includes('@')) return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  const digits = v.replace(/\D/g, '');
+  return digits.length >= 6;
+}
+
+function validate(form) {
+  return {
+    nombre: form.nombre.trim() ? '' : 'Contanos tu nombre o el de tu empresa.',
+    tipo: form.tipo ? '' : 'Elegí una opción.',
+    contactoInfo: looksLikeContact(form.contactoInfo) ? '' : 'Dejanos un email o teléfono para responderte.',
+    mensaje: form.mensaje.trim() ? '' : 'Contanos brevemente tu idea.',
+  };
+}
+
 export default function Contacto() {
   const [ref, visible] = useReveal();
   const [status, setStatus] = useState('idle'); // idle | sending | success | error
-  const [form, setForm] = useState({ nombre: '', tipo: '', mensaje: '', empresa2: '' });
+  const [form, setForm] = useState({ nombre: '', tipo: '', contactoInfo: '', mensaje: '', empresa2: '' });
+  const [touched, setTouched] = useState({});
+
+  const errors = validate(form);
 
   function updateField(key) {
     return (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
+  }
+
+  function markTouched(key) {
+    return () => setTouched((t) => ({ ...t, [key]: true }));
   }
 
   async function handleSubmit(e) {
@@ -35,9 +62,12 @@ export default function Contacto() {
     // of tipping them off that they were caught.
     if (form.empresa2) {
       setStatus('success');
-      setForm({ nombre: '', tipo: '', mensaje: '', empresa2: '' });
+      setForm({ nombre: '', tipo: '', contactoInfo: '', mensaje: '', empresa2: '' });
       return;
     }
+
+    setTouched({ nombre: true, tipo: true, contactoInfo: true, mensaje: true });
+    if (Object.values(errors).some(Boolean)) return;
 
     setStatus('sending');
     try {
@@ -47,12 +77,14 @@ export default function Contacto() {
         body: JSON.stringify({
           nombre_o_empresa: form.nombre,
           tipo_de_proyecto: form.tipo,
+          email_o_telefono: form.contactoInfo,
           mensaje: form.mensaje,
         }),
       });
       if (!res.ok) throw new Error('request failed');
       setStatus('success');
-      setForm({ nombre: '', tipo: '', mensaje: '', empresa2: '' });
+      setForm({ nombre: '', tipo: '', contactoInfo: '', mensaje: '', empresa2: '' });
+      setTouched({});
       trackEvent('form_submit_success', { form: 'contacto' });
     } catch {
       setStatus('error');
@@ -72,6 +104,7 @@ export default function Contacto() {
 
         <form
           onSubmit={handleSubmit}
+          noValidate
           style={{
             background: 'var(--color-surface)',
             border: '1px solid var(--border-neutral)',
@@ -104,28 +137,44 @@ export default function Contacto() {
               id="nombre"
               type="text"
               placeholder="Ej: Juan Pérez"
-              required
-              className="input"
+              className={`input${touched.nombre && errors.nombre ? ' input-error' : ''}`}
               value={form.nombre}
               onChange={updateField('nombre')}
+              onBlur={markTouched('nombre')}
               disabled={status === 'sending'}
+              aria-invalid={touched.nombre && !!errors.nombre}
             />
+            {touched.nombre && errors.nombre && <p className="field-error">{errors.nombre}</p>}
           </div>
 
           <div className="field">
             <label htmlFor="tipo">Tipo de proyecto</label>
-            <select
+            <Select
               id="tipo"
-              required
-              className="input"
+              options={PROJECT_TYPES}
               value={form.tipo}
-              onChange={updateField('tipo')}
+              onChange={(v) => setForm((f) => ({ ...f, tipo: v }))}
+              onBlur={markTouched('tipo')}
               disabled={status === 'sending'}
-            >
-              {PROJECT_TYPES.map((opt) => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
-              ))}
-            </select>
+              className={touched.tipo && errors.tipo ? 'input-error' : ''}
+            />
+            {touched.tipo && errors.tipo && <p className="field-error">{errors.tipo}</p>}
+          </div>
+
+          <div className="field">
+            <label htmlFor="contactoInfo">Email o Teléfono</label>
+            <input
+              id="contactoInfo"
+              type="text"
+              placeholder="tu@email.com o +54 9 11 1234-5678"
+              className={`input${touched.contactoInfo && errors.contactoInfo ? ' input-error' : ''}`}
+              value={form.contactoInfo}
+              onChange={updateField('contactoInfo')}
+              onBlur={markTouched('contactoInfo')}
+              disabled={status === 'sending'}
+              aria-invalid={touched.contactoInfo && !!errors.contactoInfo}
+            />
+            {touched.contactoInfo && errors.contactoInfo && <p className="field-error">{errors.contactoInfo}</p>}
           </div>
 
           <div className="field">
@@ -134,12 +183,14 @@ export default function Contacto() {
               id="mensaje"
               rows={4}
               placeholder="Contanos brevemente sobre tu idea o necesidad..."
-              required
-              className="input"
+              className={`input${touched.mensaje && errors.mensaje ? ' input-error' : ''}`}
               value={form.mensaje}
               onChange={updateField('mensaje')}
+              onBlur={markTouched('mensaje')}
               disabled={status === 'sending'}
+              aria-invalid={touched.mensaje && !!errors.mensaje}
             />
+            {touched.mensaje && errors.mensaje && <p className="field-error">{errors.mensaje}</p>}
           </div>
 
           <SpotlightButton as="button" type="submit" className="btn btn-primary btn-block" disabled={status === 'sending'}>
@@ -154,8 +205,8 @@ export default function Contacto() {
           {status === 'error' && (
             <p role="alert" style={{ margin: 0, fontSize: 13, color: '#ff8a80' }}>
               No pudimos enviar tu consulta. Escribinos directo a{' '}
-              <a href="mailto:contacto@dssoftwarestudio.com.ar" style={{ color: 'var(--color-accent-300)', textDecoration: 'underline' }}>
-                contacto@dssoftwarestudio.com.ar
+              <a href="mailto:dss.softwarestudio@gmail.com" style={{ color: 'var(--color-accent-300)', textDecoration: 'underline' }}>
+                dss.softwarestudio@gmail.com
               </a>{' '}
               mientras lo solucionamos.
             </p>

@@ -13,7 +13,9 @@ describe('Terminal', () => {
     const user = userEvent.setup();
     render(<Terminal />);
     await user.click(screen.getByRole('button', { name: 'stack' }));
-    expect(screen.getByText(/Tecnologías: Python, Django/i)).toBeInTheDocument();
+    // The response types out character by character, so wait for it instead
+    // of asserting synchronously.
+    expect(await screen.findByText(/Tecnologías: Python, Django/i)).toBeInTheDocument();
   });
 
   it('shows the fallback message for an unknown command typed in the input', async () => {
@@ -21,7 +23,16 @@ describe('Terminal', () => {
     render(<Terminal />);
     const input = screen.getByLabelText('Comando de terminal');
     await user.type(input, 'asdasd{enter}');
-    expect(screen.getByText(/Comando no reconocido/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Comando no reconocido/i)).toBeInTheDocument();
+  });
+
+  it('recalls the previous command with ArrowUp', async () => {
+    const user = userEvent.setup();
+    render(<Terminal />);
+    const input = screen.getByLabelText('Comando de terminal');
+    await user.type(input, 'stack{enter}');
+    await user.keyboard('{ArrowUp}');
+    expect(input).toHaveValue('stack');
   });
 
   it('clear wipes the history, including the welcome line', async () => {
