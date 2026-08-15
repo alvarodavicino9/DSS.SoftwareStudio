@@ -19,8 +19,6 @@ const SERVICES = [
   },
 ];
 
-const STACK = ['Python / Django', 'JavaScript / React', 'C# / .NET', 'SQL Server / SQLite', 'REST APIs', 'Git / CI-CD'];
-
 export default function Servicios() {
   const [headerRef, headerVisible] = useReveal();
   const [gridRef, gridVisible] = useReveal();
@@ -50,19 +48,6 @@ export default function Servicios() {
               </div>
             </div>
           ))}
-        </div>
-
-        <div style={{ marginTop: 72 }}>
-          <h6 style={{ fontSize: 12, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-tertiary)', margin: '0 0 20px', fontWeight: 400 }}>
-            Stack Tecnológico Principal
-          </h6>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
-            {STACK.map((tech, i) => (
-              <div key={tech} style={revealStyle(gridVisible, i + 4)}>
-                <span className="tag tag-neutral">{tech}</span>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </section>
