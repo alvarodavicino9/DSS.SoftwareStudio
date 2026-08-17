@@ -31,31 +31,19 @@
    tenía antes (resto de una v2 clara que nunca se actualizó cuando el sitio
    pasó a tema oscuro en v5 — quedaba pegada encima del resto en vez de
    sentirse parte del mismo sitio, sobre todo una vez que se scrollea a las
-   secciones oscuras). El degradé de marca no desaparece: queda como acento
-   fino en el borde inferior, animado con el mismo `accent-flow` que ya usa
-   la barrita de las cards de portafolio — para que la marca se siga viendo
-   sin volver a ser un bloque de color que compite con el contenido. */
+   secciones oscuras).
+   Nota: hubo una versión con una línea de degradé animada en el borde
+   inferior (acento de marca) — se sacó porque el tooltip de cada ícono del
+   dock (.dock-label) aparece justo a esa altura al hacer hover, y la línea
+   asomaba a los costados del tooltip en vez de quedar tapada — se veía como
+   un glitch. No vale la pena pelear con esa colisión de layout por un
+   detalle chico; el vidrio oscuro solo ya se integra bien con el resto. */
 .site-nav {
   background: rgba(6, 7, 13, 0.72);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border-neutral);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
-}
-.site-nav::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -1px;
-  height: 2px;
-  background: linear-gradient(90deg, var(--color-accent), var(--color-accent-2), var(--color-accent));
-  background-size: 200% 100%;
-  animation: accent-flow 6s linear infinite;
-  opacity: 0.85;
-}
-@media (prefers-reduced-motion: reduce) {
-  .site-nav::after { animation: none; }
 }
 
 /* Nav — hamburger only on mobile */
