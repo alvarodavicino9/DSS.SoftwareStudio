@@ -1,8 +1,7 @@
-// TODO(cliente): reemplazar por el Measurement ID real de GA4 (Admin → Flujos de
-// datos → tu stream web → Measurement ID, formato "G-XXXXXXXXXX").
-// Mientras el ID sea el placeholder de abajo, initAnalytics() no hace nada —
-// no se carga ningún script ni se manda tráfico a Google.
-const GA_MEASUREMENT_ID = 'G-XXXXXXXXXX';
+// Measurement ID real de GA4 (ver README, sección "Pendientes para
+// producción" / v12). Antes era un placeholder ("G-XXXXXXXXXX") — mientras
+// lo fue, initAnalytics() no cargaba ningún script ni mandaba tráfico.
+const GA_MEASUREMENT_ID = 'G-K1CBW4F5DH';
 
 let initialized = false;
 

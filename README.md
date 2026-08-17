@@ -268,7 +268,11 @@ Estas son las cosas que el diseño dejaba abiertas y que hay que terminar de res
    son proyectos propios/productizados, no encargos con un cliente nombrado; completarlo si en
    algún momento corresponde.
 
-4. **GA4** — falta pegar el Measurement ID real (ver arriba).
+4. ~~**GA4**~~ — resuelto: `GA_MEASUREMENT_ID` en `src/utils/analytics.js` ya es el real
+   (`G-K1CBW4F5DH`). Verificado end-to-end (interceptando la carga de `gtag/js` en Playwright) que
+   el script se inyecta con ese ID, `gtag('config', ...)` corre al cargar la página, y los eventos
+   ya cableados (`cta_click`, WhatsApp, envío de formulario, `portfolio_live_site_click`) llegan al
+   `dataLayer` correctamente.
 
 5. ~~**Dominio real**~~ — confirmado: `dssoftwarestudio.com.ar` es el definitivo.
    `robots.txt`/`sitemap.xml`/canonical/JSON-LD ya asumen ese dominio (ver v6 arriba).
