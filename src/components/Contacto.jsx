@@ -4,12 +4,10 @@ import { trackEvent } from '../utils/analytics';
 import SpotlightButton from './SpotlightButton';
 import Select from './Select';
 
-// TODO(cliente): reemplazar por el endpoint real de Formspree.
-// 1. Crear cuenta gratis en https://formspree.io con el email que reciba las consultas.
-// 2. Crear un formulario nuevo — Formspree te da una URL tipo https://formspree.io/f/xxxxxxx
-// 3. Pegar esa URL acá abajo. Hasta entonces el formulario queda funcional pero sin
-//    destinatario real (Formspree devuelve error y se lo mostramos al usuario).
-const FORMSPREE_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID';
+// Endpoint real de Formspree — las consultas del formulario llegan a la
+// cuenta de Formspree conectada a este form ID (ver README, sección
+// "Pendientes para producción" / v11).
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xrpzyvgr';
 
 const PROJECT_TYPES = [
   { value: 'sistema', label: 'Sistema a medida / Backend' },

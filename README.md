@@ -253,13 +253,11 @@ oscuras de abajo era particularmente duro (borde recto, sin transición).
 
 Estas son las cosas que el diseño dejaba abiertas y que hay que terminar de resolver:
 
-1. **Formspree** — el formulario de contacto (`src/components/Contacto.jsx`) apunta a
-   `https://formspree.io/f/YOUR_FORM_ID`. Hay que:
-   - Crear una cuenta gratis en [formspree.io](https://formspree.io) con el email real de contacto.
-   - Crear un formulario nuevo ahí y copiar la URL que te dan (`https://formspree.io/f/xxxxxxx`).
-   - Reemplazar `FORMSPREE_ENDPOINT` en `Contacto.jsx` por esa URL.
-   - Hasta entonces el formulario funciona (loading/success/error) pero el envío falla porque
-     el endpoint es un placeholder — el usuario ve el mensaje de error con el email de fallback.
+1. ~~**Formspree**~~ — resuelto: el formulario de contacto (`src/components/Contacto.jsx`) ya
+   apunta al endpoint real, `https://formspree.io/f/xrpzyvgr`. Verificado end-to-end (interceptando
+   la request en Playwright) que el POST sale con el JSON correcto y muestra el mensaje de éxito.
+   Si en algún momento hay que rotarlo (form nuevo, otra cuenta de Formspree), el endpoint nuevo
+   se pega en la constante `FORMSPREE_ENDPOINT` al principio de `Contacto.jsx`.
 
 2. ~~**WhatsApp**~~ — confirmado: `+549 3491687912` es el número real de WhatsApp Business. El botón
    flotante (`FloatingWhatsApp.jsx`) ahora abre un mini-chat con opciones rápidas antes de mandar
