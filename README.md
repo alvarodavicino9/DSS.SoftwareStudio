@@ -170,14 +170,58 @@ del entorno) — se puede eliminar sin romper nada, ya no se importa en ningún 
   `imagenes[0]` se usa como portada fija en la card de `Portafolio.jsx` (con zoom sutil al hover de
   la card); el array completo alimenta el `<Carousel>` en `CasoDetalle.jsx`, mostrado arriba de la
   sección problema/solución/resultado.
-- **Por qué portada fija en la grilla y no un mini-carrusel por card**: varios carruseles
-  auto-rotando a la vez en la misma pantalla es ruidoso visualmente y gasta ciclos de más sin
-  necesidad — el carrusel completo se reserva para la página de detalle, donde el usuario ya eligió
-  ver ese proyecto en particular.
 - **Si agregás un caso nuevo o cambiás capturas**: las imágenes deben ir en
   `public/portfolio/<slug>/` y listarse en el campo `imagenes` del caso correspondiente en
   `casos.js`. No hay validación automática de que el archivo exista — si el path está mal, el
   `<img>` simplemente no carga (ícono roto).
+
+  > Nota: la decisión de "portada fija, no mini-carrusel" de más abajo se revirtió en v9 — ver
+  > esa sección.
+
+## v9 — cards del portafolio: mini-carrusel + inclinación 3D + brillo ambiente
+
+Pedido: la sección de portafolio tenía que sentirse más "futurista y animada", y mostrar mejor
+cada proyecto — sobre todo pensando en que van a agregarse más de 3 casos con el tiempo, así que
+cada card necesitaba comunicar "hay más para ver acá" sin depender de que el usuario entre al
+detalle.
+
+- **`src/components/PortfolioCard.jsx` nuevo** — se separó la card del portafolio de
+  `Portafolio.jsx` a su propio componente porque ahora tiene dos animaciones corriendo a la vez que
+  necesitan vivir en elementos distintos (ver comentario al inicio del archivo):
+  1. El reveal de entrada al hacer scroll (ya existía, vía `useReveal`/`revealStyle`, controlado
+     por React state).
+  2. La inclinación 3D que sigue al mouse — mutada directo sobre el DOM con
+     `element.style.setProperty(...)` en el `mousemove`, sin pasar por React state, para que el
+     seguimiento del cursor sea fluido y no dispare un re-render en cada pixel de movimiento.
+  Mezclar las dos en el mismo elemento hacía que la transform de una pisara a la otra.
+- **Reversión de la decisión de v8**: en vez de una imagen de portada fija, cada card ahora tiene
+  el `<Carousel>` completo (en modo `compact`) con las 4 fotos del proyecto rotando solas — con
+  más de 3 proyectos en la grilla, mostrar movimiento en cada card es justamente lo que hace notar
+  que hay más contenido detrás de cada uno, en vez de competir por atención con un solo hover.
+- **`Carousel.jsx` — prop `compact` nueva**: para cuando el carrusel vive dentro de otro elemento
+  clickeable (acá, la card entera es un `<Link>`). En modo compacto las flechas/puntos son más
+  chicos y quedan ocultos hasta hacer hover sobre la imagen (no compiten visualmente con el resto
+  de la card en reposo). Los botones del carrusel ahora siempre frenan la propagación del click
+  (`stopPropagation` + `preventDefault`) — si no, tocar una flecha dentro de la card navegaría al
+  caso en vez de solo cambiar de foto.
+- **Ken Burns sutil en la foto activa**: un `scale` lento (7s, `ease-in-out infinite alternate`)
+  solo en la slide que se está mostrando — le da vida a la imagen incluso en el rato entre un
+  cambio de foto y el siguiente. Se corta con `prefers-reduced-motion` como todo lo demás.
+- **Brillo ambiente que sigue al cursor** (`.portfolio-spotlight`): mismo lenguaje visual que el
+  glow del fondo animado (`TechBackground.jsx`) y del hero, pero a escala de card — un radial
+  gradient posicionado con las mismas coordenadas del mouse que usa el tilt (`--spot-x`/`--spot-y`
+  como custom properties CSS). Vive detrás del contenido gracias a `isolation: isolate` +
+  `z-index: -1` en `.portfolio-card` (así el glow no tapa el texto pero tampoco se escapa a
+  ancestros fuera de la card).
+- **Barra de acento con degradé animado**: `.portfolio-accent` (la barrita de color arriba de cada
+  card) ahora tiene un `background-position` animado en loop (`accent-flow`, 4s linear) además de
+  seguir expandiéndose al 100% del ancho en hover, como ya hacía.
+- **CTA "Ver caso completo →"**: la flecha ahora tiene su propia transición y se desliza a la
+  derecha en hover (`.portfolio-cta svg`), en vez de ser parte del texto plano.
+- **Performance**: el tilt usa `getBoundingClientRect()` + `style.setProperty` directo (no
+  `setState`) específicamente para evitar re-renderizar toda la card (imagen, texto, carrusel) en
+  cada evento de `mousemove` — con 3+ cards en pantalla, hacerlo con React state hubiera sido
+  notablemente menos fluido.
 
 ## Pendientes para producción
 

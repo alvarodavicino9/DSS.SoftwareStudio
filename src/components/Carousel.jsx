@@ -5,7 +5,14 @@ import { useEffect, useRef, useState } from 'react';
 // tiene el mouse encima o está interactuando (arrastre táctil básico), y
 // respeta prefers-reduced-motion desactivando el auto-avance del todo.
 // Uso: <Carousel images={['/a.jpg', '/b.jpg']} alt="Nombre del proyecto" />
-export default function Carousel({ images, alt = '', interval = 4200, rounded = true, aspectRatio = '16 / 9' }) {
+//
+// `compact`: para cuando el carrusel vive DENTRO de otro elemento clickeable
+// (ej. la card de Portafolio.jsx, que es un <Link>) — flechas/puntos quedan
+// ocultos hasta hacer hover y son más chicos, para no competir visualmente
+// con el resto de la card. Los botones siempre frenan la propagación del
+// click para que interactuar con el carrusel no dispare la navegación del
+// <Link> que lo envuelve.
+export default function Carousel({ images, alt = '', interval = 4200, rounded = true, aspectRatio = '16 / 9', compact = false }) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const touchStartX = useRef(null);
@@ -27,6 +34,14 @@ export default function Carousel({ images, alt = '', interval = 4200, rounded = 
   const prev = () => goTo(index - 1);
   const next = () => goTo(index + 1);
 
+  // Los controles pueden vivir dentro de un <Link> (cards de Portafolio.jsx)
+  // — sin esto, tocar una flecha o un punto también navegaría al caso.
+  const stop = (fn) => (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    fn();
+  };
+
   const onTouchStart = (e) => {
     touchStartX.current = e.touches[0].clientX;
   };
@@ -42,7 +57,7 @@ export default function Carousel({ images, alt = '', interval = 4200, rounded = 
 
   return (
     <div
-      className="carousel-root"
+      className={`carousel-root${compact ? ' carousel-compact' : ''}`}
       style={{ borderRadius: rounded ? 'var(--radius-lg)' : 0 }}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
@@ -55,7 +70,7 @@ export default function Carousel({ images, alt = '', interval = 4200, rounded = 
             key={src}
             src={src}
             alt={`${alt} — captura ${i + 1} de ${images.length}`}
-            className="carousel-slide"
+            className={`carousel-slide${i === index ? ' carousel-slide-active' : ''}`}
             style={{ opacity: i === index ? 1 : 0, pointerEvents: i === index ? 'auto' : 'none' }}
             loading={i === 0 ? 'eager' : 'lazy'}
           />
@@ -67,7 +82,7 @@ export default function Carousel({ images, alt = '', interval = 4200, rounded = 
           <button
             type="button"
             className="carousel-arrow carousel-arrow-prev"
-            onClick={prev}
+            onClick={stop(prev)}
             aria-label="Imagen anterior"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -77,7 +92,7 @@ export default function Carousel({ images, alt = '', interval = 4200, rounded = 
           <button
             type="button"
             className="carousel-arrow carousel-arrow-next"
-            onClick={next}
+            onClick={stop(next)}
             aria-label="Imagen siguiente"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -91,7 +106,7 @@ export default function Carousel({ images, alt = '', interval = 4200, rounded = 
                 key={src}
                 type="button"
                 className={`carousel-dot${i === index ? ' carousel-dot-active' : ''}`}
-                onClick={() => goTo(i)}
+                onClick={stop(() => goTo(i))}
                 aria-label={`Ir a la imagen ${i + 1}`}
                 aria-current={i === index}
               />
