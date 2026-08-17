@@ -22,6 +22,7 @@ export default function Nav() {
 
   return (
     <nav
+      className="site-nav"
       style={{
         position: 'fixed',
         top: 0,
@@ -32,8 +33,6 @@ export default function Nav() {
         gridTemplateColumns: '1fr auto 1fr',
         alignItems: 'center',
         padding: 'var(--space-6) var(--space-8)',
-        background: 'var(--gradient-brand)',
-        boxShadow: '0 4px 24px rgba(0, 0, 0, 0.35)',
       }}
     >
       <div style={{ justifySelf: 'start' }}>

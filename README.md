@@ -223,6 +223,32 @@ detalle.
   cada evento de `mousemove` — con 3+ cards en pantalla, hacerlo con React state hubiera sido
   notablemente menos fluido.
 
+## v10 — barra de navegación: vidrio oscuro en vez del bloque de degradé sólido
+
+Se sentía "pegada encima" del resto del sitio: era el único resto del tema claro de v2 que nunca
+se actualizó cuando todo pasó a oscuro en v5 — un bloque de color sólido y opaco, mientras que
+cards/terminal/selector usan paneles de vidrio translúcido con blur. El corte contra las secciones
+oscuras de abajo era particularmente duro (borde recto, sin transición).
+
+- **`Nav.jsx`**: el fondo pasó de `background: var(--gradient-brand)` (sólido) a una clase
+  `.site-nav` (en `layout.css`) con `rgba(6, 7, 13, 0.72)` + `backdrop-filter: blur(20px)` — mismo
+  criterio que `.card`/`.mobile-menu`. Como `<Nav>` no está dentro de `#hero-section`, sus custom
+  properties de color siempre resuelven al tema oscuro global sin importar qué sección esté atrás
+  — por eso la barra se ve igual de bien tanto sobre el Hero (que sigue siendo claro a propósito,
+  ver v5/comentario en `Hero.jsx`) como sobre las secciones oscuras.
+- **El degradé de marca no desapareció** — quedó como una línea de 2px animada en el borde
+  inferior de la barra (`.site-nav::after`, reusa el keyframe `accent-flow` que ya tienen las
+  cards de portafolio desde v9), así la identidad de color se sigue viendo sin volver a competir
+  con el contenido como bloque grande.
+- **`.nav-dock`/`.dock-item`** (el dock de íconos del menú desktop): pasaron de un pill blanco
+  translúcido (pensado para contrastar contra el degradé sólido de antes) a vidrio oscuro
+  (`var(--color-surface)` + borde), consistente con el resto de la UI.
+- **Lo que NO se tocó, a propósito**: el botón `+` del menú radial mobile (`RadialMenu.jsx`) se
+  queda blanco sólido — ya estaba pensado como "chip flotante" que contrasta contra cualquier
+  fondo, y sigue funcionando igual de bien sobre la barra oscura. El logo sigue usando su variante
+  clara (`light`) porque blanco lee bien tanto sobre la barra oscura como sobre el Hero claro
+  detrás — no hacía falta una segunda variante de color.
+
 ## Pendientes para producción
 
 Estas son las cosas que el diseño dejaba abiertas y que hay que terminar de resolver:
