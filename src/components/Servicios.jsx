@@ -1,10 +1,10 @@
 import { useReveal, revealStyle } from '../hooks/useReveal';
-import { ServerIcon, GlobeIcon, RocketIcon } from './SectionIcons';
+import { ServerIcon, GlobeIcon, BotIcon } from './SectionIcons';
 
 const SERVICES = [
   {
-    title: 'Sistemas & Backend',
-    desc: 'Automatizamos procesos operativos y construimos APIs seguras y escalables que se integran con los sistemas que ya usás.',
+    title: 'Landings & Sitios Web',
+    desc: 'Sitios web rápidos, responsivos y optimizados para buscadores, con diseño a medida y sin plantillas genéricas.',
     Icon: ServerIcon,
   },
   {
@@ -13,9 +13,9 @@ const SERVICES = [
     Icon: GlobeIcon,
   },
   {
-    title: 'Desarrollo de MVPs',
-    desc: 'MVPs funcionales en semanas, no meses, con métricas desde el primer usuario para validar tu idea antes de invertir de más.',
-    Icon: RocketIcon,
+    title: 'Bots & Automatizaciones',
+    desc: 'Automatizamos tareas repetitivas y tediosas, para que tu equipo pueda enfocarse en lo que realmente importa.',
+    Icon: BotIcon,
   },
 ];
 
