@@ -19,10 +19,10 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <Servicios />
-      <Proceso />
       <Portafolio />
       <Terminal />
+      <Servicios />
+      <Proceso />
       <Contacto />
     </>
   );
