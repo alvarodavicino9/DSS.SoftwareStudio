@@ -90,6 +90,21 @@ export default function PortfolioCard({ caso, index, visible }) {
             <span className="card-kicker" style={{ display: 'block', marginBottom: 'var(--space-1)' }}>Resultado</span>
             <p className="card-body" style={{ fontWeight: 500, opacity: 1, color: 'var(--color-accent-300)' }}>{caso.resultado}</p>
           </div>
+
+          {caso.stack && caso.stack.length > 0 && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+              {caso.stack.slice(0, 4).map((tech) => (
+                <span
+                  key={tech}
+                  className="tag tag-neutral"
+                  style={{ fontFamily: 'monospace', fontSize: 11, padding: '4px 9px' }}
+                >
+                  {tech}
+                </span>
+              ))}
+            </div>
+          )}
+
           <span className="portfolio-cta">
             Ver caso completo
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">

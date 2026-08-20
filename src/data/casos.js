@@ -9,6 +9,10 @@
 // recortadas a 1280x720 / 16:9). imagenes[0] se usa como portada fija en la
 // card de Portafolio.jsx; el arreglo completo alimenta el <Carousel> de
 // CasoDetalle.jsx (ver README v8).
+// `funcionalidades` y `stack` (ver README v13): detalle técnico de qué incluye
+// cada proyecto y con qué se construyó — CasoDetalle.jsx los muestra en una
+// sección "Qué incluye" con bullets + chips. Se sacaron revisando el código
+// real de cada proyecto (carpetas locales del usuario), no son genéricos.
 export const CASOS = [
   {
     slug: 'torneo-star-basket-estadisticas-en-vivo',
@@ -19,6 +23,18 @@ export const CASOS = [
     solucion: 'Sistema que recibe el Excel con las estadísticas de cada partido y las sube solo a la base de datos, publicándolas en la web sin carga manual.',
     resultado: 'Estadísticas individuales de cada jugador y equipo disponibles automáticamente apenas termina el partido.',
     url: 'https://www.torneostarbasket.com.ar/',
+    funcionalidades: [
+      'Estadísticas en vivo por jugador y por equipo: puntos, rebotes, asistencias, robos, tapones, tiros de 1, 2 y 3 puntos, y faltas',
+      'Carga de la planilla del partido en Excel, con importación automática a la base de datos',
+      'Fixture, resultados y tabla de posiciones, separados por categoría masculina y femenina',
+      'Ficha de partido ("Game Center") con el resultado, el desglose por cuarto y los goleadores destacados',
+      'Perfil de cada jugador con gráfico de evolución de puntos partido a partido',
+      'Encuestas de predicción antes de cada partido ("¿quién gana?"), con los resultados en porcentaje',
+      'Tarjetas de equipo animadas en 3D con el escudo y el récord de cada franquicia',
+      'Acceso directo a la transmisión en vivo del torneo por YouTube',
+      'Instalable como app desde el navegador (PWA), con ícono propio en el celular',
+    ],
+    stack: ['React', 'Vite', 'Supabase', 'Excel (xlsx)', 'Recharts', 'PWA'],
     imagenes: [
       '/portfolio/torneo-star-basket-estadisticas-en-vivo/1.jpg',
       '/portfolio/torneo-star-basket-estadisticas-en-vivo/2.jpg',
@@ -32,9 +48,21 @@ export const CASOS = [
     titulo: 'Sitio web para inmobiliarias con panel de administración',
     resumen: 'Plataforma web para inmobiliarias: publicación de propiedades en alquiler y venta, con panel de administración propio.',
     problema: 'Las inmobiliarias necesitan una web propia para publicar sus propiedades, en vez de depender solo de portales de terceros.',
-    solucion: 'Sitio listo para ofrecer a clientes del rubro: publicación de propiedades en alquiler y venta, más un panel de administrador para manejar toda la página.',
+    solucion: 'Sitio listo para ofrecer a clientes del rubro: publicación de propiedades en alquiler y venta, con catálogo, mapa interactivo y favoritos, más un panel de administrador para manejar toda la página.',
     resultado: 'Producto listo para ofrecer a inmobiliarias, con control total de las publicaciones desde un panel propio.',
     url: 'https://inmobiliarias889-pi.vercel.app/',
+    funcionalidades: [
+      'Catálogo de propiedades con filtros por operación (venta o alquiler), tipo, barrio, ambientes y presupuesto',
+      'Vista en grilla o en mapa interactivo, con cada propiedad ubicada geográficamente',
+      'Ficha de propiedad con galería de fotos, datos completos, ubicación y propiedades relacionadas',
+      'Favoritos: guardar propiedades para comparar más tarde, sin necesidad de crear una cuenta',
+      'Panel de administración para publicar, editar y dar de baja propiedades sin tocar código',
+      'Home con video ambiente y scroll cinematográfico, al estilo de un showcase inmobiliario premium',
+      'Transiciones animadas entre páginas y scroll suave en todo el recorrido del sitio',
+      'Selector de moneda para mostrar los precios en distintas divisas',
+      'Formulario de contacto listo para conectar a email, WhatsApp o un CRM',
+    ],
+    stack: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'GSAP', 'Leaflet (mapas)'],
     imagenes: [
       '/portfolio/sitio-web-para-inmobiliarias/1.jpg',
       '/portfolio/sitio-web-para-inmobiliarias/2.jpg',
@@ -51,6 +79,17 @@ export const CASOS = [
     solucion: 'Sistema de reserva de turnos con automatización de calendario, más un panel de administrador para manejar toda la página.',
     resultado: 'Turnos gestionados automáticamente y control total de la página desde un panel propio.',
     url: 'https://veterinaria-ecru.vercel.app/',
+    funcionalidades: [
+      'Tienda online con categorías (alimento, ropa, accesorios, higiene, juguetes, salud), filtros por mascota y búsqueda',
+      'Stock en tiempo real, con avisos de "sin stock" o "últimas unidades" en cada producto',
+      'Carrito de compra lateral y checkout con retiro en el local o envío a domicilio',
+      'Asistente de reserva de turnos en 3 pasos (servicio, fecha/hora y datos de la mascota), respetando los horarios reales de atención',
+      'Código de turno para confirmarlo por WhatsApp o agregarlo directo a Google Calendar',
+      'Gestión de turno propia: el cliente lo busca con el código y su email, y lo cancela o reprograma sin llamar',
+      'Botón flotante de WhatsApp con estado "disponible ahora" según el horario real, y accesos rápidos (turno, pedido, urgencia)',
+      'Panel para el equipo de la veterinaria con login propio: turnos (lista y calendario semanal), pedidos, y stock/precios de cada producto',
+    ],
+    stack: ['React', 'Vite', 'Tailwind CSS', 'Framer Motion', 'Zustand'],
     imagenes: [
       '/portfolio/veterinaria-y-pet-shop-turnos-online/1.jpg',
       '/portfolio/veterinaria-y-pet-shop-turnos-online/2.jpg',

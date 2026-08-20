@@ -98,6 +98,56 @@ export default function CasoDetalle({ slug }) {
           </div>
         )}
 
+        {caso.funcionalidades && caso.funcionalidades.length > 0 && (
+          <div className="card elev-sm" style={{ padding: 'calc(var(--space-8) * 1.4)', marginBottom: 32 }}>
+            <span className="card-kicker" style={{ display: 'block', marginBottom: 18 }}>Qué incluye</span>
+            <ul
+              style={{
+                margin: 0,
+                padding: 0,
+                listStyle: 'none',
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+                gap: '14px 24px',
+              }}
+            >
+              {caso.funcionalidades.map((item) => (
+                <li key={item} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                    style={{ flexShrink: 0, marginTop: 3, color: 'var(--color-accent-300)' }}
+                  >
+                    <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  <span style={{ fontSize: 14.5, lineHeight: 1.55, color: 'var(--color-text)' }}>{item}</span>
+                </li>
+              ))}
+            </ul>
+
+            {caso.stack && caso.stack.length > 0 && (
+              <>
+                <div style={{ height: 1, background: 'var(--border-neutral)', margin: '26px 0 20px' }} />
+                <span className="card-kicker" style={{ display: 'block', marginBottom: 10 }}>Tecnología</span>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                  {caso.stack.map((tech) => (
+                    <span
+                      key={tech}
+                      className="tag tag-neutral"
+                      style={{ fontFamily: 'monospace', fontSize: 12.5 }}
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        )}
+
         <div className="card elev-sm" style={{ padding: 'calc(var(--space-8) * 1.4)', display: 'flex', flexDirection: 'column', gap: 28 }}>
           <div>
             <span className="card-kicker" style={{ display: 'block', marginBottom: 8 }}>El problema</span>
