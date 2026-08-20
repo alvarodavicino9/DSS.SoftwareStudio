@@ -5,7 +5,7 @@ import { useTypewriter } from '../hooks/useTypewriter';
 
 const COMMANDS = {
   stack: { response: 'Tecnologías: Python, Django, React, JavaScript, C#, SQL Server, SQLite, REST APIs.' },
-  equipo: { response: 'Fundadores: Álvaro Davicino & Gabriel Schurrer (Ingenieros en Software).' },
+  equipo: { response: 'Fundadores: Álvaro Davicino & Gabriel Schurrer (Estudiantes avanzados de Ingenieria).' },
   portafolio: {
     response: 'Mostrando los casos que resolvimos — bajá para verlos, o hacé clic en cualquiera para el detalle completo.',
     scrollTo: 'portafolio',
@@ -14,7 +14,7 @@ const COMMANDS = {
     response: 'Cada proyecto es distinto. Contanos tu idea (comando contacto, o el formulario de abajo) y te armamos un presupuesto a medida.',
   },
   contacto: {
-    response: 'Email: dss.softwarestudio@gmail.com | Web: DSSoftwareStudio.com.ar',
+    response: 'Email: dss.softwarestudio@gmail.com | Web: DSSoftwareStudio.com.ar | Tel: +54 3491687912',
     scrollTo: 'contacto',
   },
 };
