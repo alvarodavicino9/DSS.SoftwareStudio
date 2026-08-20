@@ -20,7 +20,7 @@ export const CASOS = [
     titulo: 'Plataforma de estadísticas en vivo para un torneo de básquet',
     resumen: 'Sitio web para un torneo de básquet con carga y visualización de estadísticas en vivo de cada partido.',
     problema: 'Es un torneo real de básquet en Córdoba, con categoría masculina y femenina, varios equipos y partidos por fecha. Las estadísticas se cargaban a mano después de cada partido, jugador por jugador — lento, con margen de error, y sin ningún lugar público donde jugadores y familias pudieran seguir el torneo en tiempo real.',
-    solucion: 'Un sistema que recibe directo el Excel con la planilla del partido y sube las estadísticas solas a la base de datos, sin que nadie tenga que tipear un número. Sobre esa base se construyó además una experiencia pensada para los fans: perfiles de jugador, comparativas por partido, predicciones y acceso directo a la transmisión en vivo.',
+    solucion: 'Carga de la planilla del partido en Excel, con importación automática a la base de datos, sin que nadie tenga que tipear un número. Sobre esa base se construyó además una experiencia pensada para los fans: perfiles de jugador, comparativas por partido, predicciones y acceso directo a la transmisión en vivo.',
     resultado: 'El torneo tiene hoy un sitio propio en producción (torneostarbasket.com.ar) con estadísticas, fixture y posiciones de ambas categorías siempre al día apenas termina cada partido, más funciones de fan engagement que no estaban en el pedido original.',
     url: 'https://www.torneostarbasket.com.ar/',
     funcionalidades: [
