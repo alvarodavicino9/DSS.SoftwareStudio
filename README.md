@@ -249,6 +249,36 @@ oscuras de abajo era particularmente duro (borde recto, sin transición).
   clara (`light`) porque blanco lee bien tanto sobre la barra oscura como sobre el Hero claro
   detrás — no hacía falta una segunda variante de color.
 
+## v11 — Portafolio: carrusel en abanico y selección de casos
+
+La grilla de cards (v9) mostraba los 3-5 casos en paralelo, cada uno con su propio mini-carrusel;
+funcionaba pero no se sentía "curada" — todos los proyectos compitiendo por atención a la vez, sin
+un punto de entrada claro. Se reemplazó por un carrusel de tarjetas en abanico (una portada por
+proyecto, en semicírculo) donde clickear una tarjeta muestra el detalle de ESE caso debajo, en vez
+de mandar directo a la página completa.
+
+- **`CardFanCarousel.jsx`** (nuevo): adaptación a JSX plano de un componente de referencia que
+  originalmente venía en TypeScript + Tailwind + convención de shadcn (`/components/ui`). Este
+  proyecto no usa ninguna de las tres cosas (Vite + JSX simple, CSS propio en `tokens.css`/
+  `layout.css`, sin TypeScript) — se tradujeron los tipos a JS plano y **todas** las clases de
+  Tailwind se reemplazaron por clases CSS propias (`fan-*`, en `tokens.css`) que usan los mismos
+  tokens de color/superficie que el resto del sitio, en vez de instalar Tailwind solo para un
+  componente. La lógica de animación (GSAP: posiciones en abanico, hover que empuja las tarjetas
+  vecinas, entrada elástica) se mantuvo igual a la original.
+- **Selección en vez de links directos**: el componente original navegaba a `linkUrl` al clickear.
+  Se le agregaron props `selectedIndex`/`onSelect` — cada tarjeta es un `<button>` que dispara
+  `onSelect(index)`; la tarjeta seleccionada se marca con un anillo de acento (`.fan-card-selected`).
+- **`Portafolio.jsx`**: reemplaza la grilla de `PortfolioCard` (eliminado — quedó sin uso) por
+  `<CardFanCarousel>` (portada = `imagenes[0]` de cada caso) + un panel de detalle debajo
+  (`.fan-detail`) que muestra problema/solución/resultado + chips de `stack` del caso
+  seleccionado, con botón "Ver caso completo" a la página propia de ese caso. Arranca con el
+  primer caso ya seleccionado (`useState(0)`) para que la sección no se vea vacía al cargar.
+- **Sin pagination visible**: el componente soporta más de 7 tarjetas con flechas prev/next
+  (`MAX_VISIBLE = 7`), pero con los 5 casos actuales entran todos en el abanico sin necesidad de
+  eso — las flechas aparecen solas si en algún momento se supera ese número.
+- Dependencia nueva: **`gsap`** (antes solo se usaba `framer-motion`, que sigue en pie para
+  `Dock.jsx`/`RadialMenu.jsx` — no se migró nada existente a GSAP, conviven las dos librerías).
+
 ## Pendientes para producción
 
 Estas son las cosas que el diseño dejaba abiertas y que hay que terminar de resolver:
