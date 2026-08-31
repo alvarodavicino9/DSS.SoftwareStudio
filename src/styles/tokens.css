@@ -578,6 +578,17 @@ textarea.input { resize: vertical; min-height: 96px; }
      separación en CardFanCarousel.jsx, deja un borde tocable más ancho. */
   .fan-card { width: clamp(128px, 32vw, 150px); }
 }
+@media (min-width: 1320px) {
+  /* La tarjeta llega a su tope de 264px ya a 1056px de viewport, así que en
+     monitores grandes (1440px, 1920px...) el abanico quedaba chico y
+     rodeado de espacio vacío en vez de acompañar el ancho disponible. Este
+     escalón arranca en 264px (mismo valor que el tope anterior, sin salto
+     visible) y sigue creciendo con el viewport hasta un nuevo tope de
+     300px. La separación entre tarjetas crece en la misma proporción vía
+     `getResponsiveMultiplier` en CardFanCarousel.jsx, para no aumentar la
+     superposición entre tarjetas. */
+  .fan-card { width: clamp(264px, 20vw, 300px); }
+}
 .fan-card:focus-visible {
   border-color: var(--color-accent);
   box-shadow: 0 0 0 3px rgba(139, 124, 246, 0.35), 0 20px 45px rgba(0, 0, 0, 0.45);

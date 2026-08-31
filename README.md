@@ -380,6 +380,15 @@ de ventana en vez de en cada frame (hoy se repintan sin necesidad aunque su posi
 frame a frame) — quedaría como la siguiente optimización más impactante si en algún celular real se
 sigue notando lentitud.
 
+**Ajuste posterior: tarjetas más grandes en monitores anchos.** El tope de ancho de tarjeta (264px)
+se alcanzaba ya a partir de 1056px de viewport, así que en monitores grandes (1440px, 1920px...) el
+abanico quedaba chico, rodeado de espacio vacío que no acompañaba el ancho disponible. Se agregó un
+escalón nuevo a partir de 1320px (arranca en 264px, sin salto visible, y crece hasta un tope de
+300px), con la separación entre tarjetas creciendo en la misma proporción (`getResponsiveMultiplier`
+en `CardFanCarousel.jsx`) para no aumentar la superposición entre tarjetas. Verificado con capturas en
+1366/1440/1512/1920px: no genera scroll horizontal ni corta tarjetas contra el borde en ningún tamaño.
+En laptops normales (hasta ~1320px) el tamaño queda exactamente igual que antes.
+
 ## Pendientes para producción
 
 Estas son las cosas que el diseño dejaba abiertas y que hay que terminar de resolver:

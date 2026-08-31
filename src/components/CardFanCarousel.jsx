@@ -34,7 +34,15 @@ function getResponsiveMultiplier(width) {
   if (width < 640) return 0.38;
   if (width < 768) return 0.5;
   if (width < 1024) return 0.75;
-  return 1.0;
+  if (width < 1320) return 1.0;
+  // A partir de acá la tarjeta también crece (ver el media query de
+  // .fan-card ≥1320px en tokens.css, tope 300px vs 264px normal, +13.6%).
+  // Sin este ajuste el espaciado se quedaba fijo mientras la tarjeta
+  // crecía, y el abanico se veía más apilado/superpuesto que antes en vez
+  // de simplemente más grande. +13% de separación mantiene la misma
+  // proporción de superposición que en pantallas más chicas.
+  if (width < 1500) return 1.06;
+  return 1.14;
 }
 
 /**
