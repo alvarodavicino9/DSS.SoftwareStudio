@@ -278,6 +278,57 @@ de mandar directo a la página completa.
   eso — las flechas aparecen solas si en algún momento se supera ese número.
 - Dependencia nueva: **`gsap`** (antes solo se usaba `framer-motion`, que sigue en pie para
   `Dock.jsx`/`RadialMenu.jsx` — no se migró nada existente a GSAP, conviven las dos librerías).
+- **Ajuste: la tarjeta clickeada pasa a ser el centro del abanico.** En la primera versión, clickear
+  una tarjeta actualizaba el panel de detalle pero la tarjeta se quedaba donde estaba — si no era la
+  del medio, quedaba visualmente desconectada de la info que aparecía debajo. Se unificó el mapeo de
+  slots (`getVisibleMap`) para que sea siempre circular alrededor de `centerIndex`, y ese
+  `centerIndex` ahora se sincroniza con `selectedIndex`: al clickear, la tarjeta elegida se reacomoda
+  al centro (escala 1, sin rotación, al frente) y el resto se reordena alrededor. También se agregó
+  `gsap.killTweensOf(cardElements)` al principio del efecto de posicionamiento, para que un hover que
+  quedó a mitad de animación no compita con el reacomodo al centro.
+- **Ajuste: espaciado proporcional a la cantidad de casos.** El abanico para menos de 7 tarjetas
+  normalizaba la distancia de cada slot contra la mitad de la cantidad total de tarjetas, así que
+  con pocos casos el abanico igual ocupaba todo el ancho (-30rem a +30rem) — quedaban chicas y
+  separadas. Ahora se normaliza contra `HALF` (el radio del layout fijo de 7 tarjetas): con los 5
+  casos actuales el abanico ocupa solo ~2/3 de ese ancho, así que las tarjetas quedan más juntas y
+  más grandes, y a medida que se agreguen casos nuevos el abanico se va abriendo solo, hasta calzar
+  exactamente con el layout de 7 cuando se llegue a ese número.
+- **Navegación con flechas/teclado, siempre visible.** Antes las flechas y los puntitos solo
+  aparecían si había más de 7 casos (`needsPagination`); se sacó esa condición — con 2+ casos
+  siempre se muestran. `cycle()` (que solo movía la ventana visible) se reemplazó por `step()`,
+  que mueve la *selección* un lugar a la izquierda/derecha (o salta directo a un índice, para los
+  puntitos, que ahora son `<button>` clickeables en vez de indicadores). Como `selectedIndex` ya
+  sincroniza el centro del abanico, las flechas/puntitos automáticamente recentran la tarjeta
+  elegida. Se agregó también navegación con las flechas del teclado (← →) mientras el foco está
+  dentro del carrusel — después de navegar con teclado, el foco se mueve a la tarjeta que quedó en
+  el centro (`keyboardNavRef`), para poder seguir recorriendo con las flechas sin volver a tabular.
+- **Autoplay liviano.** Cada 5.5s avanza un caso, reusando `step()`/`onSelect` — la misma animación
+  que un click, sin trabajo extra (verificado que no agrega jank: son sólo GSAP tweens ya
+  existentes). Se pausa (no se desactiva) mientras el mouse o el teclado están sobre el carrusel, y
+  respeta `prefers-reduced-motion` (no arranca si el usuario pidió menos movimiento) y
+  `document.visibilityState` (no avanza con la pestaña en segundo plano).
+
+## v12 — SEO: robots.txt y og:image por caso
+
+Auditoría rápida de SEO/metadata a pedido. El sitio ya tenía bastante resuelto desde la v5
+(`useDocumentMeta` sincroniza `<title>`, description, canonical, robots, Open Graph/Twitter y un
+BreadcrumbList JSON-LD por ruta — cada caso de portafolio ya tenía su propio title/description, no
+el genérico de la home). Lo que faltaba:
+
+- **`public/robots.txt`** (nuevo, no existía): `Allow: /` para todo el sitio + referencia directa a
+  `sitemap.xml`. No cambia qué se indexa (ya estaba todo permitido por default), pero es la forma
+  estándar de decirle a los crawlers dónde está el sitemap sin depender de que alguien lo haya
+  cargado a mano en Search Console.
+- **`og:image`/`twitter:image` por caso**: `useDocumentMeta` ahora acepta un `image` (ruta relativa
+  o absoluta); `CasoDetalle.jsx` le pasa `caso.imagenes[0]`. Antes, compartir el link de un caso
+  puntual (Whatsapp, LinkedIn) mostraba siempre la portada genérica del sitio (`og-cover.svg`) en la
+  vista previa — ahora muestra una captura real de ESE proyecto. La home sigue usando la portada
+  genérica (no se le pasa `image`, cae al default).
+
+Quedó afuera de este alcance (no se tocó, por si se quiere retomar más adelante): structured data
+por caso (`schema.org/CreativeWork` o similar, más específico que el `BreadcrumbList` que ya hay), y
+generar los `og-cover`/`favicon` como PNG además de SVG (algunos crawlers viejos no rasterizan SVG
+para la preview del link — hoy es un riesgo menor, la mayoría de los bots grandes ya lo soportan).
 
 ## Pendientes para producción
 

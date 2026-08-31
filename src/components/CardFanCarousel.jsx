@@ -51,14 +51,20 @@ function getHeightMultiplier(width) {
 function getSlotConfig(totalCards, slot) {
   if (totalCards >= MAX_VISIBLE) return FAN_POSITIONS[slot];
   const center = totalCards >> 1;
-  const distance = totalCards > 1 ? (slot - center) / center : 0;
+  const offset = slot - center;
+  // Se normaliza contra HALF (el radio del abanico completo de 7 tarjetas),
+  // no contra `center`: así, con pocas tarjetas el abanico ocupa menos
+  // ancho (quedan más juntas y más grandes) y a medida que se agregan casos
+  // el offset se acerca a ±HALF, separándose hasta calzar con el layout fijo
+  // de 7 tarjetas de arriba — la transición es continua.
+  const distance = totalCards > 1 ? offset / HALF : 0;
   const absDistance = Math.abs(distance);
   return {
     rot: distance * 21,
     scale: 1.0 - 0.2244 * absDistance * absDistance,
     x: distance * 30,
     y: absDistance * absDistance * 7.3,
-    zIndex: 10 - Math.abs(slot - center),
+    zIndex: 10 - Math.abs(offset),
   };
 }
 
@@ -68,34 +74,101 @@ export default function CardFanCarousel({ cards, selectedIndex = null, onSelect 
   const hasEntered = useRef(false);
   const directionRef = useRef(null);
   const prevVisible = useRef(new Set());
+  const isPausedRef = useRef(false); // hover/foco pausa el autoplay (no lo desactiva)
+  const keyboardNavRef = useRef(false); // marca si el próximo cambio de índice vino del teclado
   const totalCards = cards.length;
   const needsPagination = totalCards > MAX_VISIBLE;
-  const [centerIndex, setCenterIndex] = useState(needsPagination ? HALF : totalCards >> 1);
+  const windowSize = Math.min(totalCards, MAX_VISIBLE);
+  const [centerIndex, setCenterIndex] = useState(
+    selectedIndex !== null && selectedIndex !== undefined ? selectedIndex : needsPagination ? HALF : totalCards >> 1
+  );
 
+  // Mapeo circular único: la tarjeta `center` siempre cae en el slot del
+  // medio de la ventana visible, y el resto se ubica alrededor (con wrap si
+  // hace falta). Esto vale tanto para el caso paginado (más de 7 casos, solo
+  // se ven 7 a la vez) como para el caso actual (todas las tarjetas visibles
+  // siempre) — en este último, "centrar" simplemente reordena los slots.
   const getVisibleMap = useCallback(
     (center) => {
       const map = new Map();
-      if (!needsPagination) {
-        cards.forEach((_, i) => map.set(i, i));
-        return map;
-      }
-      for (let slot = 0; slot < MAX_VISIBLE; slot++) {
-        map.set(((center + slot - HALF) % totalCards + totalCards) % totalCards, slot);
+      const centerSlot = windowSize >> 1;
+      for (let slot = 0; slot < windowSize; slot++) {
+        const cardIndex = ((center + slot - centerSlot) % totalCards + totalCards) % totalCards;
+        map.set(cardIndex, slot);
       }
       return map;
     },
-    [totalCards, needsPagination, cards]
+    [totalCards, windowSize]
   );
 
-  const cycle = useCallback(
-    (direction) => {
-      if (isAnimating.current || !needsPagination) return;
-      isAnimating.current = true;
-      directionRef.current = direction;
-      setCenterIndex((prev) => (direction === 'right' ? (prev + 1) % totalCards : (prev - 1 + totalCards) % totalCards));
+  // Al seleccionar una tarjeta (click), esa tarjeta pasa a ser el centro del
+  // abanico — así el detalle que aparece debajo siempre corresponde a la
+  // tarjeta que quedó destacada en el medio.
+  useEffect(() => {
+    if (selectedIndex === null || selectedIndex === undefined) return;
+    setCenterIndex((prev) => (prev === selectedIndex ? prev : selectedIndex));
+  }, [selectedIndex]);
+
+  // Mueve la selección un lugar a la izquierda/derecha (circular). Reemplaza
+  // al viejo `cycle` (que sólo desplazaba la ventana visible cuando había
+  // pagination): ahora las flechas/teclado/autoplay siempre mueven la
+  // *selección*, y como selectedIndex ya sincroniza centerIndex, el abanico
+  // se reacomoda solo. También sirve como "salto directo" pasándole un
+  // índice en vez de una dirección.
+  const step = useCallback(
+    (directionOrIndex) => {
+      if (!totalCards) return;
+      const current = selectedIndex !== null && selectedIndex !== undefined ? selectedIndex : centerIndex;
+      let next;
+      if (directionOrIndex === 'right') next = (current + 1) % totalCards;
+      else if (directionOrIndex === 'left') next = (current - 1 + totalCards) % totalCards;
+      else next = ((directionOrIndex % totalCards) + totalCards) % totalCards;
+      directionRef.current = directionOrIndex === 'left' ? 'left' : 'right';
+      if (onSelect) onSelect(next);
+      else setCenterIndex(next);
     },
-    [totalCards, needsPagination]
+    [totalCards, selectedIndex, centerIndex, onSelect]
   );
+  const stepRef = useRef(step);
+  useEffect(() => {
+    stepRef.current = step;
+  }, [step]);
+
+  // Autoplay liviano: reusa `step`/`onSelect`, así que la animación es la
+  // misma que la de un click — no hay trabajo extra. Se frena solo (sin
+  // desactivarse para siempre) mientras el mouse o el teclado están sobre el
+  // carrusel, mientras la pestaña no está visible, o si el sistema pide
+  // menos movimiento (`prefers-reduced-motion`).
+  useEffect(() => {
+    if (totalCards <= 1) return undefined;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
+
+    const AUTOPLAY_MS = 5500;
+    let timeoutId;
+    const tick = () => {
+      timeoutId = setTimeout(() => {
+        if (!isPausedRef.current && document.visibilityState === 'visible') {
+          stepRef.current('right');
+        }
+        tick();
+      }, AUTOPLAY_MS);
+    };
+    tick();
+    return () => clearTimeout(timeoutId);
+  }, [totalCards]);
+
+  // Si el cambio de selección vino del teclado (flechas), mueve el foco a
+  // la tarjeta que quedó en el centro — así se puede seguir navegando con
+  // las flechas sin volver a tabular hasta el carrusel.
+  useEffect(() => {
+    if (!keyboardNavRef.current) return;
+    keyboardNavRef.current = false;
+    const container = containerRef.current;
+    if (!container) return;
+    const idx = selectedIndex !== null && selectedIndex !== undefined ? selectedIndex : centerIndex;
+    const el = container.querySelectorAll('.fan-card')[idx];
+    el?.focus();
+  }, [selectedIndex, centerIndex]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -109,10 +182,15 @@ export default function CardFanCarousel({ cards, selectedIndex = null, onSelect 
     const isFirstMount = !hasEntered.current;
     const multiplier = getResponsiveMultiplier(window.innerWidth);
     const hMult = getHeightMultiplier(window.innerWidth);
-    const slotCount = needsPagination ? MAX_VISIBLE : totalCards;
-    const config = (slot) => getSlotConfig(slotCount, slot);
+    const config = (slot) => getSlotConfig(windowSize, slot);
 
-    if (isFirstMount) isAnimating.current = true;
+    // Corta cualquier tween en curso (por ejemplo, el "push" de hover que
+    // pudo haber quedado activo justo antes de un click) para que el
+    // reacomodo al nuevo centro arranque de cero y no compita con una
+    // animación anterior.
+    gsap.killTweensOf(cardElements);
+
+    isAnimating.current = true;
     let completedCount = 0;
     const visibleCount = visibleMap.size;
     const onCardDone = () => {
@@ -250,9 +328,11 @@ export default function CardFanCarousel({ cards, selectedIndex = null, onSelect 
       window.removeEventListener('resize', onResize);
       if (leaveTimer) clearTimeout(leaveTimer);
     };
-  }, [centerIndex, totalCards, getVisibleMap, needsPagination]);
+  }, [centerIndex, totalCards, windowSize, getVisibleMap]);
 
   if (!totalCards) return null;
+
+  const activeIndex = selectedIndex !== null && selectedIndex !== undefined ? selectedIndex : centerIndex;
 
   const chevron = (direction) => (
     <svg className="fan-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -260,10 +340,31 @@ export default function CardFanCarousel({ cards, selectedIndex = null, onSelect 
     </svg>
   );
 
+  function handleKeyDown(e) {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    if (totalCards <= 1) return;
+    e.preventDefault();
+    keyboardNavRef.current = true;
+    step(e.key === 'ArrowRight' ? 'right' : 'left');
+  }
+
   return (
-    <div className="fan-carousel-section">
+    <div
+      className="fan-carousel-section"
+      role="group"
+      aria-roledescription="carrusel"
+      aria-label="Proyectos del portafolio"
+      onKeyDown={handleKeyDown}
+    >
       <div className="fan-carousel-outer">
-        <div ref={containerRef} className="fan-layout">
+        <div
+          ref={containerRef}
+          className="fan-layout"
+          onMouseEnter={() => { isPausedRef.current = true; }}
+          onMouseLeave={() => { isPausedRef.current = false; }}
+          onFocus={() => { isPausedRef.current = true; }}
+          onBlur={() => { isPausedRef.current = false; }}
+        >
           {cards.map((card, index) => (
             <button
               key={index}
@@ -281,17 +382,24 @@ export default function CardFanCarousel({ cards, selectedIndex = null, onSelect 
         </div>
       </div>
 
-      {needsPagination && (
+      {totalCards > 1 && (
         <div className="fan-pagination">
-          <button className="fan-arrow" onClick={() => cycle('left')} aria-label="Anterior">
+          <button className="fan-arrow" onClick={() => step('left')} aria-label="Proyecto anterior">
             {chevron('left')}
           </button>
           <div className="fan-dots">
             {cards.map((_, i) => (
-              <span key={i} className={`fan-dot${i === centerIndex ? ' fan-dot-active' : ''}`} />
+              <button
+                key={i}
+                type="button"
+                className={`fan-dot${i === activeIndex ? ' fan-dot-active' : ''}`}
+                onClick={() => step(i)}
+                aria-label={`Ir al proyecto ${i + 1}`}
+                aria-current={i === activeIndex}
+              />
             ))}
           </div>
-          <button className="fan-arrow" onClick={() => cycle('right')} aria-label="Siguiente">
+          <button className="fan-arrow" onClick={() => step('right')} aria-label="Siguiente proyecto">
             {chevron('right')}
           </button>
         </div>

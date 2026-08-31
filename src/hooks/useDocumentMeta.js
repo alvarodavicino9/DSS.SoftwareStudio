@@ -13,6 +13,7 @@ const SITE_URL = 'https://dssoftwarestudio.com.ar';
 const DEFAULT_TITLE = 'DS.SoftwareStudio — Software a medida, Argentina';
 const DEFAULT_DESCRIPTION =
   'Consultora de software argentina. Desarrollamos sistemas a medida, plataformas web, PWAs y MVPs. Trato directo con los ingenieros que programan tu proyecto.';
+const DEFAULT_IMAGE = `${SITE_URL}/og-cover.svg`;
 
 function setMetaByName(name, content) {
   let el = document.querySelector(`meta[name="${name}"]`);
@@ -75,12 +76,19 @@ function setBreadcrumbJsonLd(items) {
  * página (Home.jsx, CasoDetalle.jsx) — los valores omitidos vuelven al
  * default del sitio, así que navegar de un caso de vuelta a "/" resetea todo
  * solo con no pasar `title`/`description`.
+ *
+ * `image` es opcional y acepta una ruta relativa al sitio (ej.
+ * `/portfolio/hipermat.../1.jpg`, como vienen en `casos.imagenes`) o una URL
+ * absoluta — sin esto, compartir el link de un caso puntual (Whatsapp,
+ * LinkedIn, etc.) mostraba siempre la imagen genérica de portada del sitio
+ * en vez de una captura del proyecto.
  */
-export function useDocumentMeta({ title, description, path = '/', robots = 'index, follow', breadcrumb } = {}) {
+export function useDocumentMeta({ title, description, path = '/', robots = 'index, follow', breadcrumb, image } = {}) {
   useEffect(() => {
     const finalTitle = title || DEFAULT_TITLE;
     const finalDescription = description || DEFAULT_DESCRIPTION;
     const url = `${SITE_URL}${path}`;
+    const finalImage = image ? (image.startsWith('http') ? image : `${SITE_URL}${image}`) : DEFAULT_IMAGE;
 
     document.title = finalTitle;
     setMetaByName('description', finalDescription);
@@ -88,11 +96,13 @@ export function useDocumentMeta({ title, description, path = '/', robots = 'inde
     setMetaByProperty('og:title', finalTitle);
     setMetaByProperty('og:description', finalDescription);
     setMetaByProperty('og:url', url);
+    setMetaByProperty('og:image', finalImage);
     setMetaByName('twitter:title', finalTitle);
     setMetaByName('twitter:description', finalDescription);
+    setMetaByName('twitter:image', finalImage);
     setCanonical(url);
     setBreadcrumbJsonLd(breadcrumb);
 
     return () => setBreadcrumbJsonLd(null);
-  }, [title, description, path, robots, breadcrumb]);
+  }, [title, description, path, robots, breadcrumb, image]);
 }

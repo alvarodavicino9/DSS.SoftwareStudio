@@ -554,7 +554,7 @@ textarea.input { resize: vertical; min-height: 96px; }
 
 .fan-card {
   grid-area: 1 / 1;
-  width: clamp(130px, 22vw, 240px);
+  width: clamp(150px, 25vw, 264px);
   aspect-ratio: 16 / 10;
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -633,10 +633,15 @@ textarea.input { resize: vertical; min-height: 96px; }
 .fan-dot {
   width: 8px;
   height: 8px;
+  padding: 0;
+  border: none;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.15);
+  cursor: pointer;
   transition: all 0.3s ease;
 }
+.fan-dot:hover { background: rgba(255, 255, 255, 0.4); }
+.fan-dot:focus-visible { outline: 2px solid var(--color-accent-300); outline-offset: 3px; }
 .fan-dot-active { background: rgba(255, 255, 255, 0.8); transform: scale(1.3); }
 
 @keyframes fan-detail-in {

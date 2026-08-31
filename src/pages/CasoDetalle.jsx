@@ -39,6 +39,7 @@ export default function CasoDetalle({ slug }) {
     description: caso ? caso.resumen : undefined,
     path: `/portafolio/${slug}`,
     robots: caso ? 'index, follow' : 'noindex, follow',
+    image: caso?.imagenes?.[0],
     breadcrumb: caso
       ? [
           { name: 'Inicio', url: 'https://dssoftwarestudio.com.ar/' },
