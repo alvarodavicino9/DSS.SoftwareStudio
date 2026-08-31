@@ -24,7 +24,13 @@ const FAN_POSITIONS = [
 ];
 
 function getResponsiveMultiplier(width) {
-  if (width < 480) return 0.28;
+  // El piso de <480px se subió de 0.28 a 0.34: el ancho de tarjeta tiene un
+  // mínimo fijo (ver .fan-card en tokens.css) que no baja de la mano del
+  // multiplicador, así que con 0.28 las tarjetas quedaban demasiado
+  // superpuestas para tocarlas con el dedo en un celular chico. 0.34 deja un
+  // "borde" tocable más ancho sin que el abanico se salga del padding del
+  // contenedor.
+  if (width < 480) return 0.34;
   if (width < 640) return 0.38;
   if (width < 768) return 0.5;
   if (width < 1024) return 0.75;
@@ -74,8 +80,10 @@ export default function CardFanCarousel({ cards, selectedIndex = null, onSelect 
   const hasEntered = useRef(false);
   const directionRef = useRef(null);
   const prevVisible = useRef(new Set());
-  const isPausedRef = useRef(false); // hover/foco pausa el autoplay (no lo desactiva)
+  const isPausedRef = useRef(false); // hover/foco/touch pausa el autoplay (no lo desactiva)
   const keyboardNavRef = useRef(false); // marca si el próximo cambio de índice vino del teclado
+  const touchRef = useRef({ active: false, startX: 0, startY: 0, dragging: false });
+  const suppressClickRef = useRef(false); // evita que un swipe dispare además el click de la tarjeta
   const totalCards = cards.length;
   const needsPagination = totalCards > MAX_VISIBLE;
   const windowSize = Math.min(totalCards, MAX_VISIBLE);
@@ -291,32 +299,44 @@ export default function CardFanCarousel({ cards, selectedIndex = null, onSelect 
       });
     };
 
-    const enterHandlers = visibleEntries.map(({ el, slot }) => {
-      const handler = () => {
+    // El "push" al pasar el mouse es una interacción de hover real — en
+    // touch no hay mouseenter/mouseleave útiles (en el mejor de los casos
+    // llegan tarde y simulados después del tap, y podían dejar un
+    // parpadeo). Se arma solo en dispositivos que efectivamente tienen
+    // hover con precisión de mouse; en celular esto no hace nada.
+    const supportsHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    let enterHandlers = [];
+    let onMouseLeave = null;
+    if (supportsHover) {
+      enterHandlers = visibleEntries.map(({ el, slot }) => {
+        const handler = () => {
+          if (isAnimating.current) return;
+          if (leaveTimer) {
+            clearTimeout(leaveTimer);
+            leaveTimer = null;
+          }
+          if (activeSlot !== slot) {
+            activeSlot = slot;
+            updateHoverLayout(slot);
+          }
+        };
+        el.addEventListener('mouseenter', handler);
+        return { el, handler };
+      });
+
+      onMouseLeave = () => {
         if (isAnimating.current) return;
-        if (leaveTimer) {
-          clearTimeout(leaveTimer);
-          leaveTimer = null;
-        }
-        if (activeSlot !== slot) {
-          activeSlot = slot;
-          updateHoverLayout(slot);
-        }
+        if (leaveTimer) clearTimeout(leaveTimer);
+        leaveTimer = setTimeout(() => {
+          activeSlot = null;
+          updateHoverLayout(null);
+        }, 50);
       };
-      el.addEventListener('mouseenter', handler);
-      return { el, handler };
-    });
+      container.addEventListener('mouseleave', onMouseLeave);
+    }
 
-    const onMouseLeave = () => {
-      if (isAnimating.current) return;
-      if (leaveTimer) clearTimeout(leaveTimer);
-      leaveTimer = setTimeout(() => {
-        activeSlot = null;
-        updateHoverLayout(null);
-      }, 50);
-    };
-    container.addEventListener('mouseleave', onMouseLeave);
-
+    // El reflow en resize sí importa en todos lados (rotar el celular,
+    // cambiar de ventana), no sólo para hover — sigue activo siempre.
     const onResize = () => {
       if (!isAnimating.current) updateHoverLayout(activeSlot);
     };
@@ -324,7 +344,7 @@ export default function CardFanCarousel({ cards, selectedIndex = null, onSelect 
 
     return () => {
       enterHandlers.forEach(({ el, handler }) => el.removeEventListener('mouseenter', handler));
-      container.removeEventListener('mouseleave', onMouseLeave);
+      if (onMouseLeave) container.removeEventListener('mouseleave', onMouseLeave);
       window.removeEventListener('resize', onResize);
       if (leaveTimer) clearTimeout(leaveTimer);
     };
@@ -348,6 +368,49 @@ export default function CardFanCarousel({ cards, selectedIndex = null, onSelect 
     step(e.key === 'ArrowRight' ? 'right' : 'left');
   }
 
+  // Swipe táctil (también funciona con mouse-drag, sin costo extra): con
+  // Pointer Events unificamos touch/mouse/pen en un solo handler. Un
+  // movimiento chico (por debajo de SWIPE_THRESHOLD) o mayormente vertical
+  // se ignora — así no compite con el scroll normal de la página, que
+  // además queda liberado del lado del navegador con `touch-action: pan-y`
+  // en el CSS (.fan-layout).
+  const SWIPE_THRESHOLD = 40;
+
+  function handlePointerDown(e) {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    touchRef.current = { active: true, startX: e.clientX, startY: e.clientY, dragging: false };
+    isPausedRef.current = true;
+  }
+
+  function handlePointerMove(e) {
+    const t = touchRef.current;
+    if (!t.active) return;
+    const dx = e.clientX - t.startX;
+    const dy = e.clientY - t.startY;
+    if (!t.dragging && Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) {
+      t.dragging = true;
+    }
+  }
+
+  function endPointerInteraction(e) {
+    const t = touchRef.current;
+    if (!t.active) return;
+    const dx = e.clientX - t.startX;
+    const wasDragging = t.dragging;
+    touchRef.current = { active: false, startX: 0, startY: 0, dragging: false };
+    isPausedRef.current = false;
+    if (!wasDragging) return; // fue un tap normal — el onClick de la tarjeta ya lo maneja
+    suppressClickRef.current = true;
+    setTimeout(() => { suppressClickRef.current = false; }, 300);
+    if (dx <= -SWIPE_THRESHOLD) step('right');
+    else if (dx >= SWIPE_THRESHOLD) step('left');
+  }
+
+  function handlePointerCancel() {
+    touchRef.current = { active: false, startX: 0, startY: 0, dragging: false };
+    isPausedRef.current = false;
+  }
+
   return (
     <div
       className="fan-carousel-section"
@@ -364,13 +427,20 @@ export default function CardFanCarousel({ cards, selectedIndex = null, onSelect 
           onMouseLeave={() => { isPausedRef.current = false; }}
           onFocus={() => { isPausedRef.current = true; }}
           onBlur={() => { isPausedRef.current = false; }}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={endPointerInteraction}
+          onPointerCancel={handlePointerCancel}
         >
           {cards.map((card, index) => (
             <button
               key={index}
               type="button"
               className={`fan-card${selectedIndex === index ? ' fan-card-selected' : ''}`}
-              onClick={() => onSelect && onSelect(index)}
+              onClick={() => {
+                if (suppressClickRef.current) return; // el click "fantasma" al final de un swipe
+                onSelect && onSelect(index);
+              }}
               aria-label={card.alt || `Proyecto ${index + 1}`}
               aria-pressed={selectedIndex === index}
             >

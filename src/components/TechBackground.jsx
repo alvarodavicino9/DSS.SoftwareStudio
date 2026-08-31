@@ -19,8 +19,11 @@ import { useReducedMotion } from '../hooks/useReducedMotion';
 // dentro de HOVER_RADIUS; en touch no hay mousemove así que simplemente
 // no se activa (no hace falta detectar el dispositivo aparte).
 const NODE_COUNT_DESKTOP = 170;
-const NODE_COUNT_MOBILE = 80;
+const NODE_COUNT_MOBILE = 50;
 const CONNECT_DIST = 150;
+const CONNECT_DIST_SQ = CONNECT_DIST * CONNECT_DIST;
+const MOBILE_BREAKPOINT = 720;
+const MOBILE_FRAME_INTERVAL = 1000 / 30; // ~30fps en mobile en vez de 60fps
 const MAX_PULSES = 10;
 const PULSE_SPAWN_CHANCE = 0.035;
 const HOVER_RADIUS = 220;
@@ -117,8 +120,14 @@ export default function TechBackground() {
           const b = nodes[j];
           const dx = a.x - b.x;
           const dy = a.y - b.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < CONNECT_DIST) {
+          const distSq = dx * dx + dy * dy;
+          // Comparación con el cuadrado de la distancia: evita el sqrt (el
+          // paso más caro de este loop O(n²)) para la mayoría de los pares,
+          // que ni siquiera están lo bastante cerca como para conectarse.
+          // Solo se calcula el sqrt real para los pares que sí van a
+          // dibujarse, donde hace falta para el falloff del alpha.
+          if (distSq < CONNECT_DIST_SQ) {
+            const dist = Math.sqrt(distSq);
             let alpha = (1 - dist / CONNECT_DIST) * 0.22;
             let lineWidth = 1;
             if (mouse.active) {
@@ -191,7 +200,25 @@ export default function TechBackground() {
       });
     }
 
-    function tick() {
+    let lastFrameTime = 0;
+    function tick(now = performance.now()) {
+      // Seguimos pidiendo el próximo frame primero: así el reloj de rAF no
+      // se corta (y sigue pausándose solo si la pestaña pasa a segundo
+      // plano), aunque este frame en particular no haga trabajo.
+      if (!reducedMotion && running) raf = requestAnimationFrame(tick);
+
+      // En mobile, la red de nodos ya corre a la mitad de densidad, pero el
+      // loop O(n²) de conexiones + el redibujado del canvas entero seguían
+      // siendo caros a 60fps en un CPU de gama media — se notaba como jank
+      // en TODA la página, no solo acá, porque este fondo vive detrás de
+      // todo el sitio. Con un piso de ~30fps en mobile el movimiento sigue
+      // viéndose fluido (los nodos se mueven muy lento) y el costo por
+      // segundo baja a la mitad.
+      if (width < MOBILE_BREAKPOINT) {
+        if (now - lastFrameTime < MOBILE_FRAME_INTERVAL) return;
+        lastFrameTime = now;
+      }
+
       if (!reducedMotion) {
         nodes.forEach((n) => {
           n.x += n.vx;
@@ -203,7 +230,6 @@ export default function TechBackground() {
         });
       }
       draw();
-      if (!reducedMotion && running) raf = requestAnimationFrame(tick);
     }
 
     function handleVisibility() {

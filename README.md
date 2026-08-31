@@ -330,6 +330,56 @@ por caso (`schema.org/CreativeWork` o similar, más específico que el `Breadcru
 generar los `og-cover`/`favicon` como PNG además de SVG (algunos crawlers viejos no rasterizan SVG
 para la preview del link — hoy es un riesgo menor, la mayoría de los bots grandes ya lo soportan).
 
+## v13 — Mobile: touch en el carrusel, tap targets y performance del fondo animado
+
+A pedido de mejorar todo el celular para que quede igual de fluido que la PC. Auditoría separando
+bugs reales de falsos positivos (una captura `fullPage` de Playwright no scrollea de verdad, así que
+secciones con reveal por `IntersectionObserver` aparecían "vacías" en la captura sin estarlo en el
+sitio real — no era un bug, era el método de prueba).
+
+Cambios reales aplicados:
+
+- **Swipe táctil en el carrusel de casos.** `CardFanCarousel` solo reaccionaba a mouse (hover/click);
+  en celular no había forma de deslizar para cambiar de caso, había que tocar los puntitos. Ahora
+  escucha Pointer Events (`onPointerDown/Move/Up/Cancel`, unifica touch y mouse) y detecta un swipe
+  horizontal genuino (umbral 40px) para avanzar/retroceder, sin interferir con el scroll vertical de
+  la página (`touch-action: pan-y`).
+- **Tarjetas más chicas se superponían en pantallas angostas.** El multiplicador de espaciado
+  responsive no dejaba suficiente aire para el piso mínimo de ancho de la tarjeta por debajo de
+  480px; ajustado para que no se pisen en los celus más chicos (iPhone SE y similares).
+- **Puntos de paginación con área de toque muy chica.** El punto visible mide 8px, pero el área
+  clickeable ahora es 24×24 (`padding` + `background-clip: content-box`, con `box-sizing:
+  content-box` explícito para no chocar con el reset global del proyecto) — cumple el mínimo
+  recomendado de tap target sin agrandar el punto visualmente. Las flechas también se agrandaron un
+  poco (40px → 44px) en el tamaño base mobile.
+- **El hover-push (la tarjeta se "empuja" al pasar el mouse) ahora solo se activa en dispositivos con
+  mouse de verdad** (`matchMedia('(hover: hover) and (pointer: fine)')`). En touch no hay hover real,
+  así que ese código ni se registra — menos listeners, menos trabajo innecesario en celular.
+- **`TechBackground.jsx` (el fondo de red de nodos animado detrás de todo el sitio) tenía un costo de
+  CPU real y medible, no relacionado con el carrusel.** Con CPU limitado a 1/4 (simulando un celular
+  de gama media) se veían tareas de +200-500ms bloqueando el hilo principal casi sin parar —esto se
+  siente como jank en TODA la página, no solo en el fondo, porque el canvas vive fijo detrás de todo.
+  Causa: el loop de conexión entre nodos es O(n²) (compara cada par de nodos) y corría a 60fps con
+  toda la densidad de nodos también en mobile. Se aplicaron tres ajustes seguros y verificados:
+  - Menos nodos en mobile (80 → 50).
+  - El loop evita la raíz cuadrada (la parte más cara) para los pares que ni siquiera están cerca:
+    compara primero la distancia al cuadrado, y solo calcula `Math.sqrt` real para los pares que van
+    a dibujarse.
+  - Tope de ~30fps en mobile (en vez de 60fps) usando un chequeo de tiempo transcurrido antes de
+    hacer el trabajo pesado — el reloj de animación se sigue pidiendo siempre (para que se pause bien
+    si la pestaña pasa a segundo plano), pero se salta el trabajo de la mitad de los frames.
+
+  Verificado con CPU limitado a 1/4 antes/después: las tareas largas bajaron de 71 a 54 en la misma
+  ventana de ~13s (~24% menos), y la duración típica bajó de ~200-530ms a ~190-290ms. Es una mejora
+  real pero no elimina el costo del todo — el movimiento se sigue viendo fluido a simple vista, pero
+  queda una oportunidad pendiente (ver abajo).
+
+Quedó afuera de este alcance, para retomar si hace falta más adelante: cachear los degradés de brillo
+del fondo (`glowTL`/`glowBR`) en una capa fuera de pantalla que solo se redibuje al cambiar el tamaño
+de ventana en vez de en cada frame (hoy se repintan sin necesidad aunque su posición/color no cambian
+frame a frame) — quedaría como la siguiente optimización más impactante si en algún celular real se
+sigue notando lentitud.
+
 ## Pendientes para producción
 
 Estas son las cosas que el diseño dejaba abiertas y que hay que terminar de resolver:

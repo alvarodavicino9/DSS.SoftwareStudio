@@ -546,6 +546,10 @@ textarea.input { resize: vertical; min-height: 96px; }
   width: 100%;
   max-width: 80rem;
   min-height: 22rem;
+  /* Deja el gesto vertical (scroll de la página) en manos del navegador y
+     nos da a nosotros los gestos horizontales (swipe entre tarjetas) sin
+     el delay/jank de tener que hacer preventDefault a mano. */
+  touch-action: pan-y;
 }
 @media (min-width: 480px) { .fan-layout { min-height: 26rem; } }
 @media (min-width: 640px) { .fan-layout { min-height: 28rem; } }
@@ -565,6 +569,14 @@ textarea.input { resize: vertical; min-height: 96px; }
   box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
   outline: none;
   transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  touch-action: pan-y;
+}
+@media (max-width: 479px) {
+  /* En celulares chicos, el ancho mínimo de 150px hacía que las tarjetas
+     quedaran tapadas casi por completo entre sí (el abanico se achica más
+     rápido que las tarjetas). Achicarlas un poco acá, sumado al ajuste de
+     separación en CardFanCarousel.jsx, deja un borde tocable más ancho. */
+  .fan-card { width: clamp(128px, 32vw, 150px); }
 }
 .fan-card:focus-visible {
   border-color: var(--color-accent);
@@ -602,8 +614,8 @@ textarea.input { resize: vertical; min-height: 96px; }
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 999px;
   border: 1.5px solid var(--border-neutral);
   background: var(--color-surface);
@@ -629,14 +641,19 @@ textarea.input { resize: vertical; min-height: 96px; }
 .fan-arrow:active { opacity: 0.7; }
 .fan-arrow-icon { position: relative; width: 16px; height: 16px; }
 @media (min-width: 768px) { .fan-arrow-icon { width: 20px; height: 20px; } }
-.fan-dots { display: flex; align-items: center; gap: var(--space-2); }
+.fan-dots { display: flex; align-items: center; gap: 2px; }
 .fan-dot {
+  /* El puntito visible se queda en 8px, pero el área tocable es de 24px:
+     el padding agranda el <button> y `background-clip: content-box` deja
+     el color pintado solo en el centro, así se ve igual que antes. */
+  box-sizing: content-box;
   width: 8px;
   height: 8px;
-  padding: 0;
+  padding: 8px;
   border: none;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.15);
+  background-clip: content-box;
   cursor: pointer;
   transition: all 0.3s ease;
 }
