@@ -389,6 +389,30 @@ en `CardFanCarousel.jsx`) para no aumentar la superposición entre tarjetas. Ver
 1366/1440/1512/1920px: no genera scroll horizontal ni corta tarjetas contra el borde en ningún tamaño.
 En laptops normales (hasta ~1320px) el tamaño queda exactamente igual que antes.
 
+## v14 — Badges e íconos: de "burbuja" de color a vidrio, más profesional
+
+A pedido explícito ("queda muy infantil"): el botón "Ver caso completo", los íconos de Lo Que Hacemos
+y los círculos numerados de Cómo Trabajamos usaban el degradé de marca (violeta→cian, `--gradient-brand`)
+a pleno color rellenando todo el círculo/cuadrado, con una sombra de brillo encima. Repetido 3-4 veces
+por sección, esa combinación de saturación al 100% + forma circular + glow leía más a app de consumo
+que a estudio de software serio.
+
+- **`.icon-badge`, `.step-badge`, `.avatar-badge`** (íconos de servicios, números del proceso, avatar
+  del equipo — comparten el mismo patrón): pasaron de relleno sólido a degradé a un tratamiento
+  "vidrio" — el mismo lenguaje que ya usan las cards (fondo translúcido tenue + borde fino), con el
+  ícono/número en un solo color sólido (`--color-accent-300`) en vez de blanco sobre gradiente. La
+  marca violeta→cian sigue presente, pero como un tinte muy sutil de fondo en vez de a pleno color. Se
+  sacó también el `box-shadow` de brillo (`--shadow-glow`); en hover ahora se intensifica un poco el
+  borde/fondo en vez de depender del glow.
+- **`.btn-primary`** (botón principal — "Ver caso completo", "Agendar una Consulta", etc.): mantiene el
+  degradé de marca (tiene sentido que el único botón de acción sea el elemento más saturado de la
+  página), pero con una versión mezclada ~30% con negro (`--gradient-brand-deep`, token nuevo) y una
+  sombra más contenida — menos "candy", más peso. El degradé original (`--gradient-brand`) queda sin
+  tocar para el logo, que es donde tiene sentido que se vea a pleno brillo.
+
+Los íconos SVG en sí (`SectionIcons.jsx`) no se tocaron — ya eran un set outline minimal consistente
+(mismo stroke-width, mismo estilo), el problema era el fondo, no el dibujo.
+
 ## Pendientes para producción
 
 Estas son las cosas que el diseño dejaba abiertas y que hay que terminar de resolver:
