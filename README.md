@@ -424,6 +424,15 @@ orden real de scroll: Inicio → Portafolio → Servicios → Cómo Trabajamos �
 leyendo el `aria-label`/texto de cada link renderizado (dock, menú radial abierto, footer) en vez de
 solo mirar el array en el código, para confirmar que lo que ve el usuario ya quedó en el orden nuevo.
 
+## v16 — Instagram: link en el footer
+
+El estudio abrió Instagram (@ds.softwarestudio). Se agregó un link en el footer, mismo lugar y mismo
+estilo que WhatsApp y el email (`src/utils/instagram.js`, mismo patrón que `utils/whatsapp.js`).
+Queda afuera de este alcance, por si se retoma más adelante: sumar `sameAs` con la URL de Instagram a
+un JSON-LD de tipo `Organization` (hoy `useDocumentMeta.js` solo arma `BreadcrumbList`) — ayuda a que
+Google asocie la cuenta con el sitio, pero es una pieza nueva de SEO, no algo que haga falta para que
+el link del footer funcione.
+
 ## Pendientes para producción
 
 Estas son las cosas que el diseño dejaba abiertas y que hay que terminar de resolver:

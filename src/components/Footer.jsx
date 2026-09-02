@@ -1,5 +1,6 @@
 import Logo from './Logo';
 import { WHATSAPP_URL } from '../utils/whatsapp';
+import { INSTAGRAM_URL } from '../utils/instagram';
 import { useLocation } from '../router';
 import { sectionHref } from '../utils/sectionHref';
 
@@ -64,6 +65,9 @@ export default function Footer() {
             </a>
             <a href="mailto:dss.softwarestudio@gmail.com" style={{ color: 'var(--color-accent-2)', fontWeight: 500 }}>
               dss.softwarestudio@gmail.com
+            </a>
+            <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-accent-2)', fontWeight: 500 }}>
+              Instagram
             </a>
           </div>
         </div>
