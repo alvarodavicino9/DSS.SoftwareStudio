@@ -8,11 +8,14 @@ import { sectionHref } from '../utils/sectionHref';
 // what actually renders under the icon — "Cómo Trabajamos" is too wide to
 // sit next to its neighbors without crowding them, so it gets a shorter
 // on-screen name while keeping the descriptive aria-label intact.
+// Mismo orden que LINKS en Nav.jsx, alineado con el orden real de las
+// secciones en Home.jsx — Portafolio es la segunda sección de la página,
+// así que va segunda acá también (ver el comentario en Nav.jsx).
 const ITEMS = [
   { hash: '#', label: 'Inicio', short: 'Inicio', Icon: HomeIcon },
+  { hash: '#portafolio', label: 'Portafolio', short: 'Portafolio', Icon: BriefcaseIcon },
   { hash: '#servicios', label: 'Servicios', short: 'Servicios', Icon: WrenchIcon },
   { hash: '#proceso', label: 'Cómo Trabajamos', short: 'Proceso', Icon: StepsIcon },
-  { hash: '#portafolio', label: 'Portafolio', short: 'Portafolio', Icon: BriefcaseIcon },
   { hash: '#contacto', label: 'Contacto', short: 'Contacto', Icon: MailIcon },
 ];
 

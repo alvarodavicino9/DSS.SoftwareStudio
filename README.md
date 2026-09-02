@@ -413,6 +413,17 @@ que a estudio de software serio.
 Los íconos SVG en sí (`SectionIcons.jsx`) no se tocaron — ya eran un set outline minimal consistente
 (mismo stroke-width, mismo estilo), el problema era el fondo, no el dibujo.
 
+## v15 — Fix: el menú no reflejaba el nuevo orden de las secciones
+
+Portafolio pasó a ser la segunda sección de la página (justo después del Hero, ver v11), pero el orden
+de los links quedó desactualizado en tres lugares donde vive por separado (no hay una única fuente de
+verdad): el dock de escritorio (`LINKS` en `Nav.jsx`), el menú radial de mobile (`ITEMS` en
+`RadialMenu.jsx`, "lo mismo en mobile") y el footer (`FOOTER_LINKS` en `Footer.jsx`) — los tres seguían
+listando Portafolio anteúltimo, antes de Contacto. Reordenados los tres para que coincidan con el
+orden real de scroll: Inicio → Portafolio → Servicios → Cómo Trabajamos → Contacto. Verificado
+leyendo el `aria-label`/texto de cada link renderizado (dock, menú radial abierto, footer) en vez de
+solo mirar el array en el código, para confirmar que lo que ve el usuario ya quedó en el orden nuevo.
+
 ## Pendientes para producción
 
 Estas son las cosas que el diseño dejaba abiertas y que hay que terminar de resolver:

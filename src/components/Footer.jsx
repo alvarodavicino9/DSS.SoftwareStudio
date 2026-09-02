@@ -3,10 +3,12 @@ import { WHATSAPP_URL } from '../utils/whatsapp';
 import { useLocation } from '../router';
 import { sectionHref } from '../utils/sectionHref';
 
+// Mismo orden que LINKS en Nav.jsx, alineado con el orden real de las
+// secciones en Home.jsx (Portafolio es la segunda sección de la página).
 const FOOTER_LINKS = [
+  { hash: '#portafolio', label: 'Portafolio' },
   { hash: '#servicios', label: 'Servicios' },
   { hash: '#proceso', label: 'Cómo Trabajamos' },
-  { hash: '#portafolio', label: 'Portafolio' },
   { hash: '#contacto', label: 'Contacto' },
 ];
 

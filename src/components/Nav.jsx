@@ -5,11 +5,16 @@ import { HomeIcon, WrenchIcon, StepsIcon, BriefcaseIcon, MailIcon } from './NavI
 import { useLocation } from '../router';
 import { sectionHref } from '../utils/sectionHref';
 
+// Orden alineado con el orden real de las secciones en Home.jsx (Hero →
+// Portafolio → Terminal → Servicios → Proceso → Contacto; Terminal no tiene
+// link propio acá). Portafolio pasó a ser la segunda sección de la página,
+// así que también tiene que ser el segundo link del menú — si no, el menú
+// no refleja el orden real de scroll y confunde.
 const LINKS = [
   { hash: '#', label: 'Inicio', Icon: HomeIcon },
+  { hash: '#portafolio', label: 'Portafolio', Icon: BriefcaseIcon },
   { hash: '#servicios', label: 'Servicios', Icon: WrenchIcon },
   { hash: '#proceso', label: 'Cómo Trabajamos', Icon: StepsIcon },
-  { hash: '#portafolio', label: 'Portafolio', Icon: BriefcaseIcon },
   { hash: '#contacto', label: 'Contacto', Icon: MailIcon },
 ];
 
