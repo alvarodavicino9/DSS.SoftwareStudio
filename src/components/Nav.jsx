@@ -1,18 +1,22 @@
 import Logo from './Logo';
 import { Dock, DockItem, DockLabel, DockIcon } from './Dock';
 import RadialMenu from './RadialMenu';
-import { HomeIcon, WrenchIcon, StepsIcon, BriefcaseIcon, MailIcon } from './NavIcons';
+import { HomeIcon, WrenchIcon, StepsIcon, BriefcaseIcon, MailIcon, AppsIcon } from './NavIcons';
 import { useLocation } from '../router';
 import { sectionHref } from '../utils/sectionHref';
 
 // Orden alineado con el orden real de las secciones en Home.jsx (Hero →
-// Portafolio → Terminal → Servicios → Proceso → Contacto; Terminal no tiene
-// link propio acá). Portafolio pasó a ser la segunda sección de la página,
-// así que también tiene que ser el segundo link del menú — si no, el menú
-// no refleja el orden real de scroll y confunde.
+// Portafolio → Apps del Estudio → Terminal → Servicios → Proceso → Contacto;
+// Terminal no tiene link propio acá). Portafolio pasó a ser la segunda sección
+// de la página, así que también tiene que ser el segundo link del menú — si
+// no, el menú no refleja el orden real de scroll y confunde.
+// Ojo: "Apps del Estudio" está acá y en FOOTER_LINKS (Footer.jsx), pero a
+// propósito NO en ITEMS del menú radial de mobile (RadialMenu.jsx) — decisión
+// de producto, no un olvido (ver README v17).
 const LINKS = [
   { hash: '#', label: 'Inicio', Icon: HomeIcon },
   { hash: '#portafolio', label: 'Portafolio', Icon: BriefcaseIcon },
+  { hash: '#apps', label: 'Apps del Estudio', Icon: AppsIcon },
   { hash: '#servicios', label: 'Servicios', Icon: WrenchIcon },
   { hash: '#proceso', label: 'Cómo Trabajamos', Icon: StepsIcon },
   { hash: '#contacto', label: 'Contacto', Icon: MailIcon },

@@ -63,3 +63,16 @@ export function MailIcon() {
     </svg>
   );
 }
+
+// Cuadrícula de apps (sección "Apps del Estudio"). A diferencia del resto,
+// lleva aria-label propio en vez de aria-hidden.
+export function AppsIcon() {
+  return (
+    <svg {...common} aria-hidden={undefined} role="img" aria-label="Apps del Estudio">
+      <rect x="4" y="4" width="6.5" height="6.5" rx="1.6" />
+      <rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6" />
+      <rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6" />
+      <rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6" />
+    </svg>
+  );
+}

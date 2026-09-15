@@ -433,6 +433,52 @@ un JSON-LD de tipo `Organization` (hoy `useDocumentMeta.js` solo arma `Breadcrum
 Google asocie la cuenta con el sitio, pero es una pieza nueva de SEO, no algo que haga falta para que
 el link del footer funcione.
 
+## v17 — Sección "Apps del Estudio" con el Anotador de Truco
+
+Nueva sección entre Portafolio y la Terminal para mostrar apps propias del estudio, arrancando por el
+Anotador de Truco (gratis, sin cuenta, publicado en `https://anotador-truco-five.vercel.app`).
+
+**Por qué va en una sección propia y no en el portafolio**: los casos de `src/data/casos.js` cuentan
+un problema de negocio, la solución y el resultado, con página de detalle propia (`/portafolio/:slug`).
+El anotador no es un encargo ni un caso así: es un producto nuestro que cualquiera puede usar ya, gratis.
+Meterlo en el abanico del portafolio lo hubiera obligado a inventar un "problema/resultado" que no
+tiene, y hubiera mezclado dos mensajes distintos ("esto hacemos para clientes" vs. "esto hicimos y
+podés usarlo"). Por eso tiene su propia fuente de datos y su propia sección, preparada para sumar más
+apps.
+
+- **`src/data/apps.js`** (nuevo): array `APPS` (slug, nombre, resumen, chips, url, imagen, alt) +
+  constante `ANOTADOR_URL`, que usan la sección, el chip del Hero y la terminal.
+- **`src/components/AppsEstudio.jsx`** (nuevo): misma anatomía que Servicios/Portafolio. Tarjeta
+  destacada con la captura en un marco de celular, chips y botón "Abrir el anotador ↗"
+  (`SpotlightButton`, pestaña nueva). Estilos `.app-*` en `layout.css`, solo con tokens; debajo de
+  760px la tarjeta se apila. Hay slots punteados "Próxima app" preparados pero **ocultos**
+  (`PROXIMAS = 0` en `AppsEstudio.jsx`): con una sola app se leían como espacio vacío. Para volver a
+  mostrarlos, subir ese número; el markup y los estilos `.app-slot` quedan en el código.
+- **Captura**: `public/apps/anotador-de-truco/1.jpg`, 540x1036 en JPG (~55 KB), sacada de una captura
+  real del celular (834x1600) achicada sin recortar. El marco de celular usa esa misma proporción: al
+  9:19.5 que se había planeado se cortaban los costados de la app. El `<img>` lleva `width`/`height`
+  explícitos y `loading="lazy"`. Si el archivo falta, un `onError` lo oculta y queda el marco vacío en
+  vez del ícono de imagen rota.
+- **Navegación**: ícono nuevo `AppsIcon` (cuadrícula 2x2, `NavIcons.jsx`) y link "Apps del Estudio"
+  en el dock de escritorio (`Nav.jsx`) y en el footer (`Footer.jsx`). **A propósito no está en el menú
+  radial de mobile** (`RadialMenu.jsx`): decisión de producto, además de que con 6 items las etiquetas
+  quedaban muy justas a 360px. Esto rompe a sabiendas la regla de v15 de que las tres listas
+  coincidan; está anotado en el comentario de `Nav.jsx` para que nadie lo "arregle".
+- **Chip en el Hero** ("Nuevo: Anotador de Truco ↗"), debajo de los CTA: secundario a propósito (sin
+  fondo, 13px, peso normal). **Abre el anotador directo en pestaña nueva, no scrollea a `#apps`**:
+  así el texto, la flecha ↗ y el evento de analytics dicen lo mismo.
+- **Terminal**: comando/botón `apps` (scrollea a `#apps`). Las entradas de `COMMANDS` ahora aceptan un
+  `link` opcional (`{ href, text, onClick }`) que se muestra clickeable cuando termina de tipearse la
+  respuesta; help, clear, historial y Tab no cambian.
+- **Analytics**: `trackEvent('cta_click', { label: 'abrir_anotador', location })` con `location`
+  `'apps'`, `'hero'` o `'terminal'`, y solo en clicks que realmente abren la app.
+- **`vercel.json`**: bloque `redirects` con `/anotador` → la URL de la app (307, `permanent: false`,
+  por si la URL de Vercel cambia). Va aparte del `rewrites` catch-all a `/index.html`; Vercel evalúa
+  los redirects primero. El link de la terminal muestra `dssoftwarestudio.com.ar/anotador` pero apunta
+  directo a la app, así funciona también en local y antes del deploy.
+- **Tests**: `AppsEstudio.test.jsx` (tarjeta, chips, slots ocultos y botón con `target="_blank"` +
+  `rel="noopener noreferrer"`) y un caso nuevo en `Terminal.test.jsx` para el link de `apps`.
+
 ## Pendientes para producción
 
 Estas son las cosas que el diseño dejaba abiertas y que hay que terminar de resolver:

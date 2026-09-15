@@ -1,6 +1,7 @@
 import { useEffect, useRef, lazy, Suspense } from 'react';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { trackEvent } from '../utils/analytics';
+import { ANOTADOR_URL } from '../data/apps';
 import SpotlightButton from './SpotlightButton';
 
 // three.js is a heavy dependency (~700kB) used only by the 3D hero visuals —
@@ -110,6 +111,20 @@ export default function Hero() {
             <SpotlightButton href="#portafolio" className="btn btn-secondary" glowColor="rgba(139,124,246,0.4)">
               Ver Experiencia
             </SpotlightButton>
+          </div>
+          {/* Abre el anotador directo (pestaña nueva) en vez de bajar a #apps:
+              así el texto, la flecha ↗ y el evento de analytics dicen lo mismo
+              — ver README v17. */}
+          <div className="fade-up-item" style={{ animation: 'fadeUp 1s var(--ease-cinematic) 0.32s both' }}>
+            <a
+              href={ANOTADOR_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hero-app-chip"
+              onClick={() => trackEvent('cta_click', { label: 'abrir_anotador', location: 'hero' })}
+            >
+              Nuevo: Anotador de Truco <span aria-hidden="true">↗</span>
+            </a>
           </div>
         </div>
 

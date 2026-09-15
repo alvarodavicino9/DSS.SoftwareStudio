@@ -5,9 +5,11 @@ import { useLocation } from '../router';
 import { sectionHref } from '../utils/sectionHref';
 
 // Mismo orden que LINKS en Nav.jsx, alineado con el orden real de las
-// secciones en Home.jsx (Portafolio es la segunda sección de la página).
+// secciones en Home.jsx (Portafolio es la segunda sección de la página, Apps
+// del Estudio la tercera).
 const FOOTER_LINKS = [
   { hash: '#portafolio', label: 'Portafolio' },
+  { hash: '#apps', label: 'Apps del Estudio' },
   { hash: '#servicios', label: 'Servicios' },
   { hash: '#proceso', label: 'Cómo Trabajamos' },
   { hash: '#contacto', label: 'Contacto' },

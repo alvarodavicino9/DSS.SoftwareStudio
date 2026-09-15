@@ -545,3 +545,91 @@
 @media (min-width: 640px) {
   .pill { font-size: 15px; padding: 0.4em 1.2em; }
 }
+
+/* Apps del Estudio (AppsEstudio.jsx) — tarjeta destacada con la captura en
+   un marco de celular a la izquierda y el texto a la derecha; debajo de
+   760px se apila (celular arriba, centrado). Solo tokens de tokens.css. */
+.app-feature {
+  display: grid;
+  grid-template-columns: minmax(180px, 260px) 1fr;
+  align-items: center;
+  gap: calc(var(--space-8) * 1.6);
+  padding: calc(var(--space-8) * 1.2);
+}
+.app-phone {
+  width: 100%;
+  max-width: 260px;
+  padding: 8px;
+  border-radius: 34px;
+  border: 1px solid var(--color-neutral-700);
+  background: var(--color-bg-alt);
+  box-shadow: var(--shadow-lg);
+}
+.app-phone-screen {
+  aspect-ratio: 540 / 1036;
+  border-radius: 26px;
+  overflow: hidden;
+  background: var(--color-bg);
+}
+.app-phone-screen img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.app-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  margin: 0 0 28px;
+  padding: 0;
+}
+.app-slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+.app-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  border: 1.5px dashed var(--border-neutral);
+  border-radius: var(--radius-md);
+  color: var(--text-faint);
+  font-size: 14px;
+}
+@media (max-width: 760px) {
+  .app-feature {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+    padding: var(--space-8) var(--space-6);
+  }
+  .app-phone { max-width: 170px; }
+  .app-chips { justify-content: center; }
+}
+
+/* Chip "Nuevo: Anotador de Truco" debajo de los CTA del Hero — secundario a
+   propósito: sin fondo, 13px, peso normal, para no competir con "Agendar una
+   Consulta". Vive dentro de #hero-section, así que estos tokens resuelven a
+   la paleta clara del Hero (ver el bloque del principio de este archivo). */
+.hero-app-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 18px;
+  padding: 5px 12px;
+  border: 1px solid var(--border-neutral);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 400;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.hero-app-chip:hover {
+  color: var(--color-accent-300);
+  border-color: var(--color-accent);
+}

@@ -24,7 +24,7 @@ const ITEMS = [
 // guessing angles/radius that "should" fit, this measures the trigger's
 // actual on-screen position when it opens and works out, from the real
 // available space in each direction (left/right/down), exactly how wide an
-// arc and radius fit — then spreads the 6 items evenly across THAT. Nothing
+// arc and radius fit — then spreads all ITEMS evenly across THAT. Nothing
 // can clip because the numbers come from the real screen, not an assumption.
 const EDGE_MARGIN = 16;
 const ITEM_HALF = 23; // half of the 46px item circle

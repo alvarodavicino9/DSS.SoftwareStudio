@@ -1,4 +1,7 @@
 {
+  "redirects": [
+    { "source": "/anotador", "destination": "https://anotador-truco-five.vercel.app", "permanent": false }
+  ],
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]

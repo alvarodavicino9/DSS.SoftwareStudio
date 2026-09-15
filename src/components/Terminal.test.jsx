@@ -18,6 +18,16 @@ describe('Terminal', () => {
     expect(await screen.findByText(/Tecnologías: Python, Django/i)).toBeInTheDocument();
   });
 
+  it('apps shows the anotador response with a clickable link once typed', async () => {
+    const user = userEvent.setup();
+    render(<Terminal />);
+    await user.click(screen.getByRole('button', { name: 'apps' }));
+    const link = await screen.findByRole('link', { name: 'dssoftwarestudio.com.ar/anotador' }, { timeout: 3000 });
+    expect(screen.getByText(/Anotador de Truco: nuestra app gratis/i)).toBeInTheDocument();
+    expect(link).toHaveAttribute('target', '_blank');
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+  });
+
   it('shows the fallback message for an unknown command typed in the input', async () => {
     const user = userEvent.setup();
     render(<Terminal />);

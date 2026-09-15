@@ -2,6 +2,7 @@ import Hero from '../components/Hero';
 import Servicios from '../components/Servicios';
 import Proceso from '../components/Proceso';
 import Portafolio from '../components/Portafolio';
+import AppsEstudio from '../components/AppsEstudio';
 import Terminal from '../components/Terminal';
 import Contacto from '../components/Contacto';
 import { useDocumentMeta } from '../hooks/useDocumentMeta';
@@ -20,6 +21,7 @@ export default function Home() {
     <>
       <Hero />
       <Portafolio />
+      <AppsEstudio />
       <Terminal />
       <Servicios />
       <Proceso />

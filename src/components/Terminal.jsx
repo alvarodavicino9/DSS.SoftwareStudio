@@ -2,13 +2,27 @@ import { useEffect, useRef, useState } from 'react';
 import { useReveal, revealStyle } from '../hooks/useReveal';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { useTypewriter } from '../hooks/useTypewriter';
+import { trackEvent } from '../utils/analytics';
+import { ANOTADOR_URL } from '../data/apps';
 
+// Cada entrada: `response` (texto que se tipea), `scrollTo` opcional (id de
+// sección) y `link` opcional ({ href, text, onClick }) — se muestra como link
+// clickeable, en pestaña nueva, al final de la respuesta.
 const COMMANDS = {
   stack: { response: 'Tecnologías: Python, Django, React, JavaScript, C#, SQL Server, SQLite, REST APIs.' },
   equipo: { response: 'Fundadores: Álvaro Davicino & Gabriel Schurrer (Estudiantes avanzados de Ingenieria).' },
   portafolio: {
     response: 'Mostrando los casos que resolvimos — bajá para verlos, o hacé clic en cualquiera para el detalle completo.',
     scrollTo: 'portafolio',
+  },
+  apps: {
+    response: 'Anotador de Truco: nuestra app gratis para anotar las partidas desde el celular, sin cuenta. Abrila en',
+    scrollTo: 'apps',
+    link: {
+      href: ANOTADOR_URL,
+      text: 'dssoftwarestudio.com.ar/anotador',
+      onClick: () => trackEvent('cta_click', { label: 'abrir_anotador', location: 'terminal' }),
+    },
   },
   tarifas: {
     response: 'Cada proyecto es distinto. Contanos tu idea (comando contacto, o el formulario de abajo) y te armamos un presupuesto a medida.',
@@ -20,22 +34,35 @@ const COMMANDS = {
 };
 
 const ALL_COMMANDS = [...Object.keys(COMMANDS), 'help', 'clear'];
-const BUTTONS = ['help', 'stack', 'equipo', 'portafolio', 'tarifas', 'contacto', 'clear'];
+const BUTTONS = ['help', 'stack', 'equipo', 'portafolio', 'apps', 'tarifas', 'contacto', 'clear'];
 
 function helpText() {
   return `Comandos disponibles: ${ALL_COMMANDS.filter((c) => c !== 'help').join(', ')}`;
 }
 
+function ResponseLink({ link }) {
+  if (!link) return null;
+  return (
+    <>
+      {' '}
+      <a href={link.href} target="_blank" rel="noopener noreferrer" onClick={link.onClick} style={{ color: 'var(--color-accent-2)', textDecoration: 'underline' }}>
+        {link.text}
+      </a>
+    </>
+  );
+}
+
 /** Types out `text` once (on mount) unless prefers-reduced-motion is set, in
  *  which case it renders instantly. Only used for the most recent line so
- *  older lines don't replay when a new command is run. */
-function TypedResponse({ text, reducedMotion }) {
+ *  older lines don't replay when a new command is run. The optional `link`
+ *  only appears once the text is fully typed. */
+function TypedResponse({ text, link, reducedMotion }) {
   const { displayed, done } = useTypewriter(text, 12, 0);
-  if (reducedMotion) return <>{text}</>;
+  if (reducedMotion) return <>{text}<ResponseLink link={link} /></>;
   return (
     <>
       {displayed}
-      {!done && <span className="typewriter-cursor" aria-hidden="true" />}
+      {done ? <ResponseLink link={link} /> : <span className="typewriter-cursor" aria-hidden="true" />}
     </>
   );
 }
@@ -72,7 +99,7 @@ export default function Terminal() {
     const entry = cmd === 'help' ? { response: helpText() } : COMMANDS[cmd];
     const response = entry ? entry.response : `Comando no reconocido: "${cmd}". Escribí help para ver las opciones.`;
     idRef.current += 1;
-    setLines((prev) => [...prev, { id: idRef.current, isCommand: true, cmd, response }]);
+    setLines((prev) => [...prev, { id: idRef.current, isCommand: true, cmd, response, link: entry?.link }]);
 
     if (entry?.scrollTo) {
       requestAnimationFrame(() => {
@@ -146,7 +173,11 @@ export default function Terminal() {
                       <span style={{ color: 'var(--color-text)' }}>{line.cmd}</span>
                     </div>
                     <div style={{ color: 'rgba(233,233,237,0.6)', marginLeft: 16, marginTop: 4 }}>
-                      {i === lastIndex ? <TypedResponse text={line.response} reducedMotion={reducedMotion} /> : line.response}
+                      {i === lastIndex ? (
+                        <TypedResponse text={line.response} link={line.link} reducedMotion={reducedMotion} />
+                      ) : (
+                        <>{line.response}<ResponseLink link={line.link} /></>
+                      )}
                     </div>
                   </>
                 )}
