@@ -454,8 +454,10 @@ apps.
   760px la tarjeta se apila. Hay slots punteados "Próxima app" preparados pero **ocultos**
   (`PROXIMAS = 0` en `AppsEstudio.jsx`): con una sola app se leían como espacio vacío. Para volver a
   mostrarlos, subir ese número; el markup y los estilos `.app-slot` quedan en el código.
-- **Captura**: `public/apps/anotador-de-truco/1.jpg`, 540x1036 en JPG (~55 KB), sacada de una captura
-  real del celular (834x1600) achicada sin recortar. El marco de celular usa esa misma proporción: al
+- **Captura**: `public/apps/anotador-de-truco/1.jpg`, 540x1036 en JPG (~100 KB), sacada de una captura
+  de la app (834x1600, `trucoAPP.png`) achicada sin recortar. Se actualizó con el rediseño de madera y
+  palitos de fósforo (la anterior era la versión verde, pixelada): una partida en juego, 8 a 5,
+  en un viewport de 417x800 a densidad 2 para que salga exacta la proporción del marco. El marco de celular usa esa misma proporción: al
   9:19.5 que se había planeado se cortaban los costados de la app. El `<img>` lleva `width`/`height`
   explícitos y `loading="lazy"`. Si el archivo falta, un `onError` lo oculta y queda el marco vacío en
   vez del ícono de imagen rota.

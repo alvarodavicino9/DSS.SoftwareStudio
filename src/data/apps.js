@@ -26,6 +26,6 @@ export const APPS = [
     chips: ['Gratis', 'Sin cuenta', 'Anda en el celular'],
     url: ANOTADOR_URL,
     imagen: '/apps/anotador-de-truco/1.jpg',
-    alt: 'Anotador de Truco en un celular: elección de puntaje objetivo (18, 24 o 30), botón Nuevo partido y el marcador de Nosotros con +1, +2, +3 y Falta envido',
+    alt: 'Anotador de Truco en un celular: mesa de madera con el puntaje de Nosotros y Ellos dibujado con palitos de fósforo, botones +2 y +3, deshacer, menú y las pestañas Anotador, Historial, Torneo y Señas',
   },
 ];
