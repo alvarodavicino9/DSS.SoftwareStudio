@@ -27,7 +27,7 @@ export const APPS = [
     slug: 'anotador-de-truco',
     nombre: 'Anotador de Truco',
     resumen:
-      'Anotador de puntos para truco pensado para jugar desde el celular, sin papel ni birome. Cada punto se dibuja como un palito de fósforo sobre una mesa de madera, con partidas a 18, 24 o 30, historial de manos y un armador de torneos con llaves eliminatorias. Lo abrís, lo instalás si querés, y a jugar.',
+      'Anotador de puntos para truco pensado para jugar desde el celular, con partidas a 18, 24 o 30, historial de manos y un armador de torneos con llaves eliminatorias. Lo abrís, lo instalás si querés, y a jugar.',
     chips: ['Gratis', 'Sin cuenta', 'Anda en el celular', 'Funciona sin conexión'],
     funcionalidades: [
       'Marcador con palitos de fósforo: cada punto cae en su lugar y cada cinco forman el cuadrado clásico del truco',
