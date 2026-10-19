@@ -72,6 +72,36 @@ export default function AppsEstudio() {
                   Abrir el anotador <span aria-hidden="true">↗</span>
                 </SpotlightButton>
               </div>
+
+              {app.funcionalidades?.length > 0 && (
+                <div className="app-includes">
+                  <span className="card-kicker app-includes-kicker">Qué incluye</span>
+                  <ul className="app-includes-list">
+                    {app.funcionalidades.map((item) => (
+                      <li key={item}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                          <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {app.stack?.length > 0 && (
+                    <>
+                      <div className="app-includes-divider" />
+                      <span className="card-kicker app-includes-kicker">Tecnología</span>
+                      <div className="app-stack">
+                        {app.stack.map((tech) => (
+                          <span key={tech} className="tag tag-neutral">
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
             </article>
           </div>
 

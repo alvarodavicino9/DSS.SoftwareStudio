@@ -461,6 +461,13 @@ apps.
   9:19.5 que se había planeado se cortaban los costados de la app. El `<img>` lleva `width`/`height`
   explícitos y `loading="lazy"`. Si el archivo falta, un `onError` lo oculta y queda el marco vacío en
   vez del ícono de imagen rota.
+- **Descripción y "Qué incluye"**: cada app de `apps.js` lleva, además del resumen, `funcionalidades`
+  (lista con tildes) y `stack` (chips de tecnología). `AppsEstudio.jsx` los muestra en un bloque de ancho
+  completo debajo del celular y el texto, con la misma anatomía que "Qué incluye" de `CasoDetalle.jsx`
+  (estilos `.app-includes*` en `layout.css`). La lista del Anotador salió de revisar el código real de
+  la app: palitos, partidas a 18/24/30, falta envido, punta y hacha, historial, torneo de 4 u 8 equipos,
+  señas, sonido y vibración, pantalla encendida, uso sin conexión y guardado en el dispositivo. Si la app
+  suma o saca algo, hay que actualizar esa lista.
 - **Navegación**: ícono nuevo `AppsIcon` (cuadrícula 2x2, `NavIcons.jsx`) y link "Apps del Estudio"
   en el dock de escritorio (`Nav.jsx`) y en el footer (`Footer.jsx`). **A propósito no está en el menú
   radial de mobile** (`RadialMenu.jsx`): decisión de producto, además de que con 6 items las etiquetas

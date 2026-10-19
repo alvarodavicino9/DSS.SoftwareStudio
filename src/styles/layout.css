@@ -576,6 +576,56 @@
   width: 100%;
   height: auto;
 }
+/* Bloque "Qué incluye" de la tarjeta: ocupa todo el ancho debajo del celular y
+   el texto (misma anatomía que "Qué incluye" en CasoDetalle.jsx). */
+.app-includes {
+  grid-column: 1 / -1;
+  align-self: stretch;
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--border-neutral);
+  text-align: left;
+}
+.app-includes-kicker {
+  display: block;
+  margin-bottom: 16px;
+}
+.app-includes-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr));
+  gap: 14px 32px;
+}
+.app-includes-list li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.app-includes-list svg {
+  flex-shrink: 0;
+  margin-top: 3px;
+  color: var(--color-accent-300);
+}
+.app-includes-list span {
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--color-text);
+}
+.app-includes-divider {
+  height: 1px;
+  background: var(--border-neutral);
+  margin: 26px 0 20px;
+}
+.app-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.app-stack .tag {
+  font-family: monospace;
+  font-size: 12.5px;
+}
 .app-chips {
   display: flex;
   flex-wrap: wrap;
