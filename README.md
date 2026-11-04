@@ -505,10 +505,11 @@ apps.
 ## v19 — Contacto nuevo, secciones renovadas, mobile y rendimiento
 
 **Rendimiento (Lighthouse, home):** celular 34 → 97-98, escritorio → 100. Peso de la página: 850 KB → ~240 KB.
-- **Robot 3D del Hero**: era lo más pesado del sitio (WebGL dibujando 60 veces por segundo). En celular/tablet
-  (< 861px) ahora es una imagen fija (`public/hero/robot-*.webp`, capturada del mismo modelo) que flota con CSS, y
-  three.js no se descarga. En escritorio arranca con la imagen fija (`robot-d-*.webp`, misma pose de reposo) y pasa
-  al 3D con la primera interacción (mouse, scroll, tecla) — `useInteractionMount` en `src/hooks/useDeferredMount.js`.
+- **Robot 3D del Hero**: era lo más pesado del sitio (WebGL dibujando 60 veces por segundo). Ahora, al cargar, se
+  ve una imagen fija del robot en su pose de reposo (`public/hero/robot-*.webp` en celular, `robot-d-*.webp` en
+  escritorio) y el 3D arranca con la primera interacción: mover el mouse, tocar la pantalla o scrollear
+  (`useInteractionMount` en `src/hooks/useDeferredMount.js`). En celular el robot sigue al dedo al tocar y al
+  arrastrar (`touchstart`/`touchmove` en `HeroFigure.jsx`).
   **Si cambia el modelo del robot (`HeroFigure.jsx`), hay que volver a capturar esas imágenes.**
 - Los loops de three.js (robot y red del Hero) se pausan cuando salen de pantalla (`runWhileVisible`). La red 3D del
   Hero se omite en celular y en equipos con ≤ 4 núcleos o ahorro de datos.

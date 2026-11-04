@@ -20,8 +20,7 @@ export default function HeroFigure({ wrapRef, followSpeed = 0.08, reducedMotion 
 
     const rect = wrap.getBoundingClientRect();
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-    // En el celular, 1.5x alcanza para que se vea nítido y dibuja ~44% menos píxeles que 2x.
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.innerWidth < 860 ? 1.5 : 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.setSize(rect.width, rect.height || 1);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -147,6 +146,14 @@ export default function HeroFigure({ wrapRef, followSpeed = 0.08, reducedMotion 
       target.rx = Math.max(-0.35, Math.min(0.35, -ny * 0.4));
     };
 
+    // Celular: el robot mira hacia donde se toca la pantalla y sigue al dedo
+    // mientras se arrastra (antes dependía solo del "mousemove" que el
+    // navegador simula al tocar, que llega una sola vez por toque).
+    const handleTouch = (e) => {
+      const t = e.touches && e.touches[0];
+      if (t) handleMouseMove(t);
+    };
+
     const handleResize = () => {
       const r = wrap.getBoundingClientRect();
       renderer.setSize(r.width, r.height || 1);
@@ -171,6 +178,8 @@ export default function HeroFigure({ wrapRef, followSpeed = 0.08, reducedMotion 
     const stopLoop = runWhileVisible(wrap, animate);
 
     window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('touchstart', handleTouch, { passive: true });
+    window.addEventListener('touchmove', handleTouch, { passive: true });
     window.addEventListener('resize', handleResize);
     // window 'resize' only fires on actual viewport size changes — it does
     // NOT fire when a CSS media query alone changes this element's box
@@ -183,6 +192,8 @@ export default function HeroFigure({ wrapRef, followSpeed = 0.08, reducedMotion 
     return () => {
       stopLoop();
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('touchstart', handleTouch);
+      window.removeEventListener('touchmove', handleTouch);
       window.removeEventListener('resize', handleResize);
       ro.disconnect();
       renderer.dispose();

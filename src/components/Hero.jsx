@@ -14,13 +14,9 @@ export default function Hero() {
   const heroRef = useRef(null);
   const wrapRef = useRef(null);
   const reducedMotion = useReducedMotion();
-  // Celular/tablet (layout apilado, < 861px): el robot es una imagen fija
-  // (public/hero/robot-*.webp, capturada del mismo modelo 3D) con una
-  // flotación suave en CSS, y no se descarga three.js. En el celular el robot
-  // 3D no sigue al dedo (solo al mouse), así que lo único que se perdía era
-  // un leve balanceo — a cambio de ~130 kB de JavaScript y de dibujar WebGL
-  // 60 veces por segundo, lo más pesado de todo el sitio en un teléfono
-  // (Lighthouse mobile: 68 con el 3D, 98 sin él).
+  // Celular/tablet (layout apilado, < 861px): mismo robot 3D que en
+  // escritorio (sigue al dedo al tocar la pantalla), con la red 3D de fondo
+  // omitida para no abrir un segundo contexto WebGL en el teléfono.
   const [small] = useState(() => typeof window !== 'undefined' && window.innerWidth < 861);
   // La red 3D de fondo del Hero es un segundo contexto WebGL: también se omite
   // en equipos modestos o con ahorro de datos (el fondo claro queda igual de
@@ -30,12 +26,12 @@ export default function Hero() {
       typeof window !== 'undefined' &&
       ((navigator.hardwareConcurrency || 8) <= 4 || navigator.connection?.saveData === true)
   );
-  // Escritorio: primero la imagen fija del robot (misma pose de reposo) y el
-  // 3D recién con la primera interacción — ver useInteractionMount. El
-  // contenido aparece al instante y el robot "despierta" cuando hay un cursor
-  // al que seguir. La imagen se saca un momento después de que el 3D ya se
-  // está viendo encima (fade de entrada de .hero-figure-in).
-  const show3D = useInteractionMount(!small);
+  // Rendimiento: al cargar se muestra una imagen fija del robot (su misma pose
+  // de reposo) y el 3D arranca con la primera interacción real — mover el
+  // mouse, tocar la pantalla o scrollear (ver useInteractionMount). Así el
+  // contenido aparece al instante y three.js no compite con la carga de la
+  // página. La imagen se saca apenas el 3D ya se está viendo encima.
+  const show3D = useInteractionMount(true);
   const [posterGone, setPosterGone] = useState(false);
   useEffect(() => {
     if (!show3D) return;
@@ -166,7 +162,7 @@ export default function Hero() {
         >
           {!posterGone && (
             <img
-              className={`hero-robot-static${small ? ' is-floating' : ''}`}
+              className="hero-robot-static"
               src={small ? '/hero/robot-2x.webp' : '/hero/robot-d-1x.webp'}
               srcSet={
                 small
@@ -180,7 +176,7 @@ export default function Hero() {
               decoding="async"
             />
           )}
-          {!small && show3D && (
+          {show3D && (
             <Suspense fallback={null}>
               <div className="hero-figure-in" style={{ width: '100%', height: '100%' }}>
                 <HeroFigure wrapRef={wrapRef} followSpeed={0.08} reducedMotion={reducedMotion} />

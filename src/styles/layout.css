@@ -1093,13 +1093,7 @@
      bloque vacío debajo de los botones antes de llegar al portafolio. */
   #hero-section { min-height: auto !important; padding-bottom: 48px !important; }
   #hero-section .scroll-hint { display: none !important; }
-  #hero-figure-wrap { height: 240px !important; }
-}
-/* El cuerpo del robot se cortaba con un borde recto en el límite del canvas:
-   se desvanece hacia abajo en vez de terminar en seco. */
-#hero-figure-wrap {
-  -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent 98%);
-  mask-image: linear-gradient(to bottom, #000 72%, transparent 98%);
+  #hero-figure-wrap { height: 260px !important; }
 }
 /* Contraste: el violeta del tag del Hero no llegaba a 4.5:1 sobre el fondo claro. */
 #hero-section .tag-outline { color: #4f3fb0; border-color: rgba(109, 91, 208, 0.55); }
@@ -1113,14 +1107,6 @@
   transform: translateX(-50%);
   pointer-events: none;
 }
-/* En el celular la imagen es el robot definitivo: flota suave para que no
-   se vea "congelado". */
-.hero-robot-static.is-floating { animation: robotFloat 5s ease-in-out infinite; }
-@keyframes robotFloat {
-  0%, 100% { transform: translate(-50%, 0); }
-  50% { transform: translate(-50%, -6px); }
-}
-@media (prefers-reduced-motion: reduce) { .hero-robot-static.is-floating { animation: none; } }
 #hero-figure-wrap { overflow: hidden; }
 .hero-figure-in { position: relative; z-index: 1; }
 
