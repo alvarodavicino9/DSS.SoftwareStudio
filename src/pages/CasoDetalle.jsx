@@ -3,6 +3,7 @@ import { useDocumentMeta } from '../hooks/useDocumentMeta';
 import { trackEvent } from '../utils/analytics';
 import { Link } from '../router';
 import Carousel from '../components/Carousel';
+import BrowserBar from '../components/BrowserBar';
 import { getCasoBySlug, CASOS } from '../data/casos';
 
 function NotFound() {
@@ -55,7 +56,7 @@ export default function CasoDetalle({ slug }) {
 
   return (
     <section className="section-textured caso-page" style={{ padding: '150px 40px 140px' }}>
-      <div ref={ref} style={{ maxWidth: 860, margin: '0 auto', ...revealStyle(visible, 0) }}>
+      <div ref={ref} style={{ maxWidth: 940, margin: '0 auto', ...revealStyle(visible, 0) }}>
         <Link
           to="/#portafolio"
           style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-accent-300)', display: 'inline-flex', alignItems: 'center', gap: 6, marginBottom: 32 }}
@@ -100,7 +101,7 @@ export default function CasoDetalle({ slug }) {
         )}
 
         {caso.funcionalidades && caso.funcionalidades.length > 0 && (
-          <div className="card elev-sm caso-card" style={{ padding: 'calc(var(--space-8) * 1.4)', marginBottom: 32 }}>
+          <div className="card caso-card" style={{ padding: 'calc(var(--space-8) * 1.4)', marginBottom: 32 }}>
             <span className="card-kicker" style={{ display: 'block', marginBottom: 18 }}>Qué incluye</span>
             <ul
               style={{
@@ -133,53 +134,82 @@ export default function CasoDetalle({ slug }) {
               <>
                 <div style={{ height: 1, background: 'var(--border-neutral)', margin: '26px 0 20px' }} />
                 <span className="card-kicker" style={{ display: 'block', marginBottom: 10 }}>Tecnología</span>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                <ul className="tech-list" aria-label="Tecnologías">
                   {caso.stack.map((tech) => (
-                    <span
-                      key={tech}
-                      className="tag tag-neutral"
-                      style={{ fontFamily: 'monospace', fontSize: 12.5 }}
-                    >
+                    <li key={tech} className="tech-chip">
                       {tech}
-                    </span>
+                    </li>
                   ))}
-                </div>
+                </ul>
               </>
             )}
           </div>
         )}
 
-        <div className="card elev-sm caso-card" style={{ padding: 'calc(var(--space-8) * 1.4)', display: 'flex', flexDirection: 'column', gap: 28 }}>
-          <div>
-            <span className="card-kicker" style={{ display: 'block', marginBottom: 8 }}>El problema</span>
-            <p style={{ fontSize: 16, lineHeight: 1.7, color: 'var(--color-text)', margin: 0 }}>{caso.problema}</p>
+        <div className="caso-story">
+          <div className="card caso-story-card">
+            <span className="caso-ps-label">
+              <b>01</b> El problema
+            </span>
+            <p>{caso.problema}</p>
           </div>
-          <div style={{ height: 1, background: 'var(--border-neutral)' }} />
-          <div>
-            <span className="card-kicker" style={{ display: 'block', marginBottom: 8 }}>La solución</span>
-            <p style={{ fontSize: 16, lineHeight: 1.7, color: 'var(--color-text)', margin: 0 }}>{caso.solucion}</p>
-          </div>
-          <div style={{ height: 1, background: 'var(--border-neutral)' }} />
-          <div>
-            <span className="card-kicker" style={{ display: 'block', marginBottom: 8 }}>El resultado</span>
-            <p style={{ fontSize: 17, lineHeight: 1.7, fontWeight: 500, color: 'var(--color-accent-300)', margin: 0 }}>{caso.resultado}</p>
+          <div className="card caso-story-card">
+            <span className="caso-ps-label">
+              <b>02</b> La solución
+            </span>
+            <p>{caso.solucion}</p>
           </div>
         </div>
 
-        <div style={{ marginTop: 48, display: 'flex', gap: 14, flexWrap: 'wrap' }}>
+        <div className="caso-result caso-result-lg">
+          <span className="caso-result-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M4 17l5-5 4 4 7-8" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M15 8h5v5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </span>
+          <div>
+            <span className="caso-result-label">El resultado</span>
+            <p>{caso.resultado}</p>
+          </div>
+        </div>
+
+        <div className="caso-cta card">
+          <div>
+            <h2>¿Necesitás algo parecido para tu negocio?</h2>
+            <p>Contanos qué querés resolver y te respondemos en menos de 24 hs hábiles, sin compromiso.</p>
+          </div>
           <Link to="/#contacto" className="btn btn-primary">
             Quiero un proyecto así
           </Link>
         </div>
 
         {otros.length > 0 && (
-          <div style={{ marginTop: 80 }}>
-            <h2 style={{ fontSize: 20, margin: '0 0 20px' }}>Otros casos</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16 }}>
+          <div style={{ marginTop: 72 }}>
+            <h2 className="caso-otros-title">Otros proyectos</h2>
+            <div className="caso-otros">
               {otros.map((c) => (
-                <Link key={c.slug} to={`/portafolio/${c.slug}`} className="card elev-sm" style={{ padding: 'var(--space-6)', display: 'block' }}>
-                  <h3 className="card-title" style={{ fontSize: 15 }}>{c.titulo}</h3>
-                  <span style={{ fontSize: 13, color: 'var(--color-accent-300)', fontWeight: 600 }}>Ver caso →</span>
+                <Link key={c.slug} to={`/portafolio/${c.slug}`} className="card elev-sm caso-otro">
+                  <div className="caso-shot caso-shot-sm">
+                    <BrowserBar url={c.url} />
+                    <img
+                      src={c.imagenes[0].replace(/\/[^/]+$/, '/thumb.webp')}
+                      srcSet={`${c.imagenes[0].replace(/\/[^/]+$/, '/thumb-320.webp')} 320w, ${c.imagenes[0].replace(/\/[^/]+$/, '/thumb.webp')} 640w`}
+                      sizes="(max-width: 640px) 92vw, 280px"
+                      alt=""
+                      width={640}
+                      height={360}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                  <div className="caso-otro-body">
+                    <span className="caso-meta-client">{c.cliente || 'Proyecto del estudio'}</span>
+                    <h3>{c.titulo}</h3>
+                    <span className="caso-otro-link">
+                      Ver caso <span aria-hidden="true">→</span>
+                    </span>
+                  </div>
                 </Link>
               ))}
             </div>

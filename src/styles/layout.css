@@ -1042,7 +1042,7 @@
   }
   .process-item { flex-direction: row; gap: 16px; padding-bottom: 22px; }
   .process-item:last-child { padding-bottom: 0; }
-  .process-card { padding: 0; background: none; border: 0; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; padding-top: 7px; }
+  .process-card.card { padding: 0; background: none; border: 0; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; padding-top: 7px; }
   .process-card .card-title { font-size: 17px; margin-bottom: 6px; }
 }
 
@@ -1058,30 +1058,6 @@
 .fan-placeholder { min-height: calc(15rem + 64px); }
 @media (min-width: 768px) { .fan-placeholder { min-height: calc(22rem + 72px); } }
 @media (min-width: 1024px) { .fan-placeholder { min-height: calc(24rem + 72px); } }
-
-.caso-panel { margin-top: 12px; padding: 32px; }
-.caso-panel-head { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 14px; }
-.caso-panel-head h3 { font-size: 22px; line-height: 1.25; margin: 0; letter-spacing: -0.01em; }
-.caso-panel-resumen { color: var(--text-secondary); font-size: 15.5px; line-height: 1.6; margin: 0 0 24px; max-width: 720px; }
-.caso-panel-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; margin-bottom: 24px; }
-.caso-panel-grid .card-kicker { display: block; margin-bottom: 6px; }
-.caso-panel-grid p { font-size: 14px; line-height: 1.65; color: var(--color-text); margin: 0; }
-.caso-panel-grid .caso-panel-resultado { font-weight: 500; color: var(--color-accent-300); }
-.caso-panel-stack { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
-.caso-panel-stack .tag { font-size: 12px; }
-.caso-panel-actions { display: flex; flex-wrap: wrap; gap: 10px; }
-.caso-panel-actions .btn { display: inline-flex; align-items: center; gap: 8px; }
-@media (max-width: 900px) { .caso-panel-grid { grid-template-columns: 1fr; gap: 18px; } }
-@media (max-width: 640px) {
-  .caso-panel { padding: 22px 18px; }
-  .caso-panel-head h3 { font-size: 19px; }
-  .caso-panel-resumen { font-size: 15px; margin-bottom: 18px; }
-  /* En el celular el panel mostraba problema + solución + resultado completos
-     (más de 1.500 px de texto). Acá queda resumen + resultado + botones; el
-     detalle completo está en la página del caso. */
-  .caso-panel-ps { display: none; }
-  .caso-panel-actions .btn { flex: 1 1 100%; justify-content: center; }
-}
 
 /* ----------------------------- Terminal --------------------------- */
 @media (max-width: 640px) {
@@ -1161,3 +1137,276 @@
   .footer-email-full { display: none; }
   .footer-email-short { display: inline; }
 }
+
+/* ======================================================================
+   v20 — Cards: un mismo lenguaje visual en todo el sitio
+   ====================================================================== */
+
+/* Base: radio más generoso, degradé sutil de arriba hacia abajo, borde fino
+   y un reflejo de 1px arriba (inset) que le da volumen sin sombras pesadas.
+   Solo las cards clickeables (.elev-sm) se levantan al pasar el mouse; los
+   paneles de lectura quedan quietos. */
+.card {
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.055) 0%, rgba(255, 255, 255, 0.022) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+.elev-sm { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 1px 2px rgba(0, 0, 0, 0.3); }
+.elev-sm:hover {
+  transform: translateY(-3px);
+  border-color: rgba(139, 124, 246, 0.34);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.075) 0%, rgba(255, 255, 255, 0.03) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 22px 44px -18px rgba(0, 0, 0, 0.75), 0 0 0 4px rgba(139, 124, 246, 0.06);
+}
+.card-title { font-weight: 600; letter-spacing: -0.012em; }
+.card-kicker { letter-spacing: 0.12em; }
+@media (prefers-reduced-motion: reduce) { .elev-sm:hover { transform: none; } }
+
+/* Chips de tecnología: neutros y discretos (antes eran pastillas violetas en
+   mayúsculas que competían con los botones). */
+.tech-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.tech-chip,
+.app-stack .tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px;
+  border-radius: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-secondary);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* ----------------------- Panel de proyecto (home) ------------------ */
+.caso-panel { margin-top: 16px; padding: 0; overflow: hidden; }
+.caso-panel-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: 40px;
+  padding: 32px;
+  align-items: start;
+}
+
+/* Captura con barra de navegador */
+.caso-shot {
+  display: block;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #0b0c14;
+  box-shadow: 0 24px 48px -20px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(0, 0, 0, 0.4);
+  transition: transform 0.35s var(--ease-cinematic), box-shadow 0.35s ease, border-color 0.25s ease;
+}
+.caso-shot img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; object-position: top; }
+a.caso-shot:hover { transform: translateY(-3px); border-color: rgba(139, 124, 246, 0.4); box-shadow: 0 30px 60px -22px rgba(0, 0, 0, 0.85), 0 0 0 4px rgba(139, 124, 246, 0.08); }
+.caso-shot-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 12px;
+  background: rgba(255, 255, 255, 0.045);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+.caso-shot-bar > span { width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 255, 255, 0.16); }
+.caso-shot-bar em {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin: 0 30px 0 10px;
+  height: 18px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--text-tertiary);
+  font-size: 11px;
+  font-style: normal;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.caso-panel-info { display: flex; flex-direction: column; min-width: 0; }
+.caso-panel-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-bottom: 14px; font-size: 12.5px; }
+.caso-meta-index { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--text-tertiary); letter-spacing: 0.04em; }
+.caso-meta-client {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--color-text);
+  font-size: 12.5px;
+  font-weight: 500;
+}
+.caso-live { display: inline-flex; align-items: center; gap: 7px; color: #86efac; font-weight: 500; }
+.caso-live i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.18);
+}
+.caso-panel-info h3 { font-size: 24px; line-height: 1.25; letter-spacing: -0.02em; font-weight: 600; margin: 0 0 10px; }
+.caso-panel-resumen { color: var(--text-secondary); font-size: 15px; line-height: 1.6; margin: 0 0 20px; }
+
+/* Resultado destacado */
+.caso-result {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(139, 124, 246, 0.12), rgba(47, 200, 219, 0.06));
+  border: 1px solid rgba(139, 124, 246, 0.26);
+  margin-bottom: 20px;
+}
+.caso-result-icon {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: rgba(139, 124, 246, 0.18);
+  color: var(--color-accent-300);
+}
+.caso-result-label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-accent-300);
+}
+.caso-result p { margin: 0; font-size: 14px; line-height: 1.6; color: var(--color-text); }
+.caso-panel-info .tech-list { margin-bottom: 24px; }
+.caso-panel-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: auto; }
+.caso-panel-actions .btn { display: inline-flex; align-items: center; gap: 8px; }
+
+/* Problema / solución: franja inferior en dos columnas */
+.caso-panel-ps {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(0, 0, 0, 0.14);
+}
+.caso-panel-ps > div { padding: 24px 32px 28px; }
+.caso-panel-ps > div + div { border-left: 1px solid rgba(255, 255, 255, 0.07); }
+.caso-panel-ps p,
+.caso-story-card p { margin: 0; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+.caso-ps-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+.caso-ps-label b {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-accent-300);
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: rgba(139, 124, 246, 0.12);
+}
+
+@media (max-width: 960px) {
+  .caso-panel-top { grid-template-columns: 1fr; gap: 28px; }
+}
+@media (max-width: 640px) {
+  .caso-panel-top { padding: 16px 16px 22px; gap: 20px; }
+  .caso-panel-info h3 { font-size: 20px; }
+  .caso-panel-resumen { font-size: 14.5px; }
+  .caso-result { padding: 14px; gap: 12px; }
+  /* En el celular: captura + resumen + resultado + botones. Problema y
+     solución completos están en la página del caso. */
+  .caso-panel-ps { display: none; }
+  .caso-panel-actions .btn { flex: 1 1 100%; justify-content: center; }
+  .caso-shot-bar em { margin-right: 10px; }
+}
+
+/* --------------------------- Página de caso ------------------------ */
+.caso-story { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.caso-story-card { padding: 26px 28px; }
+.caso-story-card p { font-size: 15px; }
+.caso-result-lg { padding: 22px 24px; margin-bottom: 0; }
+.caso-result-lg .caso-result-icon { width: 38px; height: 38px; }
+.caso-result-lg p { font-size: 16px; line-height: 1.65; }
+.caso-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px 32px;
+  flex-wrap: wrap;
+  margin-top: 40px;
+  padding: 28px 32px;
+  background: linear-gradient(135deg, rgba(139, 124, 246, 0.14), rgba(47, 200, 219, 0.07));
+  border-color: rgba(139, 124, 246, 0.25);
+}
+.caso-cta h2 { font-size: 20px; font-weight: 600; letter-spacing: -0.015em; margin: 0 0 6px; }
+.caso-cta p { margin: 0; font-size: 14.5px; color: var(--text-secondary); }
+.caso-otros-title { font-size: 22px; font-weight: 600; letter-spacing: -0.015em; margin: 0 0 20px; }
+.caso-otros { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+.caso-otro { display: flex; flex-direction: column; padding: 12px; color: inherit; }
+.caso-shot-sm { box-shadow: none; border-radius: 10px; }
+.caso-shot-sm .caso-shot-bar { height: 22px; padding: 0 9px; gap: 5px; }
+.caso-shot-sm .caso-shot-bar > span { width: 6px; height: 6px; }
+.caso-shot-sm .caso-shot-bar em { height: 13px; font-size: 9.5px; margin-right: 16px; }
+.caso-otro-body { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 14px 6px 6px; flex: 1; }
+.caso-otro-body h3 { font-size: 15.5px; line-height: 1.4; font-weight: 600; margin: 0; letter-spacing: -0.01em; }
+.caso-otro-link { margin-top: auto; padding-top: 4px; font-size: 13px; font-weight: 600; color: var(--color-accent-300); }
+.caso-otro:hover .caso-otro-link { color: #fff; }
+@media (max-width: 700px) {
+  .caso-story { grid-template-columns: 1fr; }
+  .caso-story-card { padding: 20px 18px; }
+  .caso-result-lg { padding: 18px 16px; }
+  .caso-cta { padding: 22px 18px; }
+  .caso-cta .btn { width: 100%; justify-content: center; }
+}
+
+/* ----------------------------- Servicios --------------------------- */
+.service-card { position: relative; overflow: hidden; }
+/* Línea de marca arriba que aparece al pasar el mouse */
+.service-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 24px;
+  right: 24px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-accent), var(--color-accent-2), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.service-card:hover::before { opacity: 1; }
+.service-example {
+  width: 100%;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+.service-text .card-body { margin-bottom: 18px; }
+@media (max-width: 640px) {
+  .service-text .card-body { margin-bottom: 12px; }
+  .service-example { padding-top: 10px; }
+}
+
+/* ----------------------------- Proceso ----------------------------- */
+.process-card .card-title { font-size: 17px; }
+
+/* ------------------------------ Apps -------------------------------- */
+.app-phone { border-radius: 36px; border-color: rgba(255, 255, 255, 0.14); box-shadow: 0 30px 60px -24px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.08); }
+
+/* ----------------------------- Contacto ---------------------------- */
+.contact-steps li + li { position: relative; }
