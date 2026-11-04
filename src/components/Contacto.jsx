@@ -405,7 +405,7 @@ export default function Contacto() {
                       name="empresa"
                       type="text"
                       autoComplete="organization"
-                      placeholder="Ej.: Hamburguesería Fuegos"
+                      placeholder="Ej.: Tu negocio o marca"
                       className="input"
                       value={form.empresa}
                       onChange={onInput('empresa')}
@@ -475,7 +475,7 @@ export default function Contacto() {
                     name="mensaje"
                     rows={5}
                     maxLength={MSG_MAX}
-                    placeholder="Ej.: Tenemos una hamburguesería y queremos que los clientes armen el pedido en la web y nos llegue por WhatsApp, con un panel para cambiar precios."
+                    placeholder="Ej.: Tenemos un negocio y queremos que los clientes vean nuestros productos en la web y nos consulten por WhatsApp, con un panel para actualizar precios."
                     className={`input${show('mensaje') ? ' input-error' : ''}`}
                     value={form.mensaje}
                     onChange={onInput('mensaje')}
