@@ -488,6 +488,20 @@ apps.
 - **Tests**: `AppsEstudio.test.jsx` (tarjeta, chips, slots ocultos y botón con `target="_blank"` +
   `rel="noopener noreferrer"`) y un caso nuevo en `Terminal.test.jsx` para el link de `apps`.
 
+## v18 — Portafolio: Good Luck Store
+
+- **Caso nuevo en `src/data/casos.js`**: Good Luck Store (`/portafolio/good-luck-store-tienda-de-iphone`),
+  tienda de iPhone sellados, seminuevos y usados en Ceres, Santa Fe, publicada en
+  `https://www.goodluckstore.com.ar/`. Va **primero** en el array, así queda seleccionado por defecto en el
+  abanico del portafolio. `cliente: 'Good Luck Store'` (es un encargo con cliente nombrado, como Hipermat).
+- **`funcionalidades` y `stack`** salieron de revisar el código real del proyecto (repo `Gabigol05/goodLuckPage`):
+  catálogo con filtros, buscador, ficha con galería por color, pedido por WhatsApp, Plan Canje, encargos,
+  lanzamiento, widget de WhatsApp, panel de administración, SEO con datos estructurados y modo claro/oscuro.
+- **Capturas**: `public/portfolio/good-luck-store-tienda-de-iphone/1-4.jpg` (inicio, catálogo, ficha del
+  iPhone 18 Pro y Plan Canje), 1280x720 en JPG, sacadas del build del proyecto con los datos de ejemplo del
+  repo. Si cambian precios o equipos en el sitio real, conviene rehacerlas desde el dominio.
+- **`public/sitemap.xml`**: URL nueva del caso.
+
 ## Pendientes para producción
 
 Estas son las cosas que el diseño dejaba abiertas y que hay que terminar de resolver:

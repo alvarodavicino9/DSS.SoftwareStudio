@@ -15,6 +15,36 @@
 // real de cada proyecto (carpetas locales del usuario), no son genéricos.
 export const CASOS = [
   {
+    slug: 'good-luck-store-tienda-de-iphone',
+    cliente: 'Good Luck Store',
+    titulo: 'Tienda online de iPhone con panel de administración para Good Luck Store',
+    resumen: 'Sitio y catálogo online para Good Luck Store, tienda de iPhone sellados, seminuevos y usados en Ceres, Santa Fe, con pedidos por WhatsApp, Plan Canje y panel de administración propio.',
+    problema: 'Good Luck vende iPhone sellados, seminuevos y usados —además de iPad, Mac, Apple Watch, AirPods y PlayStation— en Ceres, Santa Fe. Stock, precios en dólares, colores y estado de cada equipo se respondían conversación por conversación por WhatsApp, sin un catálogo donde el cliente pudiera ver qué había y cuánto salía antes de escribir.',
+    solucion: 'Un sitio a medida con la identidad de Good Luck: catálogo con filtros y buscador, ficha de cada equipo con galería de fotos por color, capacidades y precio, y un pedido que se arma en la web y llega listo por WhatsApp. Se sumaron los flujos propios del rubro —Plan Canje para cotizar el iPhone usado como parte de pago y encargos de modelos que no están en stock— y un panel de administración para que los dueños carguen productos, precios, stock y fotos sin tocar código.',
+    resultado: 'Good Luck tiene hoy su tienda online en producción con dominio propio (goodluckstore.com.ar), preparada para posicionar en Google, con el catálogo actualizado desde su propio panel y cada consulta llegando a WhatsApp con el equipo, la capacidad y el color ya elegidos.',
+    url: 'https://www.goodluckstore.com.ar/',
+    funcionalidades: [
+      'Catálogo de iPhone, iPad, Mac, Apple Watch, AirPods, consolas y accesorios, con filtros por categoría, condición (sellado, seminuevo o usado) y rango de precio, y orden por precio o por modelo más nuevo',
+      'Buscador de modelos que ignora acentos y muestra primero los equipos en stock',
+      'Ficha de cada equipo con galería de fotos por color, selector de capacidad, salud de batería en los usados y aviso de "en stock" o "por pedido"',
+      'Pedido armado en la web (forma de pago y entrega) que se envía listo por WhatsApp, sin cobrar ni guardar datos en el sitio',
+      'Plan Canje: formulario para cotizar el iPhone usado como parte de pago (modelo, capacidad, batería y estado), que arma el mensaje para WhatsApp',
+      'Encargos de modelos que no están en stock, con el modelo ya elegido desde la ficha o desde el bloque de lanzamiento',
+      'Portada con equipo destacado y bloque de lanzamiento (hoy, el iPhone 18 Pro) que se eligen desde el panel',
+      'Widget de WhatsApp con consultas guiadas: compra, encargo, canje, pagos y envíos',
+      'Panel de administración con login: productos, precios, stock, colores y fotos, destacados, WhatsApp, horarios y textos de envío y garantía',
+      'SEO local: títulos y descripciones por página y datos estructurados de producto (precio y stock) para Google',
+      'Modo claro y oscuro',
+    ],
+    stack: ['React', 'TypeScript', 'Vite', 'React Router', 'Supabase', 'Vercel'],
+    imagenes: [
+      '/portfolio/good-luck-store-tienda-de-iphone/1.jpg',
+      '/portfolio/good-luck-store-tienda-de-iphone/2.jpg',
+      '/portfolio/good-luck-store-tienda-de-iphone/3.jpg',
+      '/portfolio/good-luck-store-tienda-de-iphone/4.jpg',
+    ],
+  },
+  {
     slug: 'torneo-star-basket-estadisticas-en-vivo',
     cliente: null,
     titulo: 'Plataforma de estadísticas en vivo para un torneo de básquet',
