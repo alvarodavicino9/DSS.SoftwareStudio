@@ -1,5 +1,6 @@
-import { useEffect, useRef, lazy, Suspense } from 'react';
+import { useEffect, useRef, useState, lazy, Suspense } from 'react';
 import { useReducedMotion } from '../hooks/useReducedMotion';
+import { useInteractionMount } from '../hooks/useDeferredMount';
 import { trackEvent } from '../utils/analytics';
 import { ANOTADOR_URL } from '../data/apps';
 import SpotlightButton from './SpotlightButton';
@@ -13,6 +14,34 @@ export default function Hero() {
   const heroRef = useRef(null);
   const wrapRef = useRef(null);
   const reducedMotion = useReducedMotion();
+  // Celular/tablet (layout apilado, < 861px): el robot es una imagen fija
+  // (public/hero/robot-*.webp, capturada del mismo modelo 3D) con una
+  // flotación suave en CSS, y no se descarga three.js. En el celular el robot
+  // 3D no sigue al dedo (solo al mouse), así que lo único que se perdía era
+  // un leve balanceo — a cambio de ~130 kB de JavaScript y de dibujar WebGL
+  // 60 veces por segundo, lo más pesado de todo el sitio en un teléfono
+  // (Lighthouse mobile: 68 con el 3D, 98 sin él).
+  const [small] = useState(() => typeof window !== 'undefined' && window.innerWidth < 861);
+  // La red 3D de fondo del Hero es un segundo contexto WebGL: también se omite
+  // en equipos modestos o con ahorro de datos (el fondo claro queda igual de
+  // prolijo).
+  const [lowEnd] = useState(
+    () =>
+      typeof window !== 'undefined' &&
+      ((navigator.hardwareConcurrency || 8) <= 4 || navigator.connection?.saveData === true)
+  );
+  // Escritorio: primero la imagen fija del robot (misma pose de reposo) y el
+  // 3D recién con la primera interacción — ver useInteractionMount. El
+  // contenido aparece al instante y el robot "despierta" cuando hay un cursor
+  // al que seguir. La imagen se saca un momento después de que el 3D ya se
+  // está viendo encima (fade de entrada de .hero-figure-in).
+  const show3D = useInteractionMount(!small);
+  const [posterGone, setPosterGone] = useState(false);
+  useEffect(() => {
+    if (!show3D) return;
+    const t = setTimeout(() => setPosterGone(true), 1200);
+    return () => clearTimeout(t);
+  }, [show3D]);
 
   // Scroll parallax on the figure wrap — sinks, shrinks and fades as the
   // first section enters. Skipped under prefers-reduced-motion.
@@ -54,9 +83,11 @@ export default function Hero() {
           pensados para leerse por contraste sobre fondo claro; con el resto
           del sitio en tema oscuro (tokens.css v5) se perdía. */}
       <div style={{ position: 'absolute', inset: 0, zIndex: 0, overflow: 'hidden', background: 'var(--color-bg)' }}>
-        <Suspense fallback={null}>
-          <TechNetwork containerRef={heroRef} reducedMotion={reducedMotion} />
-        </Suspense>
+        {show3D && !small && !lowEnd && (
+          <Suspense fallback={null}>
+            <TechNetwork containerRef={heroRef} reducedMotion={reducedMotion} />
+          </Suspense>
+        )}
       </div>
 
       <div id="hero-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', alignItems: 'center', flex: 1, minHeight: 0, position: 'relative', zIndex: 1 }}>
@@ -106,10 +137,10 @@ export default function Hero() {
               className="btn btn-primary"
               onClick={() => trackEvent('cta_click', { label: 'agendar_consulta', location: 'hero' })}
             >
-              Agendar una Consulta
+              Contanos tu proyecto
             </SpotlightButton>
             <SpotlightButton href="#portafolio" className="btn btn-secondary" glowColor="rgba(139,124,246,0.4)">
-              Ver Experiencia
+              Ver proyectos
             </SpotlightButton>
           </div>
           {/* Abre el anotador directo (pestaña nueva) en vez de bajar a #apps:
@@ -133,9 +164,29 @@ export default function Hero() {
           ref={wrapRef}
           style={{ position: 'absolute', right: '-6%', top: 0, width: '56%', height: '100%', zIndex: 1 }}
         >
-          <Suspense fallback={null}>
-            <HeroFigure wrapRef={wrapRef} followSpeed={0.08} reducedMotion={reducedMotion} />
-          </Suspense>
+          {!posterGone && (
+            <img
+              className={`hero-robot-static${small ? ' is-floating' : ''}`}
+              src={small ? '/hero/robot-2x.webp' : '/hero/robot-d-1x.webp'}
+              srcSet={
+                small
+                  ? '/hero/robot-2x.webp 2x, /hero/robot-3x.webp 3x'
+                  : '/hero/robot-d-1x.webp 1x, /hero/robot-d-2x.webp 2x'
+              }
+              width={small ? 281 : 787}
+              height={small ? 240 : 690}
+              alt=""
+              aria-hidden="true"
+              decoding="async"
+            />
+          )}
+          {!small && show3D && (
+            <Suspense fallback={null}>
+              <div className="hero-figure-in" style={{ width: '100%', height: '100%' }}>
+                <HeroFigure wrapRef={wrapRef} followSpeed={0.08} reducedMotion={reducedMotion} />
+              </div>
+            </Suspense>
+          )}
         </div>
       </div>
 
@@ -152,7 +203,7 @@ export default function Hero() {
           fontSize: 11,
           letterSpacing: '0.08em',
           textTransform: 'uppercase',
-          color: 'var(--text-faint)',
+          color: 'var(--text-secondary)',
           animation: 'bounceHint 2.2s ease-in-out infinite',
         }}
       >

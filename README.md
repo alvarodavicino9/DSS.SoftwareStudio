@@ -502,6 +502,41 @@ apps.
   repo. Si cambian precios o equipos en el sitio real, conviene rehacerlas desde el dominio.
 - **`public/sitemap.xml`**: URL nueva del caso.
 
+## v19 — Contacto nuevo, secciones renovadas, mobile y rendimiento
+
+**Rendimiento (Lighthouse, home):** celular 34 → 97-98, escritorio → 100. Peso de la página: 850 KB → ~240 KB.
+- **Robot 3D del Hero**: era lo más pesado del sitio (WebGL dibujando 60 veces por segundo). En celular/tablet
+  (< 861px) ahora es una imagen fija (`public/hero/robot-*.webp`, capturada del mismo modelo) que flota con CSS, y
+  three.js no se descarga. En escritorio arranca con la imagen fija (`robot-d-*.webp`, misma pose de reposo) y pasa
+  al 3D con la primera interacción (mouse, scroll, tecla) — `useInteractionMount` en `src/hooks/useDeferredMount.js`.
+  **Si cambia el modelo del robot (`HeroFigure.jsx`), hay que volver a capturar esas imágenes.**
+- Los loops de three.js (robot y red del Hero) se pausan cuando salen de pantalla (`runWhileVisible`). La red 3D del
+  Hero se omite en celular y en equipos con ≤ 4 núcleos o ahorro de datos.
+- `TechBackground`: los resplandores de fondo pasaron a CSS (antes eran 3 rellenos de pantalla completa por cuadro);
+  en celular ya no regenera los nodos cuando la barra del navegador aparece/desaparece al scrollear.
+- Abanico del portafolio (GSAP) cargado aparte (`lazy`). Miniaturas `thumb.webp` / `thumb-320.webp` (5-20 KB) en
+  vez de la captura completa; capturas `.webp` al lado de cada `.jpg` (el carrusel de cada caso usa `<picture>`).
+  **Al sumar un caso nuevo, generar también `N.webp`, `thumb.webp` (640px) y `thumb-320.webp`.**
+- Google Fonts se carga sin bloquear el primer pintado.
+
+**Contacto (`Contacto.jsx`)**: formulario nuevo en dos columnas. Nombre, empresa (opcional), email y/o WhatsApp
+(alcanza con uno), "¿Qué necesitás?" con chips (radios reales, accesibles), punto de partida y plazo (opcionales),
+mensaje con contador. Errores al enviar con foco en el primer campo mal; error de red con WhatsApp/email de respaldo
+sin perder lo cargado; pantalla de éxito con "Seguir por WhatsApp" (mensaje armado con lo que completó). A Formspree
+llegan `_subject` y `_replyto`, así se puede responder directo desde el mail. Al costado: "Qué pasa después" y canales
+directos. Ya no usa `Select.jsx` (queda en el repo).
+
+**Secciones**: padding y títulos unificados (`.section-pad`, `.section-title`, `.section-sub` en `layout.css`).
+Servicios pasó de 3 a 6, con link a un caso real como ejemplo. Proceso como recorrido (línea que une los pasos;
+línea de tiempo vertical en celular). Portafolio: menos hueco arriba del abanico y botón "Ver sitio en vivo"; en
+celular el panel muestra resumen + resultado. Terminal con encabezado como el resto y stack actualizado. Footer en
+tres columnas, con más contraste y links tocables.
+
+**Mobile (bugs)**: el botón del menú quedaba centrado en vez de a la derecha (`.nav-slot-end` en la columna 3); el
+logo del footer era invisible (id de degradé repetido en el SVG → `useId` en `Logo.jsx`); los campos hacían zoom en
+iPhone (16px en celular); el Hero dejaba un bloque vacío (alto por contenido < 861px); la lista de "Apps del Estudio"
+muestra 4 ítems + "Ver más".
+
 ## Pendientes para producción
 
 Estas son las cosas que el diseño dejaba abiertas y que hay que terminar de resolver:

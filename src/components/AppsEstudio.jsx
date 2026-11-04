@@ -9,6 +9,7 @@ import SpotlightButton from './SpotlightButton';
 // mostrarlos, subir este número (ej. 2); el markup y los estilos .app-slot
 // siguen intactos.
 const PROXIMAS = 0;
+const VISIBLES_MOBILE = 4;
 
 // Captura de 540x1036 (ver apps.js). width/height explícitos en el
 // <img> para que el navegador reserve el alto antes de que cargue, sin saltos
@@ -19,7 +20,18 @@ function PhoneFrame({ src, alt }) {
   return (
     <div className="app-phone">
       <div className="app-phone-screen">
-        {!failed && <img src={src} alt={alt} width={540} height={1036} loading="lazy" onError={() => setFailed(true)} />}
+        {!failed && (
+          <picture>
+            {/\.jpe?g$/i.test(src) && (
+              <source
+                type="image/webp"
+                srcSet={`${src.replace(/\.jpe?g$/i, '-340.webp')} 340w, ${src.replace(/\.jpe?g$/i, '.webp')} 540w`}
+                sizes="(max-width: 760px) 170px, 260px"
+              />
+            )}
+            <img src={src} alt={alt} width={540} height={1036} loading="lazy" decoding="async" onError={() => setFailed(true)} />
+          </picture>
+        )}
       </div>
     </div>
   );
@@ -29,15 +41,19 @@ export default function AppsEstudio() {
   const [headerRef, headerVisible] = useReveal();
   const [gridRef, gridVisible] = useReveal();
   const [app] = APPS;
+  // En el celular la lista "Qué incluye" (9 ítems largos) ocupaba más de una
+  // pantalla entera: se muestran los primeros y el resto con "Ver todo".
+  const [expanded, setExpanded] = useState(false);
+  const extra = Math.max(0, (app.funcionalidades?.length || 0) - VISIBLES_MOBILE);
 
   return (
-    <section id="apps" className="section-textured" style={{ padding: '60px 40px 140px' }}>
+    <section id="apps" className="section-textured section-pad">
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         <div ref={headerRef} style={revealStyle(headerVisible, 0)}>
           <div className="section-header" style={{ marginBottom: 48, maxWidth: 560 }}>
             <div className="section-kicker" />
-            <h2 style={{ fontSize: 36, margin: '0 0 10px', letterSpacing: '-0.015em' }}>Apps del Estudio</h2>
-            <p style={{ color: 'var(--text-secondary)', fontSize: 16, margin: 0 }}>
+            <h2 className="section-title">Apps del Estudio</h2>
+            <p className="section-sub">
               Productos propios que hacemos y mantenemos nosotros, gratis para el que quiera usarlos.
             </p>
           </div>
@@ -76,7 +92,7 @@ export default function AppsEstudio() {
               {app.funcionalidades?.length > 0 && (
                 <div className="app-includes">
                   <span className="card-kicker app-includes-kicker">Qué incluye</span>
-                  <ul className="app-includes-list">
+                  <ul id="app-includes-list" className={`app-includes-list${expanded ? ' is-expanded' : ''}`}>
                     {app.funcionalidades.map((item) => (
                       <li key={item}>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -86,6 +102,17 @@ export default function AppsEstudio() {
                       </li>
                     ))}
                   </ul>
+                  {extra > 0 && (
+                    <button
+                      type="button"
+                      className="app-includes-toggle"
+                      aria-expanded={expanded}
+                      aria-controls="app-includes-list"
+                      onClick={() => setExpanded((v) => !v)}
+                    >
+                      {expanded ? 'Ver menos' : `Ver ${extra} funciones más`}
+                    </button>
+                  )}
 
                   {app.stack?.length > 0 && (
                     <>

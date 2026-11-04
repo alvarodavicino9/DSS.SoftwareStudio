@@ -54,7 +54,7 @@ export default function CasoDetalle({ slug }) {
   const otros = CASOS.filter((c) => c.slug !== caso.slug);
 
   return (
-    <section className="section-textured" style={{ padding: '150px 40px 140px' }}>
+    <section className="section-textured caso-page" style={{ padding: '150px 40px 140px' }}>
       <div ref={ref} style={{ maxWidth: 860, margin: '0 auto', ...revealStyle(visible, 0) }}>
         <Link
           to="/#portafolio"
@@ -100,7 +100,7 @@ export default function CasoDetalle({ slug }) {
         )}
 
         {caso.funcionalidades && caso.funcionalidades.length > 0 && (
-          <div className="card elev-sm" style={{ padding: 'calc(var(--space-8) * 1.4)', marginBottom: 32 }}>
+          <div className="card elev-sm caso-card" style={{ padding: 'calc(var(--space-8) * 1.4)', marginBottom: 32 }}>
             <span className="card-kicker" style={{ display: 'block', marginBottom: 18 }}>Qué incluye</span>
             <ul
               style={{
@@ -149,7 +149,7 @@ export default function CasoDetalle({ slug }) {
           </div>
         )}
 
-        <div className="card elev-sm" style={{ padding: 'calc(var(--space-8) * 1.4)', display: 'flex', flexDirection: 'column', gap: 28 }}>
+        <div className="card elev-sm caso-card" style={{ padding: 'calc(var(--space-8) * 1.4)', display: 'flex', flexDirection: 'column', gap: 28 }}>
           <div>
             <span className="card-kicker" style={{ display: 'block', marginBottom: 8 }}>El problema</span>
             <p style={{ fontSize: 16, lineHeight: 1.7, color: 'var(--color-text)', margin: 0 }}>{caso.problema}</p>

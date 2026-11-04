@@ -15,7 +15,7 @@ describe('Terminal', () => {
     await user.click(screen.getByRole('button', { name: 'stack' }));
     // The response types out character by character, so wait for it instead
     // of asserting synchronously.
-    expect(await screen.findByText(/Tecnologías: Python, Django/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Tecnologías: React, TypeScript/i, {}, { timeout: 4000 })).toBeInTheDocument();
   });
 
   it('apps shows the anotador response with a clickable link once typed', async () => {

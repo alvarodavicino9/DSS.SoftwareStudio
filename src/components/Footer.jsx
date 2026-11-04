@@ -5,78 +5,69 @@ import { useLocation } from '../router';
 import { sectionHref } from '../utils/sectionHref';
 
 // Mismo orden que LINKS en Nav.jsx, alineado con el orden real de las
-// secciones en Home.jsx (Portafolio es la segunda sección de la página, Apps
-// del Estudio la tercera).
+// secciones en Home.jsx.
 const FOOTER_LINKS = [
   { hash: '#portafolio', label: 'Portafolio' },
   { hash: '#apps', label: 'Apps del Estudio' },
   { hash: '#servicios', label: 'Servicios' },
-  { hash: '#proceso', label: 'Cómo Trabajamos' },
+  { hash: '#proceso', label: 'Cómo trabajamos' },
   { hash: '#contacto', label: 'Contacto' },
 ];
 
-// Footer un poco más oscuro/opaco que el resto de las secciones "glass" —
-// antes usaba var(--color-text) como fondo porque en el tema claro ese token
-// era navy oscuro; con el tema oscuro ese mismo token pasó a ser casi blanco
-// (ver tokens.css v5), así que ahora usa un color fijo propio en vez de
-// heredar el token de texto. Sigue dando ese borde inferior "asentado" que
-// tenía antes, ahora en línea con el resto del sitio (que ya es oscuro).
+// v19: tres columnas con título (marca, secciones, contacto) en vez de una
+// fila suelta de links; links con alto mínimo de 32px para que se puedan
+// tocar bien en el celular, y textos con más contraste (el gris de 40% de
+// opacidad no llegaba al mínimo de legibilidad).
 export default function Footer() {
   const path = useLocation();
 
   return (
-    <footer style={{ background: 'rgba(4, 5, 10, 0.72)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', borderTop: '1px solid var(--border-neutral)' }}>
-      <div style={{ padding: '40px 40px 32px', maxWidth: 1200, margin: '0 auto' }}>
-        <div
-          style={{
-            height: 1,
-            marginBottom: 28,
-            background: 'linear-gradient(to right, transparent, rgba(255,255,255,0.14) 48px, rgba(255,255,255,0.14) calc(100% - 48px), transparent)',
-          }}
-        />
-
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'flex-start',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: 24,
-            marginBottom: 28,
-          }}
-        >
-          <div style={{ maxWidth: 280 }}>
-            <Logo variant="mark" height={28} style={{ marginBottom: 12 }} />
-            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)', lineHeight: 1.6, margin: 0 }}>
-              Consultoría de software argentina. Diseñamos y programamos directamente, sin capas comerciales
-              en el medio.
+    <footer className="site-footer">
+      <div className="site-footer-inner">
+        <div className="site-footer-grid">
+          <div className="site-footer-brand">
+            <Logo variant="mark" height={28} style={{ marginBottom: 14 }} />
+            <p>
+              Estudio de software argentino. Diseñamos y programamos sitios, tiendas online y sistemas a medida, sin
+              intermediarios: hablás directo con quienes escriben el código.
             </p>
+            <a href={sectionHref('#contacto', path)} className="btn btn-primary site-footer-cta">
+              Contanos tu proyecto
+            </a>
           </div>
 
-          <nav style={{ display: 'flex', flexWrap: 'wrap', gap: '10px 20px' }} aria-label="Enlaces del sitio">
-            {FOOTER_LINKS.map((l) => (
-              <a key={l.hash} href={sectionHref(l.hash, path)} style={{ fontSize: 13, color: 'rgba(255,255,255,0.75)' }}>
-                {l.label}
-              </a>
-            ))}
+          <nav aria-label="Secciones del sitio">
+            <h2 className="site-footer-title">Secciones</h2>
+            <ul>
+              {FOOTER_LINKS.map((l) => (
+                <li key={l.hash}>
+                  <a href={sectionHref(l.hash, path)}>{l.label}</a>
+                </li>
+              ))}
+            </ul>
           </nav>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 13 }}>
-            <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-accent-2)', fontWeight: 500 }}>
-              WhatsApp
-            </a>
-            <a href="mailto:dss.softwarestudio@gmail.com" style={{ color: 'var(--color-accent-2)', fontWeight: 500 }}>
-              dss.softwarestudio@gmail.com
-            </a>
-            <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-accent-2)', fontWeight: 500 }}>
-              Instagram
-            </a>
+          <div>
+            <h2 className="site-footer-title">Contacto</h2>
+            <ul>
+              <li>
+                <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">WhatsApp</a>
+              </li>
+              <li>
+                <a href="mailto:dss.softwarestudio@gmail.com" aria-label="Email: dss.softwarestudio@gmail.com">
+                  <span className="footer-email-full">dss.softwarestudio@gmail.com</span>
+                  <span className="footer-email-short">Email</span>
+                </a>
+              </li>
+              <li>
+                <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer">Instagram</a>
+              </li>
+            </ul>
           </div>
         </div>
 
-        <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', margin: 0 }}>
-          © {new Date().getFullYear()} DS.SoftwareStudio • Álvaro Davicino &amp; Gabriel Schurrer •
-          DSSoftwareStudio.com.ar
+        <p className="site-footer-legal">
+          © {new Date().getFullYear()} DS.SoftwareStudio · Álvaro Davicino &amp; Gabriel Schurrer · Argentina
         </p>
       </div>
     </footer>

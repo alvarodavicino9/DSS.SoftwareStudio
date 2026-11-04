@@ -31,6 +31,13 @@ const HOVER_RADIUS = 220;
 const PURPLE = [139, 124, 246];
 const CYAN = [47, 200, 219];
 const BG = '#070812';
+// Mismo look que los dos resplandores que antes se pintaban en el canvas en
+// cada cuadro (violeta arriba a la derecha, cian abajo a la izquierda).
+const BG_CSS = [
+  `radial-gradient(circle at 85% 8%, rgba(${PURPLE.join(',')}, 0.16), rgba(7, 8, 18, 0) 85vmax)`,
+  `radial-gradient(circle at 8% 95%, rgba(${CYAN.join(',')}, 0.13), rgba(7, 8, 18, 0) 85vmax)`,
+  BG,
+].join(', ');
 
 function lerpColor(a, b, t) {
   return [
@@ -54,19 +61,9 @@ export default function TechBackground() {
     let height = 0;
     let nodes = [];
     let pulses = [];
-    let glowTL = null;
-    let glowBR = null;
     let raf;
     let running = true;
     const mouse = { x: -9999, y: -9999, active: false };
-
-    function makeGlow(cx, cy, color, alpha) {
-      const r = Math.max(width, height) * 0.85;
-      const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
-      g.addColorStop(0, `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${alpha})`);
-      g.addColorStop(1, 'rgba(7, 8, 18, 0)');
-      return g;
-    }
 
     function init() {
       const count = width < 720 ? NODE_COUNT_MOBILE : NODE_COUNT_DESKTOP;
@@ -81,36 +78,42 @@ export default function TechBackground() {
         };
       });
       pulses = [];
-      glowTL = makeGlow(width * 0.85, height * 0.08, PURPLE, 0.16);
-      glowBR = makeGlow(width * 0.08, height * 0.95, CYAN, 0.13);
     }
 
     function resize() {
+      const prevWidth = width;
       width = window.innerWidth;
       height = window.innerHeight;
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      // En el celular 1.5x alcanza para líneas de 1px nítidas y es ~44% menos píxeles que 2x.
+      const dpr = Math.min(window.devicePixelRatio || 1, width < MOBILE_BREAKPOINT ? 1.5 : 2);
       canvas.width = width * dpr;
       canvas.height = height * dpr;
       canvas.style.width = width + 'px';
       canvas.style.height = height + 'px';
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      init();
+      // v19: en el celular, la barra de direcciones aparece/desaparece al
+      // scrollear y eso dispara 'resize' (cambia solo el alto). Antes cada uno
+      // regeneraba todos los nodos al azar: la red "saltaba" mientras se
+      // scrolleaba. Ahora solo se regenera si cambió el ancho.
+      if (width !== prevWidth || nodes.length === 0) init();
+      else if (reducedMotion) draw();
     }
 
     function draw() {
-      ctx.fillStyle = BG;
-      ctx.fillRect(0, 0, width, height);
-      ctx.fillStyle = glowTL;
-      ctx.fillRect(0, 0, width, height);
-      ctx.fillStyle = glowBR;
-      ctx.fillRect(0, 0, width, height);
+      // v19 — rendimiento: el fondo liso y los dos resplandores grandes ya no
+      // se pintan en el canvas en cada cuadro (eran 3 rellenos de pantalla
+      // completa por frame, lo más caro de todo el sitio en un celular). Ahora
+      // son un fondo CSS fijo del <canvas> (ver BG_CSS) y acá solo se limpia y
+      // se dibuja la red.
+      ctx.clearRect(0, 0, width, height);
 
       if (mouse.active) {
-        const hoverGlow = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, HOVER_RADIUS * 1.6);
+        const r = HOVER_RADIUS * 1.6;
+        const hoverGlow = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, r);
         hoverGlow.addColorStop(0, 'rgba(139, 124, 246, 0.14)');
         hoverGlow.addColorStop(1, 'rgba(7, 8, 18, 0)');
         ctx.fillStyle = hoverGlow;
-        ctx.fillRect(0, 0, width, height);
+        ctx.fillRect(mouse.x - r, mouse.y - r, r * 2, r * 2); // solo el cuadrado del resplandor
       }
 
       const edges = [];
@@ -274,7 +277,7 @@ export default function TechBackground() {
     <canvas
       ref={canvasRef}
       aria-hidden="true"
-      style={{ position: 'fixed', inset: 0, zIndex: -2, display: 'block', background: BG }}
+      style={{ position: 'fixed', inset: 0, zIndex: -2, display: 'block', background: BG_CSS }}
     />
   );
 }

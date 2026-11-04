@@ -46,3 +46,41 @@ export function BotIcon() {
     </svg>
   );
 }
+
+export function BagIcon() {
+  return (
+    <svg {...common}>
+      <path d="M5 8h14l-1 12H6L5 8Z" />
+      <path d="M9 8V6a3 3 0 0 1 6 0v2" />
+    </svg>
+  );
+}
+
+export function PanelIcon() {
+  return (
+    <svg {...common}>
+      <rect x="3" y="4" width="18" height="16" rx="2.2" />
+      <path d="M9 4v16" />
+      <path d="M12.5 9h5M12.5 13h5M12.5 17h3" />
+    </svg>
+  );
+}
+
+export function CalendarIcon() {
+  return (
+    <svg {...common}>
+      <rect x="3" y="5" width="18" height="16" rx="2.2" />
+      <path d="M3 10h18M8 3v4M16 3v4" />
+      <path d="M8.5 15l2 2 4-4" />
+    </svg>
+  );
+}
+
+export function PhoneIcon() {
+  return (
+    <svg {...common}>
+      <rect x="6" y="2.5" width="12" height="19" rx="2.6" />
+      <path d="M10.5 18.5h3" />
+    </svg>
+  );
+}

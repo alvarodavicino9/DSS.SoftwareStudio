@@ -453,7 +453,16 @@ export default function CardFanCarousel({ cards, selectedIndex = null, onSelect 
               aria-pressed={selectedIndex === index}
             >
               <div className="fan-card-image">
-                <img src={card.imgUrl} loading="lazy" alt={card.alt || `Card ${index}`} />
+                <img
+                  src={card.imgUrl}
+                  srcSet={card.srcSet}
+                  sizes={card.srcSet ? '(max-width: 479px) 150px, (max-width: 1319px) 264px, 300px' : undefined}
+                  loading="lazy"
+                  decoding="async"
+                  width={640}
+                  height={360}
+                  alt={card.alt || `Card ${index}`}
+                />
               </div>
             </button>
           ))}

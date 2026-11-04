@@ -9,8 +9,8 @@ import { ANOTADOR_URL } from '../data/apps';
 // sección) y `link` opcional ({ href, text, onClick }) — se muestra como link
 // clickeable, en pestaña nueva, al final de la respuesta.
 const COMMANDS = {
-  stack: { response: 'Tecnologías: Python, Django, React, JavaScript, C#, SQL Server, SQLite, REST APIs.' },
-  equipo: { response: 'Fundadores: Álvaro Davicino & Gabriel Schurrer (Estudiantes avanzados de Ingenieria).' },
+  stack: { response: 'Tecnologías: React, TypeScript, JavaScript, Vite, Node.js, Supabase (PostgreSQL), Python / Django, C#, SQL Server, REST APIs, PWA.' },
+  equipo: { response: 'Fundadores: Álvaro Davicino & Gabriel Schurrer (estudiantes avanzados de Ingeniería). Hablás directo con nosotros, sin intermediarios.' },
   portafolio: {
     response: 'Mostrando los casos que resolvimos — bajá para verlos, o hacé clic en cualquiera para el detalle completo.',
     scrollTo: 'portafolio',
@@ -28,10 +28,12 @@ const COMMANDS = {
     response: 'Cada proyecto es distinto. Contanos tu idea (comando contacto, o el formulario de abajo) y te armamos un presupuesto a medida.',
   },
   contacto: {
-    response: 'Email: dss.softwarestudio@gmail.com | Web: DSSoftwareStudio.com.ar | Tel: +54 3491687912',
+    response: 'Email: dss.softwarestudio@gmail.com | WhatsApp: +54 9 3491 68-7912 | Web: dssoftwarestudio.com.ar',
     scrollTo: 'contacto',
   },
 };
+
+const COARSE_POINTER = typeof window !== 'undefined' && window.matchMedia?.('(pointer: coarse)').matches;
 
 const ALL_COMMANDS = [...Object.keys(COMMANDS), 'help', 'clear'];
 const BUTTONS = ['help', 'stack', 'equipo', 'portafolio', 'apps', 'tarifas', 'contacto', 'clear'];
@@ -146,13 +148,19 @@ export default function Terminal() {
   const lastIndex = lines.length - 1;
 
   return (
-    <section id="terminal" style={{ padding: '60px 40px 140px', maxWidth: 900, margin: '0 auto', perspective: 1200 }}>
+    <section id="terminal" className="section-pad" style={{ maxWidth: 980, margin: '0 auto', perspective: 1200 }}>
       <div ref={ref} style={revealStyle(visible, 0)}>
-        <h2 style={{ fontSize: 30, margin: '0 0 28px', letterSpacing: '-0.015em' }}>Terminal Interactiva</h2>
+        <div className="section-header" style={{ marginBottom: 28, maxWidth: 600 }}>
+          <div className="section-kicker" />
+          <h2 className="section-title">Terminal interactiva</h2>
+          <p className="section-sub">Preguntale al estudio como si fuera una consola. Si no te gusta escribir, tocá los botones.</p>
+        </div>
         <div
           style={{ background: 'var(--color-terminal-bg)', borderRadius: 8, boxShadow: '0 0 0 1px var(--color-neutral-700)', overflow: 'hidden', fontFamily: "'Courier New', monospace" }}
           onClick={(e) => {
             // Clicking anywhere in the terminal body focuses the input, like a real one.
+            // En pantallas táctiles no: abriría el teclado con cualquier toque al scrollear.
+            if (COARSE_POINTER) return;
             if (e.target === e.currentTarget || e.target.closest('[data-terminal-body]')) inputRef.current?.focus();
           }}
         >
@@ -163,7 +171,7 @@ export default function Terminal() {
             <span style={{ marginLeft: 'auto', fontSize: 11, color: 'var(--text-faint)' }}>ds-studio-cli v1.0.0</span>
           </div>
 
-          <div ref={bodyRef} data-terminal-body style={{ padding: 20, minHeight: 220, maxHeight: 280, overflowY: 'auto', fontSize: 13.5, cursor: 'text' }}>
+          <div ref={bodyRef} data-terminal-body className="terminal-body" style={{ padding: 20, minHeight: 220, maxHeight: 280, overflowY: 'auto', fontSize: 13.5, cursor: 'text' }}>
             {lines.map((line, i) => (
               <div key={line.id ?? 'welcome'} style={{ marginBottom: 10 }}>
                 {line.isCommand && (
@@ -199,8 +207,9 @@ export default function Terminal() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="escribí un comando... (↑ historial, Tab autocompleta)"
+              placeholder={COARSE_POINTER ? 'escribí un comando…' : 'escribí un comando... (↑ historial, Tab autocompleta)'}
               aria-label="Comando de terminal"
+              className="terminal-input"
               autoComplete="off"
               autoCapitalize="off"
               autoCorrect="off"

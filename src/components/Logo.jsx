@@ -1,3 +1,5 @@
+import { useId } from 'react';
+
 /**
  * Brand lockup, recreated in SVG from the client's logo file — the
  * "<DSS/>" mark in the violet -> cyan gradient, plus the wordmark and
@@ -13,7 +15,12 @@
  * the same violet/cyan as the background) would be unreadable.
  */
 export default function Logo({ variant = 'full', height = 30, style, light = false }) {
-  const gradId = 'dss-mark-gradient';
+  // Id único por instancia: con un id fijo, todas las copias del logo
+  // apuntaban al <linearGradient> de la primera. En mobile esa primera es el
+  // logo completo del nav, que está oculto (display: none) — y un degradé
+  // dentro de un SVG oculto no se pinta, así que el logo del footer quedaba
+  // invisible en el celular.
+  const gradId = `dss-grad-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`;
 
   if (variant === 'icon') {
     return (

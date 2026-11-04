@@ -4,7 +4,7 @@ const STEPS = [
   {
     n: '01',
     title: 'Diagnóstico',
-    desc: 'Una llamada breve para entender tu problema real, tu operación actual y qué resultado necesitás — sin tecnicismos.',
+    desc: 'Una llamada breve para entender tu problema real, cómo trabajás hoy y qué resultado necesitás — sin tecnicismos.',
   },
   {
     n: '02',
@@ -14,43 +14,44 @@ const STEPS = [
   {
     n: '03',
     title: 'Desarrollo',
-    desc: 'Entregas funcionales cada semana. Ves avances reales, no promesas — y podés reajustar el rumbo mientras construimos.',
+    desc: 'Avances que podés probar cada semana. Ves el proyecto crecer y podés ajustar el rumbo mientras lo construimos.',
   },
   {
     n: '04',
-    title: 'Entrega & Soporte',
-    desc: 'Deploy a producción y acompañamiento posterior al lanzamiento. El proyecto no termina cuando sale a producción.',
+    title: 'Entrega y soporte',
+    desc: 'Lo publicamos, te enseñamos a usarlo y te seguimos acompañando después del lanzamiento.',
   },
 ];
 
+// v19: en escritorio, cuatro tarjetas unidas por una línea (se lee como un
+// recorrido, no como cuatro cajas sueltas); en el celular, una línea de tiempo
+// vertical compacta en vez de cuatro tarjetas grandes apiladas.
 export default function Proceso() {
   const [headerRef, headerVisible] = useReveal();
-  const [gridRef, gridVisible] = useReveal();
+  const [gridRef, gridVisible] = useReveal({ threshold: 0.08 });
 
   return (
-    <section id="proceso" className="section-textured section-alt" style={{ padding: '60px 40px 140px' }}>
+    <section id="proceso" className="section-textured section-alt section-pad">
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         <div ref={headerRef} style={revealStyle(headerVisible, 0)}>
-          <div className="section-header" style={{ marginBottom: 48, maxWidth: 560 }}>
+          <div className="section-header" style={{ marginBottom: 44, maxWidth: 600 }}>
             <div className="section-kicker" />
-            <h2 style={{ fontSize: 36, margin: '0 0 10px', letterSpacing: '-0.015em' }}>Cómo Trabajamos</h2>
-            <p style={{ color: 'var(--text-secondary)', fontSize: 16, margin: 0 }}>
-              Cuatro pasos simples, siempre hablando con quien escribe el código.
-            </p>
+            <h2 className="section-title">Cómo trabajamos</h2>
+            <p className="section-sub">Cuatro pasos simples, siempre hablando directo con quienes escriben el código.</p>
           </div>
         </div>
 
-        <div ref={gridRef} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 24 }}>
+        <ol ref={gridRef} className="process-list">
           {STEPS.map((step, i) => (
-            <div key={step.n} style={revealStyle(gridVisible, i + 1, 'cinematografica', { height: '100%' })}>
-              <div className="card elev-sm" style={{ height: '100%', padding: 'var(--space-8)' }}>
-                <span className="step-badge" style={{ marginBottom: 'var(--space-4)' }}>{step.n}</span>
+            <li key={step.n} className="process-item" style={revealStyle(gridVisible, i + 1, 'marcada')}>
+              <span className="step-badge process-badge">{step.n}</span>
+              <div className="card elev-sm process-card">
                 <h3 className="card-title">{step.title}</h3>
                 <p className="card-body">{step.desc}</p>
               </div>
-            </div>
+            </li>
           ))}
-        </div>
+        </ol>
       </div>
     </section>
   );

@@ -45,10 +45,10 @@ export default function Nav() {
       }}
     >
       <div style={{ justifySelf: 'start' }}>
-        <a href={homeHref} aria-label="DS.SoftwareStudio — inicio" className="nav-logo-full">
+        <a href={homeHref} className="nav-logo-full">
           <Logo height={38} light />
         </a>
-        <a href={homeHref} aria-label="DS.SoftwareStudio — inicio" className="nav-logo-compact">
+        <a href={homeHref} className="nav-logo-compact">
           <Logo variant="mark" height={30} light />
         </a>
       </div>

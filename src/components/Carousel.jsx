@@ -66,14 +66,22 @@ export default function Carousel({ images, alt = '', interval = 4200, rounded = 
     >
       <div className="carousel-viewport" style={{ aspectRatio }}>
         {images.map((src, i) => (
-          <img
-            key={src}
-            src={src}
-            alt={`${alt} — captura ${i + 1} de ${images.length}`}
-            className={`carousel-slide${i === index ? ' carousel-slide-active' : ''}`}
-            style={{ opacity: i === index ? 1 : 0, pointerEvents: i === index ? 'auto' : 'none' }}
-            loading={i === 0 ? 'eager' : 'lazy'}
-          />
+          // v19: cada captura .jpg tiene al lado su versión .webp (mitad de
+          // peso). <picture> con display: contents para no romper el
+          // posicionamiento absoluto de .carousel-slide sobre el <img>.
+          <picture key={src} style={{ display: 'contents' }}>
+            {/\.jpe?g$/i.test(src) && <source srcSet={src.replace(/\.jpe?g$/i, '.webp')} type="image/webp" />}
+            <img
+              src={src}
+              alt={`${alt} — captura ${i + 1} de ${images.length}`}
+              className={`carousel-slide${i === index ? ' carousel-slide-active' : ''}`}
+              style={{ opacity: i === index ? 1 : 0, pointerEvents: i === index ? 'auto' : 'none' }}
+              loading={i === 0 ? 'eager' : 'lazy'}
+              decoding="async"
+              width={1280}
+              height={720}
+            />
+          </picture>
         ))}
       </div>
 

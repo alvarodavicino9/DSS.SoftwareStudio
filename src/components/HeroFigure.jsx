@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { noiseTexture, gradientStripTexture } from '../utils/proceduralTextures';
+import { runWhileVisible } from '../hooks/useDeferredMount';
 
 /**
  * Procedural humanoid bust — monitor-head figure that tracks the cursor.
@@ -19,7 +20,8 @@ export default function HeroFigure({ wrapRef, followSpeed = 0.08, reducedMotion 
 
     const rect = wrap.getBoundingClientRect();
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    // En el celular, 1.5x alcanza para que se vea nítido y dibuja ~44% menos píxeles que 2x.
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.innerWidth < 860 ? 1.5 : 2));
     renderer.setSize(rect.width, rect.height || 1);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -136,7 +138,6 @@ export default function HeroFigure({ wrapRef, followSpeed = 0.08, reducedMotion 
     const target = { rx: 0, ry: 0 };
     const current = { rx: 0, ry: 0 };
     const clock = new THREE.Clock();
-    let raf;
 
     const handleMouseMove = (e) => {
       const r = wrap.getBoundingClientRect();
@@ -154,7 +155,6 @@ export default function HeroFigure({ wrapRef, followSpeed = 0.08, reducedMotion 
     };
 
     const animate = () => {
-      raf = requestAnimationFrame(animate);
       current.rx += (target.rx - current.rx) * followSpeed;
       current.ry += (target.ry - current.ry) * followSpeed;
       const t = clock.getElapsedTime();
@@ -167,7 +167,8 @@ export default function HeroFigure({ wrapRef, followSpeed = 0.08, reducedMotion 
       scanlineMat.opacity = 0.35 + Math.sin(t * 2) * 0.25 * idle;
       renderer.render(scene, camera);
     };
-    animate();
+    // Solo dibuja mientras el robot está en pantalla (ver runWhileVisible).
+    const stopLoop = runWhileVisible(wrap, animate);
 
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('resize', handleResize);
@@ -180,7 +181,7 @@ export default function HeroFigure({ wrapRef, followSpeed = 0.08, reducedMotion 
     ro.observe(wrap);
 
     return () => {
-      cancelAnimationFrame(raf);
+      stopLoop();
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('resize', handleResize);
       ro.disconnect();

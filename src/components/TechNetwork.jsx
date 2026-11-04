@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
+import { runWhileVisible } from '../hooks/useDeferredMount';
 import { dotSpriteTexture } from '../utils/proceduralTextures';
 
 const PURPLE = new THREE.Color('#8b7cf6');
@@ -121,9 +122,7 @@ export default function TechNetwork({ containerRef, reducedMotion = false }) {
     ro.observe(container);
 
     const clock = new THREE.Clock();
-    let raf;
     const animate = () => {
-      raf = requestAnimationFrame(animate);
       const dt = Math.min(clock.getDelta(), 0.05);
       const t = clock.getElapsedTime();
 
@@ -145,10 +144,10 @@ export default function TechNetwork({ containerRef, reducedMotion = false }) {
 
       renderer.render(scene, camera);
     };
-    animate();
+    const stopLoop = runWhileVisible(container, animate);
 
     return () => {
-      cancelAnimationFrame(raf);
+      stopLoop();
       window.removeEventListener('resize', resize);
       window.removeEventListener('mousemove', handleMouseMove);
       ro.disconnect();
