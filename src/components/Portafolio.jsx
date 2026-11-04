@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { useReveal, revealStyle } from '../hooks/useReveal';
 import { CASOS } from '../data/casos';
 import { Link } from '../router';
@@ -21,6 +21,44 @@ export default function Portafolio() {
   const [fanRef, fanVisible] = useReveal({ threshold: 0.1 });
   const [selected, setSelected] = useState(0);
 
+  // Avance automático del abanico — v20: antes cambiaba de proyecto cada 5,5 s
+  // aunque el usuario estuviera leyendo el panel de detalle, y se le iba lo
+  // que estaba leyendo. Ahora:
+  //  - se apaga para siempre apenas el usuario toca, hace click o usa el
+  //    teclado en cualquier parte de la sección (eligió leer, no mirar);
+  //  - se pausa mientras el mouse está sobre la sección;
+  //  - se pausa mientras el panel de detalle está a la vista (leyendo).
+  const sectionRef = useRef(null);
+  const panelRef = useRef(null);
+  const [autoplay, setAutoplay] = useState(true);
+  const [hovering, setHovering] = useState(false);
+  const [reading, setReading] = useState(false);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el || !autoplay) return undefined;
+    const stop = () => setAutoplay(false);
+    const events = ['pointerdown', 'keydown', 'touchstart'];
+    events.forEach((ev) => el.addEventListener(ev, stop, { passive: true }));
+    return () => events.forEach((ev) => el.removeEventListener(ev, stop));
+  }, [autoplay]);
+
+  useEffect(() => {
+    const el = panelRef.current;
+    if (!el || !autoplay) return undefined;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        // "Leyendo" = se ve buena parte del panel: el 60% de su alto, o la
+        // mitad de la pantalla si el panel es más alto que eso (celular).
+        const need = Math.min(entry.boundingClientRect.height * 0.6, window.innerHeight * 0.5);
+        setReading(entry.intersectionRect.height >= need);
+      },
+      { threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1] }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [autoplay, selected]);
+
   const cards = CASOS.map((c) => {
     const thumb = thumbOf(c.imagenes[0]);
     return { imgUrl: thumb, srcSet: `${thumb.replace('thumb.webp', 'thumb-320.webp')} 320w, ${thumb} 640w`, alt: c.titulo };
@@ -33,7 +71,13 @@ export default function Portafolio() {
   }
 
   return (
-    <section id="portafolio" className="section-textured section-pad">
+    <section
+      id="portafolio"
+      ref={sectionRef}
+      className="section-textured section-pad"
+      onMouseEnter={() => setHovering(true)}
+      onMouseLeave={() => setHovering(false)}
+    >
       <div style={{ maxWidth: 1200, margin: '0 auto', perspective: 1200 }}>
         <div ref={headerRef} style={revealStyle(headerVisible, 0)}>
           <div className="section-header" style={{ marginBottom: 12, maxWidth: 620 }}>
@@ -48,11 +92,23 @@ export default function Portafolio() {
 
         <div ref={fanRef} style={revealStyle(fanVisible, 1)}>
           <Suspense fallback={<div className="fan-placeholder" aria-hidden="true" />}>
-            <CardFanCarousel cards={cards} selectedIndex={selected} onSelect={handleSelect} />
+            <CardFanCarousel
+              cards={cards}
+              selectedIndex={selected}
+              onSelect={handleSelect}
+              autoplay={autoplay}
+              paused={hovering || reading}
+            />
           </Suspense>
         </div>
 
-        <article key={caso.slug} className="fan-detail card caso-panel" aria-live="polite" aria-labelledby="caso-panel-title">
+        <article
+          key={caso.slug}
+          ref={panelRef}
+          className="fan-detail card caso-panel"
+          aria-live="polite"
+          aria-labelledby="caso-panel-title"
+        >
           <div className="caso-panel-top">
             <Link to={`/portafolio/${caso.slug}`} className="caso-shot" aria-label={`Ver caso completo: ${caso.titulo}`}>
               <BrowserBar url={caso.url} />

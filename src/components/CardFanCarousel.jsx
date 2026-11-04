@@ -82,13 +82,19 @@ function getSlotConfig(totalCards, slot) {
   };
 }
 
-export default function CardFanCarousel({ cards, selectedIndex = null, onSelect }) {
+export default function CardFanCarousel({ cards, selectedIndex = null, onSelect, autoplay = true, paused = false }) {
   const containerRef = useRef(null);
   const isAnimating = useRef(false);
   const hasEntered = useRef(false);
   const directionRef = useRef(null);
   const prevVisible = useRef(new Set());
   const isPausedRef = useRef(false); // hover/foco/touch pausa el autoplay (no lo desactiva)
+  // Pausa pedida desde afuera (Portafolio.jsx: el usuario está leyendo el panel
+  // de detalle). En un ref para no reiniciar el temporizador en cada cambio.
+  const externalPausedRef = useRef(paused);
+  useEffect(() => {
+    externalPausedRef.current = paused;
+  }, [paused]);
   const keyboardNavRef = useRef(false); // marca si el próximo cambio de índice vino del teclado
   const touchRef = useRef({ active: false, startX: 0, startY: 0, dragging: false });
   const suppressClickRef = useRef(false); // evita que un swipe dispare además el click de la tarjeta
@@ -156,14 +162,16 @@ export default function CardFanCarousel({ cards, selectedIndex = null, onSelect 
   // carrusel, mientras la pestaña no está visible, o si el sistema pide
   // menos movimiento (`prefers-reduced-motion`).
   useEffect(() => {
-    if (totalCards <= 1) return undefined;
+    if (!autoplay || totalCards <= 1) return undefined;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
 
-    const AUTOPLAY_MS = 5500;
+    // 12 s (antes 5,5): con el panel de detalle debajo, 5,5 s no alcanzaba ni
+    // para leer el título y el resumen antes de que cambiara de proyecto.
+    const AUTOPLAY_MS = 12000;
     let timeoutId;
     const tick = () => {
       timeoutId = setTimeout(() => {
-        if (!isPausedRef.current && document.visibilityState === 'visible') {
+        if (!isPausedRef.current && !externalPausedRef.current && document.visibilityState === 'visible') {
           stepRef.current('right');
         }
         tick();
@@ -171,7 +179,7 @@ export default function CardFanCarousel({ cards, selectedIndex = null, onSelect 
     };
     tick();
     return () => clearTimeout(timeoutId);
-  }, [totalCards]);
+  }, [totalCards, autoplay]);
 
   // Si el cambio de selección vino del teclado (flechas), mueve el foco a
   // la tarjeta que quedó en el centro — así se puede seguir navegando con
