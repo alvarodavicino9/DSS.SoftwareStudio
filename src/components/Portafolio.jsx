@@ -1,110 +1,105 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useReveal, revealStyle } from '../hooks/useReveal';
 import { CASOS } from '../data/casos';
 import { Link } from '../router';
 import { trackEvent } from '../utils/analytics';
 import BrowserBar from './BrowserBar';
+import TiltedGridHero from './ui/TiltedGridHero';
 
-// v19: el abanico usa GSAP (~70 kB). Se carga aparte para que no viaje en el
-// paquete inicial de la página; mientras llega, un bloque del mismo alto
-// reserva el lugar (sin saltos de layout).
-const CardFanCarousel = lazy(() => import('./CardFanCarousel'));
-
-// Miniatura liviana para las tarjetas del abanico (640 px, WebP, ~5-20 kB):
-// las tarjetas miden como mucho 300 px de ancho, así que la captura completa
-// de 1280 px (40-100 kB en JPG) era peso de más. Las capturas completas
-// siguen en `imagenes` para la página de cada caso.
+// Miniatura liviana (640 px, WebP) y captura completa en WebP (1280 px).
 const thumbOf = (src) => src.replace(/\/[^/]+$/, '/thumb.webp');
 const webpOf = (src) => src.replace(/\.jpe?g$/i, '.webp');
+
+// v22: el abanico (CardFanCarousel + GSAP) se reemplazó por una cinta curva
+// (TiltedGridHero) que pasa sola con las capturas de los proyectos. Tocar o
+// hacer click en una tarjeta elige ese proyecto, y debajo hay una fila con
+// el nombre de cada uno para elegirlo directo (y con teclado). La cinta se
+// mueve sola pero el proyecto elegido NO cambia solo: el panel de detalle
+// queda fijo hasta que el usuario elige otro.
 export default function Portafolio() {
   const [headerRef, headerVisible] = useReveal();
-  const [fanRef, fanVisible] = useReveal({ threshold: 0.1 });
+  const [bandRef, bandVisible] = useReveal({ threshold: 0.1 });
   const [selected, setSelected] = useState(0);
 
-  // Avance automático del abanico — v20: antes cambiaba de proyecto cada 5,5 s
-  // aunque el usuario estuviera leyendo el panel de detalle, y se le iba lo
-  // que estaba leyendo. Ahora:
-  //  - se apaga para siempre apenas el usuario toca, hace click o usa el
-  //    teclado en cualquier parte de la sección (eligió leer, no mirar);
-  //  - se pausa mientras el mouse está sobre la sección;
-  //  - se pausa mientras el panel de detalle está a la vista (leyendo).
-  const sectionRef = useRef(null);
-  const panelRef = useRef(null);
-  const [autoplay, setAutoplay] = useState(true);
-  const [hovering, setHovering] = useState(false);
-  const [reading, setReading] = useState(false);
-
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el || !autoplay) return undefined;
-    const stop = () => setAutoplay(false);
-    const events = ['pointerdown', 'keydown', 'touchstart'];
-    events.forEach((ev) => el.addEventListener(ev, stop, { passive: true }));
-    return () => events.forEach((ev) => el.removeEventListener(ev, stop));
-  }, [autoplay]);
-
-  useEffect(() => {
-    const el = panelRef.current;
-    if (!el || !autoplay) return undefined;
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        // "Leyendo" = se ve buena parte del panel: el 60% de su alto, o la
-        // mitad de la pantalla si el panel es más alto que eso (celular).
-        const need = Math.min(entry.boundingClientRect.height * 0.6, window.innerHeight * 0.5);
-        setReading(entry.intersectionRect.height >= need);
-      },
-      { threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1] }
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, [autoplay, selected]);
-
-  const cards = CASOS.map((c) => {
-    const thumb = thumbOf(c.imagenes[0]);
-    return { imgUrl: thumb, srcSet: `${thumb.replace('thumb.webp', 'thumb-320.webp')} 320w, ${thumb} 640w`, alt: c.titulo };
-  });
+  // En pantallas anchas las tarjetas miden ~370 px (≈740 px reales en
+  // pantallas 2x): la captura de 1280 px. En el celular, la de 640 px alcanza.
+  const images = useMemo(() => {
+    const big = typeof window !== 'undefined' && window.innerWidth * (window.devicePixelRatio || 1) > 1100;
+    return CASOS.map((c) => ({ src: big ? webpOf(c.imagenes[0]) : thumbOf(c.imagenes[0]), alt: c.titulo }));
+  }, []);
+  // En el celular la cinta es más chata y con tarjetas más chicas: con la
+  // curva de escritorio las puntas se agrandaban tanto que se veían solo dos.
+  const [small] = useState(() => typeof window !== 'undefined' && window.innerWidth < 700);
   const caso = CASOS[selected];
 
-  function handleSelect(index) {
+  // En el celular la fila de nombres se desliza de costado: se centra sola
+  // en el proyecto elegido (sin mover la página).
+  const tabsRef = useRef(null);
+  useEffect(() => {
+    const row = tabsRef.current;
+    const btn = row?.querySelector('.portfolio-tab.is-active');
+    if (!row || !btn || row.scrollWidth <= row.clientWidth) return;
+    row.scrollTo({ left: btn.offsetLeft - (row.clientWidth - btn.offsetWidth) / 2, behavior: 'smooth' });
+  }, [selected]);
+
+  function handleSelect(index, via) {
     setSelected(index);
-    trackEvent('portfolio_card_select', { caso: CASOS[index].slug });
+    trackEvent('portfolio_card_select', { caso: CASOS[index].slug, via });
   }
 
   return (
-    <section
-      id="portafolio"
-      ref={sectionRef}
-      className="section-textured section-pad"
-      onMouseEnter={() => setHovering(true)}
-      onMouseLeave={() => setHovering(false)}
-    >
-      <div style={{ maxWidth: 1200, margin: '0 auto', perspective: 1200 }}>
+    <section id="portafolio" className="section-textured section-pad">
+      <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         <div ref={headerRef} style={revealStyle(headerVisible, 0)}>
-          <div className="section-header" style={{ marginBottom: 12, maxWidth: 620 }}>
+          <div className="section-header" style={{ marginBottom: 8, maxWidth: 620 }}>
             <div className="section-kicker" />
             <h2 className="section-title">Proyectos reales</h2>
             <p className="section-sub">
-              Elegí un proyecto para ver el problema, la solución y el resultado. Cada uno tiene además su página con el
+              Tocá un proyecto para ver el problema, la solución y el resultado. Cada uno tiene además su página con el
               detalle completo.
             </p>
           </div>
         </div>
+      </div>
 
-        <div ref={fanRef} style={revealStyle(fanVisible, 1)}>
-          <Suspense fallback={<div className="fan-placeholder" aria-hidden="true" />}>
-            <CardFanCarousel
-              cards={cards}
-              selectedIndex={selected}
-              onSelect={handleSelect}
-              autoplay={autoplay}
-              paused={hovering || reading}
-            />
-          </Suspense>
+      <div ref={bandRef} style={revealStyle(bandVisible, 1)}>
+        <TiltedGridHero
+          className="portfolio-band"
+          images={images}
+          speed={small ? 3.5 : 4.5}
+          tileHeight={small ? 40 : 42}
+          aspectRatio={16 / 9}
+          gap={7}
+          axis={50}
+          curve={small ? 55 : 80}
+          fade={11}
+          activeIndex={selected}
+          onTileClick={(i) => handleSelect(i, 'cinta')}
+          tileLabel={(i) => CASOS[i].nombre}
+        />
+      </div>
+
+      <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+        <div ref={tabsRef} className="portfolio-tabs" role="tablist" aria-label="Proyectos">
+          {CASOS.map((c, i) => (
+            <button
+              key={c.slug}
+              type="button"
+              role="tab"
+              aria-selected={i === selected}
+              aria-controls="caso-panel"
+              className={`portfolio-tab${i === selected ? ' is-active' : ''}`}
+              onClick={() => handleSelect(i, 'lista')}
+            >
+              {c.nombre}
+            </button>
+          ))}
         </div>
 
         <article
           key={caso.slug}
-          ref={panelRef}
+          id="caso-panel"
+          role="tabpanel"
           className="fan-detail card caso-panel"
           aria-live="polite"
           aria-labelledby="caso-panel-title"

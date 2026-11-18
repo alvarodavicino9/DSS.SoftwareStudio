@@ -549,6 +549,22 @@ muestra 4 ítems + "Ver más".
   del proyecto en modo local (catálogo propio; el panel con datos de ejemplo).
 - **`public/sitemap.xml`**: URL nueva del caso.
 
+## v22 — Portafolio: cinta curva de proyectos
+
+- **El abanico (`CardFanCarousel` + GSAP) se reemplazó por una cinta curva** (`src/components/ui/TiltedGridHero.jsx`),
+  adaptada del componente "tilted-grid-hero" de ruixen.ui (21st.dev). El original es TypeScript + Tailwind + shadcn;
+  acá se pasó a JSX y CSS propio porque el sitio no usa ninguno de los tres y sumarlos solo para esto agregaba
+  configuración y peso. La geometría es la misma: cada tarjeta se corta en 16 tiras giradas sobre un cilindro y se mueve
+  con una sola animación CSS (sin JavaScript por cuadro).
+- **Agregados para el portafolio**: tocar una tarjeta elige ese proyecto (`onTileClick`), el elegido lleva un borde de
+  marca que sigue la curva (`activeIndex`), la cinta se frena con el mouse encima y queda quieta con "reducir
+  movimiento". Debajo, una fila con el nombre de cada proyecto (`nombre` en `casos.js`) para elegirlo directo y con
+  teclado; en el celular se desliza de costado y se centra sola en el elegido.
+- La cinta pasa sola, pero **el proyecto elegido no cambia solo**: el panel de detalle queda fijo hasta que el usuario
+  elige otro. En celular la cinta es más chata (`curve` 55, tarjetas más chicas) para que se vean tres proyectos.
+- Imágenes: en pantallas anchas usa la captura `1.webp` (1280 px); en el celular, `thumb.webp` (640 px).
+- `CardFanCarousel.jsx` quedó sin uso (se puede borrar, junto con `gsap` de `package.json` si no se usa en otro lado).
+
 ## Pendientes para producción
 
 Estas son las cosas que el diseño dejaba abiertas y que hay que terminar de resolver:

@@ -1396,3 +1396,73 @@ a.caso-shot:hover { transform: translateY(-3px); border-color: rgba(139, 124, 24
 
 /* ----------------------------- Contacto ---------------------------- */
 .contact-steps li + li { position: relative; }
+
+/* ======================================================================
+   v22 — Portafolio: cinta curva de proyectos (TiltedGridHero)
+   ====================================================================== */
+/* La cinta va de borde a borde de la sección (compensa el padding lateral). */
+.portfolio-band { height: 400px; margin: 0 -40px; }
+.tgh-slice { background: #10131f; }
+.tgh-slice.is-first { border-radius: 10px 0 0 10px; }
+.tgh-slice.is-last { border-radius: 0 10px 10px 0; }
+.tgh-band.is-clickable .tgh-tile { cursor: pointer; }
+.tgh-band.is-clickable .tgh-tile img { transition: filter 0.25s ease; }
+@media (hover: hover) {
+  .tgh-band.is-clickable .tgh-tile:hover img { filter: brightness(1.12); }
+}
+/* Proyecto elegido: borde de marca que sigue la curva. Va en un ::after
+   encima de la imagen (cada tira pinta su tramo de arriba y de abajo; la
+   primera y la última, además, los costados). */
+.tgh-slice::after { content: ''; position: absolute; inset: 0; pointer-events: none; border-radius: inherit; }
+.tgh-tile.is-active .tgh-slice::after { box-shadow: inset 0 3px 0 #8b7cf6, inset 0 -3px 0 #2fc8db; }
+.tgh-tile.is-active .tgh-slice.is-first::after { box-shadow: inset 3px 0 0 #8b7cf6, inset 0 3px 0 #8b7cf6, inset 0 -3px 0 #2fc8db; }
+.tgh-tile.is-active .tgh-slice.is-last::after { box-shadow: inset -3px 0 0 #2fc8db, inset 0 3px 0 #8b7cf6, inset 0 -3px 0 #2fc8db; }
+
+/* Fila de proyectos: elegir por nombre (y con teclado) */
+.portfolio-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: 6px 0 22px;
+}
+.portfolio-tab {
+  min-height: 38px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+.portfolio-tab:hover { color: var(--color-text); border-color: rgba(255, 255, 255, 0.24); }
+.portfolio-tab.is-active {
+  color: #fff;
+  border-color: transparent;
+  background: linear-gradient(135deg, rgba(139, 124, 246, 0.9), rgba(47, 200, 219, 0.75));
+  box-shadow: 0 8px 22px -10px rgba(139, 124, 246, 0.8);
+}
+.portfolio-tab:focus-visible { outline: 2px solid var(--color-accent-300); outline-offset: 2px; }
+
+@media (max-width: 900px) { .portfolio-band { height: 320px; } }
+@media (max-width: 700px) {
+  .portfolio-band { height: 230px; margin: 0 -20px; }
+  /* En el celular, la fila de proyectos se desliza de costado en vez de
+     ocupar tres o cuatro renglones. */
+  .portfolio-tabs {
+    position: relative;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    margin: 4px -20px 18px;
+    padding: 2px 20px 6px;
+    scrollbar-width: none;
+    scroll-snap-type: x proximity;
+  }
+  .portfolio-tabs::-webkit-scrollbar { display: none; }
+  .portfolio-tab { flex: none; scroll-snap-align: start; font-size: 13.5px; padding: 7px 14px; min-height: 36px; }
+}
