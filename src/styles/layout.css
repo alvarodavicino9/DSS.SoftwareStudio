@@ -1503,3 +1503,250 @@ a.caso-shot:hover { transform: translateY(-3px); border-color: rgba(139, 124, 24
 .tgh-tile.is-active .tgh-slice::after { box-shadow: inset 0 3px 0 #8b7cf6, inset 0 -3px 0 #2fc8db; }
 .tgh-tile.is-active .tgh-slice.is-first::after { box-shadow: inset 3px 0 0 #8b7cf6, inset 0 3px 0 #8b7cf6, inset 0 -3px 0 #2fc8db; }
 .tgh-tile.is-active .tgh-slice.is-last::after { box-shadow: inset -3px 0 0 #2fc8db, inset 0 3px 0 #8b7cf6, inset 0 -3px 0 #2fc8db; }
+
+/* ======================================================================
+   v23 — Botón y chat de WhatsApp (mismo funcionamiento que Boom Zapas)
+   ====================================================================== */
+.waw-dock {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 250;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+.waw-btn-row { position: relative; display: flex; align-items: center; gap: 12px; transition: opacity 0.2s; }
+.waw-btn-row.is-hidden { opacity: 0; pointer-events: none; }
+.waw-btn {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  color: #fff;
+  background: linear-gradient(160deg, #a89bff 0%, #8b7cf6 40%, #2fc8db 100%);
+  box-shadow: 0 16px 34px -10px rgba(139, 124, 246, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.18);
+  transition: transform 0.2s ease;
+}
+.waw-btn:hover { transform: translateY(-2px) scale(1.05); }
+.waw-btn:active { transform: scale(0.95); }
+.waw-btn:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.waw-btn-dot {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #4ade80;
+  border: 2px solid #7f73ee;
+}
+.waw-nudge {
+  position: relative;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+  padding: 10px 16px;
+  border-radius: 16px 16px 6px 16px;
+  background: #fff;
+  color: #0b0d17;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.25;
+  box-shadow: 0 14px 30px -12px rgba(0, 0, 0, 0.6);
+}
+.waw-nudge small { display: block; font-size: 11px; font-weight: 500; color: rgba(11, 13, 23, 0.55); margin-top: 2px; }
+
+.waw-panel {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #0d1020;
+  color: #fff;
+}
+.waw-float {
+  width: 370px;
+  max-height: min(600px, calc(100dvh - 150px));
+  transform-origin: bottom right;
+  border-radius: 24px;
+  border: 1px solid rgba(139, 124, 246, 0.25);
+  box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.9);
+}
+.waw-head {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #6f5ff0 0%, #3b2fa8 55%, #1d6f86 100%);
+}
+.waw-avatar {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #0b0d17;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: -0.5px;
+}
+.waw-avatar > span { background: linear-gradient(90deg, #a89bff, #2fc8db); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.waw-online { position: absolute; right: -1px; bottom: -1px; width: 14px; height: 14px; border-radius: 50%; background: #4ade80; border: 2px solid #4a3cc4; }
+.waw-head-text { min-width: 0; flex: 1; }
+.waw-name { margin: 0; font-size: 15px; font-weight: 700; line-height: 1.3; }
+.waw-status { margin: 0; font-size: 12px; line-height: 1.3; color: rgba(255, 255, 255, 0.8); }
+.waw-close {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+}
+.waw-close:hover { background: rgba(255, 255, 255, 0.22); }
+
+.waw-body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 16px; }
+.waw-bubble {
+  width: fit-content;
+  max-width: 90%;
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 16px 16px 16px 4px;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 13.5px;
+  line-height: 1.4;
+}
+.waw-options { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.waw-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+  color: #fff;
+  font: inherit;
+  font-size: 13.5px;
+  line-height: 1.3;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.18s, background 0.18s;
+}
+.waw-option:hover { border-color: rgba(255, 255, 255, 0.32); }
+.waw-option.is-on { border-color: #8b7cf6; background: rgba(139, 124, 246, 0.18); }
+.waw-check {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: background 0.18s, border-color 0.18s;
+}
+.waw-option.is-on .waw-check { border-color: #8b7cf6; background: #8b7cf6; color: #fff; }
+.waw-extra-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.7);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.waw-extra-toggle:hover { color: #fff; }
+.waw-extra { display: grid; gap: 12px; padding-top: 12px; }
+.waw-extra label { display: block; }
+.waw-extra label > span { display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255, 255, 255, 0.6); }
+.waw-extra input,
+.waw-extra textarea {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  font: inherit;
+  font-size: 13.5px;
+  line-height: 1.4;
+  outline: none;
+  resize: none;
+}
+.waw-extra input:focus,
+.waw-extra textarea:focus { border-color: #8b7cf6; }
+.waw-extra textarea::placeholder { color: rgba(255, 255, 255, 0.4); }
+
+.waw-foot { padding: 12px 16px; border-top: 1px solid rgba(255, 255, 255, 0.1); background: #0d1020; }
+.waw-send {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px 20px;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  color: #fff;
+  background: linear-gradient(135deg, #8b7cf6, #2fb7cf);
+  box-shadow: 0 12px 28px -12px rgba(139, 124, 246, 0.9);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: transform 0.15s;
+}
+.waw-send:active { transform: scale(0.98); }
+.waw-foot p { margin: 8px 0 0; text-align: center; font-size: 11px; line-height: 1.4; color: rgba(255, 255, 255, 0.5); }
+
+/* Celular: hoja que sube desde abajo, a lo ancho */
+.waw-sheet-layer { position: fixed; inset: 0; z-index: 470; }
+.waw-backdrop { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+.waw-sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: 88dvh;
+  border-radius: 28px 28px 0 0;
+  box-shadow: 0 -30px 60px -20px rgba(0, 0, 0, 0.8);
+}
+.waw-sheet .waw-head { padding-top: 26px; }
+.waw-grabber { position: absolute; top: 10px; left: 50%; z-index: 2; width: 40px; height: 4px; margin-left: -20px; border-radius: 999px; background: rgba(255, 255, 255, 0.5); }
+.waw-sheet .waw-foot { padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
+/* En el celular los campos van a 16 px: si no, iPhone hace zoom al tocarlos. */
+.waw-sheet .waw-extra input,
+.waw-sheet .waw-extra textarea { font-size: 16px; }
+
+@media (max-width: 639px) {
+  .waw-dock { right: 12px; bottom: calc(16px + env(safe-area-inset-bottom)); gap: 10px; }
+  .waw-btn { width: 54px; height: 54px; }
+  .waw-nudge { padding: 8px 14px; font-size: 12.5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .waw-btn, .waw-send { transition: none; }
+}
