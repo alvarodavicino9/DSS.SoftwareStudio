@@ -15,6 +15,37 @@
 // real de cada proyecto (carpetas locales del usuario), no son genéricos.
 export const CASOS = [
   {
+    slug: 'boom-zapas-tienda-de-zapatillas',
+    cliente: 'Boom Zapas',
+    titulo: 'Tienda online de zapatillas con panel de administración para Boom Zapas',
+    resumen: 'Tienda online para Boom Zapas, venta de zapatillas con showroom en Córdoba y envío gratis a todo el país: catálogo con filtros por talle, vitrina 3D, pago con Mercado Pago y un panel para manejar pedidos, stock, caja y clientes.',
+    problema: 'Boom Zapas vende zapatillas Nike, Adidas, Jordan, New Balance, Puma y Vans desde un showroom en Córdoba y hace envíos a todo el país. Su web anterior era un único archivo de unos 4 MB con las fotos incrustadas: tardaba en cargar, sumar un modelo nuevo era engorroso y no tenía ningún lugar para seguir los pedidos, el stock por talle o la caja.',
+    solucion: 'Rehicimos la tienda desde cero: catálogo con filtros por marca, talle, precio y estilo, buscador en vivo, ficha de cada par con fotos reales y los talles disponibles, y un carrito que respeta el stock de cada talle. El pedido se cierra con Mercado Pago, transferencia o WhatsApp. La portada tiene una vitrina 3D para girar las zapatillas, y detrás de todo hay un panel de administración para pedidos, stock, caja y ganancias, clientes y reseñas.',
+    resultado: 'Boom Zapas tiene hoy su tienda en producción con dominio propio (boomzapas.com.ar), con 60 modelos publicados, una página por cada zapatilla y por marca para aparecer en Google, y todo el negocio en un solo panel: pedidos, stock por talle, caja y clientes.',
+    url: 'https://www.boomzapas.com.ar/',
+    funcionalidades: [
+      'Catálogo con filtros por marca, talle, precio y estilo, y orden por novedades o precio; los filtros quedan en el link para compartir la búsqueda',
+      'Buscador en vivo: a medida que escribís aparecen las zapatillas con foto y precio',
+      'Portada con vitrina 3D: las zapatillas se giran arrastrando y se abren con un toque (en conexiones lentas queda la foto fija)',
+      'Ficha de cada par con galería de fotos reales, zoom, talles disponibles, tabla de talles y botón para compartir',
+      'Precio con descuento automático llevando 2 pares o más',
+      'Carrito que no deja pedir más pares de los que hay en stock en cada talle',
+      'Checkout con Mercado Pago (Checkout Pro), transferencia o pedido por WhatsApp; el precio y el stock se validan en el servidor',
+      'Panel de administración: resumen de ventas con gráficos, pedidos por estado, nueva venta del local y stock por talle',
+      'Caja y ganancias, ingreso de mercadería con su costo, clientes y moderación de reseñas desde el panel',
+      'Generador de flyers para redes con las zapatillas del catálogo',
+      'Una página por zapatilla y por marca, con imagen propia al compartir, para posicionar en Google',
+      'Instalable como app en el celular (PWA)',
+    ],
+    stack: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'Three.js', 'Supabase', 'Mercado Pago', 'Vercel'],
+    imagenes: [
+      '/portfolio/boom-zapas-tienda-de-zapatillas/1.jpg',
+      '/portfolio/boom-zapas-tienda-de-zapatillas/2.jpg',
+      '/portfolio/boom-zapas-tienda-de-zapatillas/3.jpg',
+      '/portfolio/boom-zapas-tienda-de-zapatillas/4.jpg',
+    ],
+  },
+  {
     slug: 'good-luck-store-tienda-de-iphone',
     cliente: 'Good Luck Store',
     titulo: 'Tienda online de iPhone con panel de administración para Good Luck Store',

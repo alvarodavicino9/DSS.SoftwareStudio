@@ -538,6 +538,17 @@ logo del footer era invisible (id de degradé repetido en el SVG → `useId` en 
 iPhone (16px en celular); el Hero dejaba un bloque vacío (alto por contenido < 861px); la lista de "Apps del Estudio"
 muestra 4 ítems + "Ver más".
 
+## v21 — Portafolio: Boom Zapas
+
+- **Caso nuevo en `src/data/casos.js`**: Boom Zapas (`/portafolio/boom-zapas-tienda-de-zapatillas`), tienda de
+  zapatillas con showroom en Córdoba, publicada en `https://www.boomzapas.com.ar/`. Va **primero** en el array (queda
+  seleccionado por defecto en el abanico). `funcionalidades` y `stack` salieron del código real (repo
+  `alvarodavicino9/Boomzapas_`).
+- **Capturas**: `public/portfolio/boom-zapas-tienda-de-zapatillas/` — portada 3D, catálogo, ficha de un par y panel de
+  administración, 1280x720 en JPG + `.webp`, más `thumb.webp` (640) y `thumb-320.webp` para el abanico. Sacadas del build
+  del proyecto en modo local (catálogo propio; el panel con datos de ejemplo).
+- **`public/sitemap.xml`**: URL nueva del caso.
+
 ## Pendientes para producción
 
 Estas son las cosas que el diseño dejaba abiertas y que hay que terminar de resolver:
