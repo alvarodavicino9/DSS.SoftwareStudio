@@ -4,6 +4,9 @@
 // (ej. una página de caso de portafolio, /portafolio/:slug) hace falta
 // anteponer "/" para que el navegador primero navegue a la home y una vez
 // ahí busque el id — comportamiento nativo, sin JS extra.
+//
+// "Inicio" ('#') fuera de la home va a "/" a secas, sin el "#" colgando.
 export function sectionHref(hash, currentPath) {
+  if (hash === '#') return currentPath === '/' ? '#' : '/';
   return currentPath === '/' ? hash : `/${hash}`;
 }
