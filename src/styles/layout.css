@@ -1466,3 +1466,40 @@ a.caso-shot:hover { transform: translateY(-3px); border-color: rgba(139, 124, 24
   .portfolio-tabs::-webkit-scrollbar { display: none; }
   .portfolio-tab { flex: none; scroll-snap-align: start; font-size: 13.5px; padding: 7px 14px; min-height: 36px; }
 }
+
+/* ======================================================================
+   v22 — Cards opacas
+   Antes eran de vidrio (fondo blanco al 3-7% + blur): la red animada del
+   fondo se veía a través y el texto quedaba sobre líneas en movimiento.
+   Ahora tienen fondo sólido (azul noche, apenas más claro arriba).
+   ====================================================================== */
+.card {
+  background: linear-gradient(180deg, #171b2e 0%, #11142a 100%);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 10px 30px -18px rgba(0, 0, 0, 0.8);
+}
+.elev-sm { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 10px 30px -18px rgba(0, 0, 0, 0.8); }
+.elev-sm:hover {
+  background: linear-gradient(180deg, #1c2138 0%, #13172e 100%);
+  border-color: rgba(139, 124, 246, 0.36);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 24px 48px -18px rgba(0, 0, 0, 0.85), 0 0 0 4px rgba(139, 124, 246, 0.07);
+}
+.caso-cta {
+  background: linear-gradient(135deg, rgba(139, 124, 246, 0.16), rgba(47, 200, 219, 0.08)), linear-gradient(180deg, #171b2e, #11142a);
+}
+/* Los pasos de "Cómo trabajamos" en el celular son una línea de tiempo, sin caja. */
+@media (max-width: 640px) {
+  .process-card.card { background: none; border: 0; box-shadow: none; }
+}
+
+/* Tarjetas de la cinta: marco propio (filo claro arriba, borde sutil) para que
+   se lean como tarjetas sólidas aunque la captura sea oscura. */
+.tgh-slice { background: #0d1020; }
+.tgh-slice::after { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), inset 0 -1px 0 rgba(255, 255, 255, 0.08); }
+.tgh-slice.is-first::after { box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.22), inset 0 -1px 0 rgba(255, 255, 255, 0.08); }
+.tgh-slice.is-last::after { box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.22), inset 0 -1px 0 rgba(255, 255, 255, 0.08); }
+.tgh-tile.is-active .tgh-slice::after { box-shadow: inset 0 3px 0 #8b7cf6, inset 0 -3px 0 #2fc8db; }
+.tgh-tile.is-active .tgh-slice.is-first::after { box-shadow: inset 3px 0 0 #8b7cf6, inset 0 3px 0 #8b7cf6, inset 0 -3px 0 #2fc8db; }
+.tgh-tile.is-active .tgh-slice.is-last::after { box-shadow: inset -3px 0 0 #2fc8db, inset 0 3px 0 #8b7cf6, inset 0 -3px 0 #2fc8db; }

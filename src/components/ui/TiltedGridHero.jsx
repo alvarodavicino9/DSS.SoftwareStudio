@@ -22,6 +22,10 @@ import { useEffect, useId, useRef, useState } from 'react';
  * ─────────────────────────────────────────────────────────────────── */
 
 const SLICES = 16;
+// Cuánto se superpone cada tira con la anterior, como fracción del ancho de
+// una tira (ver más abajo). Invisible: la parte superpuesta muestra la misma
+// porción de la imagen, casi en el mismo plano.
+const OVERLAP = 0.35;
 const CAMERA = 1.6;
 const MAX_WIDTH = 55;
 
@@ -164,10 +168,15 @@ export default function TiltedGridHero({
                     position: 'absolute',
                     top: 0,
                     overflow: 'hidden',
-                    left: u((aspectRatio - share) / 2),
-                    width: k === SLICES - 1 ? u(share) : `calc(${u(share)} + 1px)`,
+                    // Cada tira (menos la primera) se estira hacia la izquierda y
+                    // tapa el pliegue con su vecina. El original las superponía 1 px,
+                    // y cuando la tarjeta se agranda cerca del borde ese píxel no
+                    // alcanzaba: se abría una raya oscura que titilaba.
+                    left: u((aspectRatio - share) / 2 - (k > 0 ? OVERLAP * share : 0)),
+                    width: u(share + (k > 0 ? OVERLAP * share : 0)),
                     height: u(1),
                     transform: turn((aspectRatio / 2 - (k + 0.5) * share) * unit),
+                    backfaceVisibility: 'hidden',
                   }}
                 >
                   {img ? (
@@ -182,7 +191,7 @@ export default function TiltedGridHero({
                         maxWidth: 'none',
                         objectFit: 'cover',
                         objectPosition: 'top',
-                        left: u(-k * share),
+                        left: u(-k * share + (k > 0 ? OVERLAP * share : 0)),
                         width: u(aspectRatio),
                         height: u(1),
                       }}

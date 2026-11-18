@@ -72,7 +72,7 @@ export default function Portafolio() {
           gap={7}
           axis={50}
           curve={small ? 55 : 80}
-          fade={11}
+          fade={6}
           activeIndex={selected}
           onTileClick={(i) => handleSelect(i, 'cinta')}
           tileLabel={(i) => CASOS[i].nombre}
