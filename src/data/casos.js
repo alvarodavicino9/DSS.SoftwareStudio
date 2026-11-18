@@ -18,6 +18,8 @@ export const CASOS = [
   {
     slug: 'boom-zapas-tienda-de-zapatillas',
     nombre: 'Boom Zapas',
+    // Título corto para Google y redes (<title>): Google corta en ~60 caracteres.
+    seoTitulo: 'Boom Zapas: tienda online de zapatillas',
     cliente: 'Boom Zapas',
     titulo: 'Tienda online de zapatillas con panel de administración para Boom Zapas',
     resumen: 'Tienda online para Boom Zapas, venta de zapatillas con showroom en Córdoba y envío gratis a todo el país: catálogo con filtros por talle, vitrina 3D, pago con Mercado Pago y un panel para manejar pedidos, stock, caja y clientes.',
@@ -50,6 +52,7 @@ export const CASOS = [
   {
     slug: 'good-luck-store-tienda-de-iphone',
     nombre: 'Good Luck Store',
+    seoTitulo: 'Good Luck Store: tienda online de iPhone',
     cliente: 'Good Luck Store',
     titulo: 'Tienda online de iPhone con panel de administración para Good Luck Store',
     resumen: 'Sitio y catálogo online para Good Luck Store, tienda de iPhone sellados, seminuevos y usados en Ceres, Santa Fe, con pedidos por WhatsApp, Plan Canje y panel de administración propio.',
@@ -81,6 +84,7 @@ export const CASOS = [
   {
     slug: 'torneo-star-basket-estadisticas-en-vivo',
     nombre: 'Torneo Star Basket',
+    seoTitulo: 'Torneo Star Basket: estadísticas en vivo',
     cliente: null,
     titulo: 'Plataforma de estadísticas en vivo para un torneo de básquet',
     resumen: 'Sitio web para un torneo de básquet con carga y visualización de estadísticas en vivo de cada partido.',
@@ -110,6 +114,7 @@ export const CASOS = [
   {
     slug: 'sitio-web-para-inmobiliarias',
     nombre: 'Inmobiliarias',
+    seoTitulo: 'Sitio web para inmobiliarias con panel',
     cliente: null,
     titulo: 'Sitio web para inmobiliarias con panel de administración',
     resumen: 'Plataforma web para inmobiliarias: publicación de propiedades en alquiler y venta, con panel de administración propio.',
@@ -139,6 +144,7 @@ export const CASOS = [
   {
     slug: 'veterinaria-y-pet-shop-turnos-online',
     nombre: 'Veterinaria y pet shop',
+    seoTitulo: 'Web para veterinaria con turnos online',
     cliente: null,
     titulo: 'Sitio web para veterinaria y pet shop con reserva de turnos',
     resumen: 'Plataforma para una veterinaria con pet shop: reserva de turnos online y panel de administración completo.',
@@ -167,6 +173,7 @@ export const CASOS = [
   {
     slug: 'hipermat-corralon-materiales-construccion',
     nombre: 'Hipermat',
+    seoTitulo: 'Hipermat: sitio web para corralón',
     cliente: 'Hipermat Rosario',
     titulo: 'Sitio web para Hipermat, corralón de materiales de construcción',
     resumen: 'Sitio institucional y catálogo para Hipermat, corralón de materiales de construcción en Rosario con más de 40 años en el rubro.',
@@ -194,6 +201,7 @@ export const CASOS = [
   {
     slug: 'ds-burguer-menu-online-con-pedidos',
     nombre: 'DS Burguer',
+    seoTitulo: 'Sistema de pedidos online para comida',
     cliente: null,
     titulo: 'Plataforma de pedidos online con panel de administración para hamburgueserías',
     resumen: 'Sitio y sistema de pedidos online para una hamburguesería, con menú personalizable, carrito, checkout por WhatsApp y un panel de administración completo.',

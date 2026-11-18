@@ -47,28 +47,6 @@
 }
 
 /* Nav — hamburger only on mobile */
-.hamburger-btn {
-  display: none;
-  flex-direction: column;
-  justify-content: center;
-  gap: 5px;
-  width: 34px;
-  height: 34px;
-  padding: 0;
-  border: none;
-  background: transparent;
-}
-.hamburger-btn span {
-  display: block;
-  height: 2px;
-  width: 100%;
-  background: #ffffff;
-  border-radius: 2px;
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-.hamburger-btn[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-.hamburger-btn[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
-.hamburger-btn[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
 .mobile-menu {
   position: absolute;
@@ -90,46 +68,12 @@
   from { opacity: 0; transform: translateY(-14px); }
   to { opacity: 1; transform: translateY(0); }
 }
-.mobile-menu-link {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  font-size: 15px;
-  color: var(--color-text);
-  padding: var(--space-2) var(--space-2);
-  border-radius: var(--radius-md);
-  opacity: 0;
-  animation: mobileLinkIn 0.4s var(--ease-cinematic) both;
-  transition: background 0.2s ease, transform 0.15s ease;
-}
-.mobile-menu-link:nth-child(1) { animation-delay: 0.04s; }
-.mobile-menu-link:nth-child(2) { animation-delay: 0.09s; }
-.mobile-menu-link:nth-child(3) { animation-delay: 0.14s; }
-.mobile-menu-link:nth-child(4) { animation-delay: 0.19s; }
-.mobile-menu-link:nth-child(5) { animation-delay: 0.24s; }
-.mobile-menu-link:nth-child(6) { animation-delay: 0.29s; }
-.mobile-menu-link:active {
-  background: var(--color-neutral-800);
-  transform: scale(0.98);
-}
-.mobile-menu-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  flex: none;
-  background: rgba(139, 124, 246, 0.12);
-  color: var(--color-accent-300);
-}
-.mobile-menu-icon svg { width: 18px; height: 18px; }
 @keyframes mobileLinkIn {
   from { opacity: 0; transform: translateX(-14px); }
   to { opacity: 1; transform: translateX(0); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .mobile-menu, .mobile-menu-link { animation: none; opacity: 1; }
+  .mobile-menu{ animation: none; opacity: 1; }
 }
 
 @media (max-width: 860px) {
@@ -139,7 +83,6 @@
     position: relative !important;
     width: 100% !important;
     right: 0 !important;
-    height: 260px !important;
     margin-bottom: 8px !important;
     opacity: 1 !important;
   }
@@ -172,7 +115,6 @@
 .nav-logo-compact { display: none; }
 @media (max-width: 700px) {
   .nav-links-desktop { display: none !important; }
-  .hamburger-btn { display: flex !important; }
   .nav-logo-full { display: none !important; }
   .nav-logo-compact { display: inline-block !important; }
   /* Nudge the radial-menu trigger a bit closer to the screen edge than the
@@ -189,19 +131,6 @@
 @media (min-width: 701px) {
   .mobile-menu { display: none !important; }
 }
-
-.nav-link { position: relative; transition: color 0.2s ease; }
-.nav-link:hover { color: #ffffff !important; }
-.nav-link::after {
-  content: '';
-  position: absolute;
-  left: 0; right: 100%;
-  bottom: -4px;
-  height: 1px;
-  background: #ffffff;
-  transition: right 0.25s var(--ease-cinematic);
-}
-.nav-link:hover::after { right: 0; }
 
 /* Nav dock — real macOS-dock magnification via framer-motion (see Dock.jsx):
    icons grow based on cursor distance, not just a flat per-icon hover state.
@@ -331,163 +260,19 @@
 
 /* Floating WhatsApp widget — fixed wrapper holds both the toggle button and
    the popup panel, so the panel can be positioned relative to it. */
-.whatsapp-widget {
-  position: fixed;
-  right: 24px;
-  bottom: 24px;
-  z-index: 40;
-}
-.floating-whatsapp {
-  position: relative;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--gradient-brand);
-  color: #fff;
-  box-shadow: var(--shadow-glow);
-  transition: opacity 0.3s var(--ease-cinematic), transform 0.3s var(--ease-cinematic), box-shadow 0.2s ease;
-}
-.floating-whatsapp:hover { box-shadow: 0 16px 38px rgba(139, 124, 246, 0.45); }
-.floating-whatsapp-ring {
-  position: absolute;
-  inset: -6px;
-  border-radius: 50%;
-  border: 2px solid var(--color-accent);
-  opacity: 0.5;
-  animation: whatsappPulse 2.4s ease-out infinite;
-  pointer-events: none;
-}
 @keyframes whatsappPulse {
   0% { transform: scale(0.85); opacity: 0.55; }
   100% { transform: scale(1.35); opacity: 0; }
 }
-@media (max-width: 700px) {
-  .whatsapp-widget { right: 16px; bottom: 16px; }
-  .floating-whatsapp { width: 52px; height: 52px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .floating-whatsapp-ring { animation: none; display: none; }
-}
 
 /* WhatsApp chat widget panel — quick-option popup above the floating button */
-.whatsapp-panel {
-  position: absolute;
-  right: 0;
-  bottom: 68px;
-  width: 320px;
-  max-width: calc(100vw - 32px);
-  background: rgba(10, 11, 20, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--border-neutral);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
-  overflow: hidden;
-  animation: whatsappPanelIn 0.22s var(--ease-cinematic) both;
-}
 @keyframes whatsappPanelIn {
   from { opacity: 0; transform: translateY(12px) scale(0.97); }
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
-.whatsapp-panel-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 16px 18px;
-  background: var(--gradient-brand);
-  color: #fff;
-}
-.whatsapp-panel-header strong { font-size: 15px; }
-.whatsapp-status {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.85);
-  margin-top: 4px;
-}
-.whatsapp-status-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #4ade80;
-  animation: whatsappStatusPulse 1.8s ease-in-out infinite;
-}
 @keyframes whatsappStatusPulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.4; }
-}
-.whatsapp-panel-close {
-  border: none;
-  background: rgba(255, 255, 255, 0.18);
-  color: #fff;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  cursor: pointer;
-}
-.whatsapp-panel-body {
-  padding: 16px 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.whatsapp-panel-body p {
-  margin: 0;
-  font-size: 13.5px;
-  color: var(--text-secondary);
-  line-height: 1.5;
-}
-.whatsapp-options {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.whatsapp-option-btn {
-  text-align: left;
-  border: 1px solid var(--border-neutral);
-  background: var(--color-bg);
-  color: var(--color-text);
-  border-radius: 999px;
-  padding: 10px 16px;
-  font-size: 13px;
-  font-family: inherit;
-  cursor: pointer;
-  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
-}
-.whatsapp-option-btn:hover {
-  border-color: transparent;
-  background: var(--gradient-brand);
-  color: #fff;
-}
-.whatsapp-panel-footer {
-  width: 100%;
-  border: none;
-  background: var(--gradient-brand);
-  color: #fff;
-  padding: 13px;
-  font-size: 14px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-family: inherit;
-  cursor: pointer;
-}
-@media (max-width: 400px) {
-  .whatsapp-panel { width: calc(100vw - 32px); right: -8px; }
 }
 
 /* `.section-textured` used to layer a static CSS dot grid (+ before that, a
@@ -515,41 +300,6 @@
 }
 
 /* Hero — A.R.I.A quick-action pills */
-.pill {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  white-space: nowrap;
-  border-radius: 999px;
-  font-size: 13px;
-  padding: 0.4em 1em;
-  margin: 0 0.2em 0.4em 0;
-  border: 1px solid var(--border-neutral);
-  background: var(--color-surface);
-  color: var(--color-text);
-  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
-}
-.pill:hover {
-  background: var(--gradient-brand);
-  border-color: transparent;
-  color: #fff;
-  transform: translateY(-1px);
-}
-.pill-outline {
-  background: transparent;
-  border: 1px solid var(--color-accent);
-  color: var(--color-accent-300);
-  gap: 8px;
-}
-.pill-outline:hover {
-  background: var(--gradient-brand);
-  color: #fff;
-}
-.pill-outline svg { flex-shrink: 0; }
-
-@media (min-width: 640px) {
-  .pill { font-size: 15px; padding: 0.4em 1.2em; }
-}
 
 /* Apps del Estudio (AppsEstudio.jsx) — tarjeta destacada con la captura en
    un marco de celular a la izquierda y el texto a la derecha; debajo de
@@ -565,7 +315,6 @@
   width: 100%;
   max-width: 260px;
   padding: 8px;
-  border-radius: 34px;
   border: 1px solid var(--color-neutral-700);
   background: var(--color-bg-alt);
   box-shadow: var(--shadow-lg);
@@ -980,7 +729,6 @@
 .service-card { height: 100%; padding: 28px; display: flex; flex-direction: column; gap: 18px; }
 .service-text { display: flex; flex-direction: column; flex: 1; }
 .service-example {
-  margin-top: auto;
   padding: 16px 0 4px;
   font-size: 13.5px;
   font-weight: 500;
@@ -997,7 +745,6 @@
   .service-card { flex-direction: row; align-items: flex-start; gap: 16px; padding: 20px 18px; }
   .service-icon { flex: none; width: 42px; height: 42px; }
   .service-card .card-title { font-size: 17px; margin-bottom: 6px; }
-  .service-example { padding-top: 10px; }
   .service-card .card-body { font-size: 14px; }
 }
 
@@ -1042,22 +789,13 @@
   }
   .process-item { flex-direction: row; gap: 16px; padding-bottom: 22px; }
   .process-item:last-child { padding-bottom: 0; }
-  .process-card.card { padding: 0; background: none; border: 0; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; padding-top: 7px; }
+  .process-card.card { padding: 0; backdrop-filter: none; -webkit-backdrop-filter: none; padding-top: 7px; }
   .process-card .card-title { font-size: 17px; margin-bottom: 6px; }
 }
 
 /* ---------------------------- Portafolio -------------------------- */
 /* El abanico se alinea arriba (antes se centraba en un bloque de hasta
    38rem de alto: quedaba un hueco grande entre el título y las tarjetas). */
-.fan-layout { place-items: start center; padding-top: 1.5rem; min-height: 15rem; }
-@media (min-width: 480px) { .fan-layout { min-height: 17rem; } }
-@media (min-width: 640px) { .fan-layout { min-height: 19rem; } }
-@media (min-width: 768px) { .fan-layout { min-height: 22rem; } }
-@media (min-width: 1024px) { .fan-layout { min-height: 24rem; } }
-@media (min-width: 1320px) { .fan-layout { min-height: 25rem; } }
-.fan-placeholder { min-height: calc(15rem + 64px); }
-@media (min-width: 768px) { .fan-placeholder { min-height: calc(22rem + 72px); } }
-@media (min-width: 1024px) { .fan-placeholder { min-height: calc(24rem + 72px); } }
 
 /* ----------------------------- Terminal --------------------------- */
 @media (max-width: 640px) {
@@ -1134,16 +872,9 @@
    paneles de lectura quedan quietos. */
 .card {
   border-radius: 16px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.055) 0%, rgba(255, 255, 255, 0.022) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 1px 2px rgba(0, 0, 0, 0.3);
 }
-.elev-sm { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 1px 2px rgba(0, 0, 0, 0.3); }
 .elev-sm:hover {
   transform: translateY(-3px);
-  border-color: rgba(139, 124, 246, 0.34);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.075) 0%, rgba(255, 255, 255, 0.03) 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 22px 44px -18px rgba(0, 0, 0, 0.75), 0 0 0 4px rgba(139, 124, 246, 0.06);
 }
 .card-title { font-weight: 600; letter-spacing: -0.012em; }
 .card-kicker { letter-spacing: 0.12em; }
@@ -1337,7 +1068,6 @@ a.caso-shot:hover { transform: translateY(-3px); border-color: rgba(139, 124, 24
   flex-wrap: wrap;
   margin-top: 40px;
   padding: 28px 32px;
-  background: linear-gradient(135deg, rgba(139, 124, 246, 0.14), rgba(47, 200, 219, 0.07));
   border-color: rgba(139, 124, 246, 0.25);
 }
 .caso-cta h2 { font-size: 20px; font-weight: 600; letter-spacing: -0.015em; margin: 0 0 6px; }
@@ -1402,7 +1132,6 @@ a.caso-shot:hover { transform: translateY(-3px); border-color: rgba(139, 124, 24
    ====================================================================== */
 /* La cinta va de borde a borde de la sección (compensa el padding lateral). */
 .portfolio-band { height: 400px; margin: 0 -40px; }
-.tgh-slice { background: #10131f; }
 .tgh-slice.is-first { border-radius: 10px 0 0 10px; }
 .tgh-slice.is-last { border-radius: 0 10px 10px 0; }
 .tgh-band.is-clickable .tgh-tile { cursor: pointer; }
@@ -1414,9 +1143,6 @@ a.caso-shot:hover { transform: translateY(-3px); border-color: rgba(139, 124, 24
    encima de la imagen (cada tira pinta su tramo de arriba y de abajo; la
    primera y la última, además, los costados). */
 .tgh-slice::after { content: ''; position: absolute; inset: 0; pointer-events: none; border-radius: inherit; }
-.tgh-tile.is-active .tgh-slice::after { box-shadow: inset 0 3px 0 #8b7cf6, inset 0 -3px 0 #2fc8db; }
-.tgh-tile.is-active .tgh-slice.is-first::after { box-shadow: inset 3px 0 0 #8b7cf6, inset 0 3px 0 #8b7cf6, inset 0 -3px 0 #2fc8db; }
-.tgh-tile.is-active .tgh-slice.is-last::after { box-shadow: inset -3px 0 0 #2fc8db, inset 0 3px 0 #8b7cf6, inset 0 -3px 0 #2fc8db; }
 
 /* Fila de proyectos: elegir por nombre (y con teclado) */
 .portfolio-tabs {
@@ -1733,7 +1459,7 @@ a.caso-shot:hover { transform: translateY(-3px); border-color: rgba(139, 124, 24
   bottom: 0;
   max-height: 88dvh;
   border-radius: 28px 28px 0 0;
-  box-shadow: 0 -30px 60px -20px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 -30px 60px -20px rgba(0, 0, 0, 0.8);
 }
 .waw-sheet .waw-head { padding-top: 26px; }
 .waw-grabber { position: absolute; top: 10px; left: 50%; z-index: 2; width: 40px; height: 4px; margin-left: -20px; border-radius: 999px; background: rgba(255, 255, 255, 0.5); }
@@ -1750,3 +1476,10 @@ a.caso-shot:hover { transform: translateY(-3px); border-color: rgba(139, 124, 24
 @media (prefers-reduced-motion: reduce) {
   .waw-btn, .waw-send { transition: none; }
 }
+/* ===== v24: página 404 ===== */
+.notfound-page { padding: 160px 24px 140px; text-align: center; }
+.notfound-inner { max-width: 560px; margin: 0 auto; }
+.notfound-tag { display: inline-flex; margin-bottom: var(--space-6); }
+.notfound-page h1 { font-size: clamp(26px, 6vw, 34px); margin: 16px 0 12px; letter-spacing: -0.015em; }
+.notfound-page p { color: var(--text-secondary); font-size: 15px; line-height: 1.6; margin: 0 0 28px; }
+.notfound-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }

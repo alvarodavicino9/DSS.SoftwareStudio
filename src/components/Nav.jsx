@@ -16,9 +16,9 @@ import { sectionHref } from '../utils/sectionHref';
 const LINKS = [
   { hash: '#', label: 'Inicio', Icon: HomeIcon },
   { hash: '#portafolio', label: 'Portafolio', Icon: BriefcaseIcon },
-  { hash: '#apps', label: 'Apps del Estudio', Icon: AppsIcon },
   { hash: '#servicios', label: 'Servicios', Icon: WrenchIcon },
   { hash: '#proceso', label: 'Cómo Trabajamos', Icon: StepsIcon },
+  { hash: '#apps', label: 'Apps del Estudio', Icon: AppsIcon },
   { hash: '#contacto', label: 'Contacto', Icon: MailIcon },
 ];
 

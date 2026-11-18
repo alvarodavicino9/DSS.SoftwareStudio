@@ -96,16 +96,17 @@ export default function Portafolio() {
           ))}
         </div>
 
-        <article
+        <div
           key={caso.slug}
           id="caso-panel"
           role="tabpanel"
           className="fan-detail card caso-panel"
-          aria-live="polite"
           aria-labelledby="caso-panel-title"
         >
           <div className="caso-panel-top">
-            <Link to={`/portafolio/${caso.slug}`} className="caso-shot" aria-label={`Ver caso completo: ${caso.titulo}`}>
+            {/* Misma acción que el botón "Ver caso completo": fuera del orden
+                de tabulación y oculta a lectores de pantalla para no repetirla. */}
+            <Link to={`/portafolio/${caso.slug}`} className="caso-shot" tabIndex={-1} aria-hidden="true">
               <BrowserBar url={caso.url} />
               <picture>
                 <source type="image/webp" srcSet={`${thumbOf(caso.imagenes[0])} 640w, ${webpOf(caso.imagenes[0])} 1280w`} sizes="(max-width: 900px) 92vw, 520px" />
@@ -191,7 +192,7 @@ export default function Portafolio() {
               <p>{caso.solucion}</p>
             </div>
           </div>
-        </article>
+        </div>
       </div>
     </section>
   );

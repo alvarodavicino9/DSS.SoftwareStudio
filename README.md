@@ -565,6 +565,22 @@ muestra 4 ítems + "Ver más".
 - Imágenes: en pantallas anchas usa la captura `1.webp` (1280 px); en el celular, `thumb.webp` (640 px).
 - `CardFanCarousel.jsx` quedó sin uso (se puede borrar, junto con `gsap` de `package.json` si no se usa en otro lado).
 
+## v24 — Revisión: SEO, accesibilidad y limpieza
+
+- **Vista previa al compartir**: `public/og-cover.jpg` (1200x630) reemplaza al SVG, que WhatsApp,
+  Facebook y LinkedIn no muestran. Los casos usan su primera captura (1280x720).
+- **Títulos**: cada caso tiene `seoTitulo` en `casos.js` (Google corta en ~60 caracteres).
+- **404**: cualquier ruta desconocida muestra `NotFound` con `noindex` (antes mostraba la home).
+- **Datos de empresa (JSON-LD)**: Instagram en `sameAs`, ciudad, logo e imagen.
+- **Orden de la home**: Portafolio → Servicios → Cómo trabajamos → Apps → Terminal → Contacto
+  (mismo orden en el menú y el footer).
+- **Accesibilidad**: panel de proyectos sin roles inválidos, puntitos del carrusel con área
+  táctil de 24px, contraste del "Scroll" del hero.
+- **Limpieza**: se borraron componentes sin uso (AnimatedGradient, BackgroundVideo,
+  CardFanCarousel, CursorHalo, Nosotros, Select), `gsap`, `App.css`/`index.css`/`src/assets`
+  del template, `public/videos`, `icons.svg`, `trucoAPP.png` y ~115 reglas de CSS muertas o pisadas
+  (CSS de 52 KB a 41 KB, sin cambios visuales: verificado comparando estilos computados).
+
 ## Pendientes para producción
 
 Estas son las cosas que el diseño dejaba abiertas y que hay que terminar de resolver:

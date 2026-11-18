@@ -13,7 +13,7 @@ const SITE_URL = 'https://dssoftwarestudio.com.ar';
 const DEFAULT_TITLE = 'DS.SoftwareStudio — Software a medida, Argentina';
 const DEFAULT_DESCRIPTION =
   'Consultora de software argentina. Desarrollamos sistemas a medida, plataformas web, PWAs y MVPs. Trato directo con los ingenieros que programan tu proyecto.';
-const DEFAULT_IMAGE = `${SITE_URL}/og-cover.svg`;
+const DEFAULT_IMAGE = `${SITE_URL}/og-cover.jpg`;
 
 function setMetaByName(name, content) {
   let el = document.querySelector(`meta[name="${name}"]`);
@@ -97,6 +97,10 @@ export function useDocumentMeta({ title, description, path = '/', robots = 'inde
     setMetaByProperty('og:description', finalDescription);
     setMetaByProperty('og:url', url);
     setMetaByProperty('og:image', finalImage);
+    // Portada del sitio: 1200x630. Capturas de los casos: 1280x720.
+    setMetaByProperty('og:image:width', image ? '1280' : '1200');
+    setMetaByProperty('og:image:height', image ? '720' : '630');
+    setMetaByProperty('og:image:alt', image ? `Captura de ${finalTitle}` : 'DS.SoftwareStudio: software a medida, con capturas de proyectos reales');
     setMetaByName('twitter:title', finalTitle);
     setMetaByName('twitter:description', finalDescription);
     setMetaByName('twitter:image', finalImage);

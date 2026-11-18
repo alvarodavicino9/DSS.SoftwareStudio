@@ -5,25 +5,7 @@ import { Link } from '../router';
 import Carousel from '../components/Carousel';
 import BrowserBar from '../components/BrowserBar';
 import { getCasoBySlug, CASOS } from '../data/casos';
-
-function NotFound() {
-  return (
-    <section style={{ padding: '160px 40px 140px', textAlign: 'center' }}>
-      <div style={{ maxWidth: 560, margin: '0 auto' }}>
-        <span className="tag tag-outline" style={{ marginBottom: 'var(--space-6)', display: 'inline-flex' }}>
-          404
-        </span>
-        <h1 style={{ fontSize: 32, margin: '16px 0 12px', letterSpacing: '-0.015em' }}>No encontramos ese caso</h1>
-        <p style={{ color: 'var(--text-secondary)', fontSize: 15, margin: '0 0 28px' }}>
-          Puede que el link esté roto o el caso ya no exista.
-        </p>
-        <Link to="/#portafolio" className="btn btn-primary">
-          Volver al portafolio
-        </Link>
-      </div>
-    </section>
-  );
-}
+import NotFound from '../components/NotFound';
 
 export default function CasoDetalle({ slug }) {
   const [ref, visible] = useReveal({ threshold: 0 });
@@ -36,7 +18,7 @@ export default function CasoDetalle({ slug }) {
   // si NotFound tuviera su propia (efectos de hijo primero), pisaría el
   // noindex con el "index, follow" default de esta.
   useDocumentMeta({
-    title: caso ? `${caso.titulo} — Casos de Éxito | DS.SoftwareStudio` : undefined,
+    title: caso ? `${caso.seoTitulo || caso.nombre} | DS.SoftwareStudio` : 'Página no encontrada | DS.SoftwareStudio',
     description: caso ? caso.resumen : undefined,
     path: `/portafolio/${slug}`,
     robots: caso ? 'index, follow' : 'noindex, follow',
@@ -50,7 +32,7 @@ export default function CasoDetalle({ slug }) {
       : undefined,
   });
 
-  if (!caso) return <NotFound />;
+  if (!caso) return <NotFound titulo="No encontramos ese caso" texto="Puede que el link esté roto o el caso ya no exista." />;
 
   const otros = CASOS.filter((c) => c.slug !== caso.slug);
 

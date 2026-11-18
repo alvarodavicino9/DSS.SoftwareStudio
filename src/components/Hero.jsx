@@ -199,7 +199,8 @@ export default function Hero() {
           fontSize: 11,
           letterSpacing: '0.08em',
           textTransform: 'uppercase',
-          color: 'var(--text-secondary)',
+          // Un poco más oscuro que --text-secondary: a 11px necesita contraste 4.5:1.
+          color: '#5c5d66',
           animation: 'bounceHint 2.2s ease-in-out infinite',
         }}
       >

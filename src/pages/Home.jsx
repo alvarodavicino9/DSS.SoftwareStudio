@@ -7,10 +7,10 @@ import Terminal from '../components/Terminal';
 import Contacto from '../components/Contacto';
 import { useDocumentMeta } from '../hooks/useDocumentMeta';
 
-// Home de una sola página. La sección "Nosotros" (Nosotros.jsx) se sacó a
-// pedido — el componente queda en el repo sin usar, igual que
-// TechNetwork/HeroFigure en su momento (ver README v4), por si se reutiliza
-// más adelante.
+// Home de una sola página. Orden pensado para quien llega buscando un
+// estudio: primero qué hicimos (Portafolio), después qué hacemos y cómo
+// (Servicios, Proceso); las apps propias y la terminal quedan como extra
+// antes del formulario de contacto.
 export default function Home() {
   // Sin argumentos = vuelve al title/description/canonical por default del
   // sitio. Necesario para resetearlos al volver acá desde un caso de
@@ -21,10 +21,10 @@ export default function Home() {
     <>
       <Hero />
       <Portafolio />
-      <AppsEstudio />
-      <Terminal />
       <Servicios />
       <Proceso />
+      <AppsEstudio />
+      <Terminal />
       <Contacto />
     </>
   );

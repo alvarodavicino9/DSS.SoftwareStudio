@@ -8,9 +8,9 @@ import { sectionHref } from '../utils/sectionHref';
 // secciones en Home.jsx.
 const FOOTER_LINKS = [
   { hash: '#portafolio', label: 'Portafolio' },
-  { hash: '#apps', label: 'Apps del Estudio' },
   { hash: '#servicios', label: 'Servicios' },
   { hash: '#proceso', label: 'Cómo trabajamos' },
+  { hash: '#apps', label: 'Apps del Estudio' },
   { hash: '#contacto', label: 'Contacto' },
 ];
 
